@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <ImageView style="@style/DivisionLine"
+            android:layout_marginTop="1dp"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_mine_info"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="12dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/mydata"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="62dp"
+            android:text="我的资料"
+            android:textSize="18sp"
+            android:textColor="#686" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/right_bigarraw"/>
+    </RelativeLayout>
+
+    <ImageView style="@style/DivisionLine"
+               android:layout_marginLeft="12dp"
+               android:layout_marginRight="12dp"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_mine_collect"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="12dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/mycollect"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="62dp"
+            android:text="我的收藏"
+            android:textSize="18sp"
+            android:textColor="#686" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/right_bigarraw"/>
+    </RelativeLayout>
+
+    <ImageView style="@style/DivisionLine"
+               android:layout_marginLeft="12dp"
+               android:layout_marginRight="12dp"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_mine_purse"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="12dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/mypurse"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="62dp"
+            android:text="我的礼卷"
+            android:textSize="18sp"
+            android:textColor="#686" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/right_bigarraw"/>
+
+    </RelativeLayout>
+
+    <ImageView style="@style/DivisionLine"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"/>
+
+    <ImageView style="@style/DivisionLine"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_about_author"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="12dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/contact"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="62dp"
+            android:text="关于作者"
+            android:textSize="18sp"
+            android:textColor="#686" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/right_bigarraw"/>
+    </RelativeLayout>
+
+    <ImageView style="@style/DivisionLine"
+               android:layout_marginLeft="12dp"
+               android:layout_marginRight="12dp"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_version_info"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="12dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/appversion"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="62dp"
+            android:text="版本信息"
+            android:textSize="18sp"
+            android:textColor="#686" />
+
+        <TextView
+            android:id="@+id/tv_version_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:text="V1.0.0"
+            android:textSize="16sp"
+            android:textColor="#636"/>
+    </RelativeLayout>
+
+    <ImageView style="@style/DivisionLine"/>
+</LinearLayout>

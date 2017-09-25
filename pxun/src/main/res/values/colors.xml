@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="appColor">#686868</color>
+    <color name="chatColor">#33B5E5</color>
+    <color name="bgColor">#181818</color>
+    <color name="itemColor">#CCCCCC</color>
+
+    <color name="translucent">#00000000</color>
+</resources>

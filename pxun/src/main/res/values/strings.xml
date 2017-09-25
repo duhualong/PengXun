@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">鹏讯</string>
+
+
+    <string name="regist"><u>注册</u></string>
+    <string name="registProtocol"><u>用户注册协议</u></string>
+</resources>
