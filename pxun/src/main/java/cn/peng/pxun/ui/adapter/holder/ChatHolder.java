@@ -17,7 +17,6 @@ import cn.peng.pxun.modle.greendao.Message;
 import cn.peng.pxun.ui.activity.ChatActivity;
 import cn.peng.pxun.ui.activity.DetailedActivity;
 import cn.peng.pxun.ui.view.ChatView;
-import cn.peng.pxun.utils.UIUtils;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -46,7 +45,7 @@ public class ChatHolder extends BaseHolder<Message> {
 
     @Override
     public View initHolderView() {
-        View view = View.inflate(UIUtils.getContext(), R.layout.item_chat, null);
+        View view = View.inflate(activity, R.layout.item_chat, null);
         ButterKnife.bind(this, view);
         setOnClick();
         return view;
@@ -111,7 +110,7 @@ public class ChatHolder extends BaseHolder<Message> {
                     TextView tv = mCvChatReply.getTextView(14,Color.parseColor("#1818FF"));
                     final ImageView iv = mCvChatReply.getImageView(75,100);
                     tv.setText(mData.message);
-                    Picasso.with(UIUtils.getContext())
+                    Picasso.with(activity)
                             .load(mData.picURL)
                             .resize(65, 100)
                             .centerCrop()

@@ -7,7 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import cn.peng.pxun.MyApplication;
-import cn.peng.pxun.modle.Constant;
+import cn.peng.pxun.modle.AppConfig;
 
 /**
  * Created by msi on 2017/1/1.
@@ -17,7 +17,7 @@ public class MenuAdapter extends BaseAdapter {
     String[] items;
 
     public MenuAdapter(){
-        this.items = Constant.MENU_ITEMS;
+        this.items = AppConfig.MENU_ITEMS;
     }
 
     @Override

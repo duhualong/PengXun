@@ -4,8 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import cn.peng.pxun.presenter.BasePresenter;
+import de.greenrobot.event.EventBus;
 
 /**
  * Activity的基类
@@ -13,7 +18,13 @@ import cn.peng.pxun.presenter.BasePresenter;
  */
 public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity {
     protected P presenter;
+    // Activity中的上下文
     protected BaseActivity mActivity;
+
+    // 管理运行的所有的activity
+    public final static List<AppCompatActivity> mActivities = new LinkedList();
+    // ButterKnife的解绑器
+    private Unbinder mUnbinder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,11 +38,40 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         initListener();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mActivity = this;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mActivity = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //解绑ButterKnife
+        if(mUnbinder != null){
+            mUnbinder.unbind();
+        }
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
+        synchronized (mActivities) {
+            mActivities.remove(this);
+        }
+    }
+
     /**
      * 初始化一些设置,此方法会在setLayoutRes()之前执行
      */
     protected void init(){
-        mActivity = this;
+        synchronized (mActivities) {
+            mActivities.add(this);
+        }
         this.presenter = initPresenter();
     }
 
@@ -39,7 +79,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * 初始化视图
      */
     protected void initView(){
-        ButterKnife.bind(this);
+        //绑定ButterKnife
+        mUnbinder = ButterKnife.bind(this);
     }
 
     /**
@@ -65,6 +106,5 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * @return
      */
     public abstract P initPresenter();
-
 
 }

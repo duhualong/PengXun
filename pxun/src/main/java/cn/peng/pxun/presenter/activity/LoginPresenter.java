@@ -5,14 +5,8 @@ import android.content.SharedPreferences;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 
-import java.util.List;
-
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
 import cn.peng.pxun.MyApplication;
-import cn.peng.pxun.modle.Constant;
-import cn.peng.pxun.modle.bean.User;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.activity.LoginActivity;
@@ -37,14 +31,14 @@ public class LoginPresenter extends BasePresenter{
      * @param password
      * @return
      */
-    public void login(String phone,String password) {
-        this.phone = phone;
-        this.password = password;
-
+    public void login(String phone, final String password) {
         if (!isNetUsable(activity)){
-            activity.onLogin(Constant.NET_ERROR);
+            activity.onLogin(AppConfig.NET_ERROR);
             return;
         }
+
+        this.phone = phone;
+        this.password = password;
 
         //登录环信服务器
         EMClient.getInstance().login(phone,password,new EMCallBack() {
@@ -52,12 +46,7 @@ public class LoginPresenter extends BasePresenter{
             public void onSuccess() {
                 EMClient.getInstance().groupManager().loadAllGroups();
                 EMClient.getInstance().chatManager().loadAllConversations();
-                ThreadUtils.runOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        activity.onLogin(Constant.LOGIN_SUCCESS);
-                    }
-                });
+                setResult(AppConfig.SUCCESS);
             }
 
             @Override
@@ -67,12 +56,16 @@ public class LoginPresenter extends BasePresenter{
 
             @Override
             public void onError(int code, String message) {
-                ThreadUtils.runOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        activity.onLogin(Constant.LOGIN_ERROR);
-                    }
-                });
+                setResult(AppConfig.ERROR);
+            }
+        });
+    }
+
+    private void setResult(final int code) {
+        ThreadUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.onLogin(code);
             }
         });
     }
@@ -95,17 +88,10 @@ public class LoginPresenter extends BasePresenter{
 
     }
 
-    public void getUser() {
-        BmobQuery<User> query = new BmobQuery<User>();
-        query.addWhereEqualTo("mobilePhoneNumber", phone);
-        query.findObjects(new FindListener<User>() {
-            @Override
-            public void done(List<User> list,BmobException e) {
-
-            }
-        });
-    }
-
+    /**
+     * 获取已登录用户的账号
+     * @return
+     */
     public static String getKeepUserPhone(){
         return MyApplication.sp.getString("phone","");
     }

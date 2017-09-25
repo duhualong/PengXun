@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.bean.Contacts;
 import cn.peng.pxun.modle.greendao.Message;
@@ -36,8 +37,11 @@ import de.greenrobot.event.ThreadMode;
  * 消息界面的Fragment
  */
 public class MessageFragment extends BaseFragment {
+
+    @BindView(R.id.lv_message)
+    SuperListView mLvMessage;
+
     private List<Contacts> mList;
-    private SuperListView mSlv;
     private MessageAdapter mAdapter;
 
     @Override
@@ -55,28 +59,28 @@ public class MessageFragment extends BaseFragment {
 
     @Override
     public View initView() {
-        mSlv = new SuperListView(activity);
-        return mSlv;
+        View view = View.inflate(mActivity, R.layout.fragment_message, null);
+        return view;
     }
 
     @Override
     public void initData() {
         mAdapter = new MessageAdapter(mList);
-        mSlv.setAdapter(mAdapter);
+        mLvMessage.setAdapter(mAdapter);
     }
 
     @Override
     public void initListener() {
-        mSlv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mLvMessage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> view, View view1, final int i, long l) {
-                final String username = mList.get(i-1).userName;
-                if (username.equals("系统消息")){
-                    final String messageUser = mList.get(i-1).text;
-                    AlertDialog.Builder builder=new AlertDialog.Builder(activity);
+                final String username = mList.get(i - 1).userName;
+                if (username.equals("系统消息")) {
+                    final String messageUser = mList.get(i - 1).text;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                     builder.setTitle("系统消息");
-                    builder.setMessage(mList.get(i-1).signature);
-                    if (mList.get(i-1).signature.contains("请求添加")) {
+                    builder.setMessage(mList.get(i - 1).signature);
+                    if (mList.get(i - 1).signature.contains("请求添加")) {
                         builder.setPositiveButton("同意", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -91,7 +95,7 @@ public class MessageFragment extends BaseFragment {
                                                     mList.remove(i - 1);
                                                     mAdapter.setDataSets(mList);
                                                     mAdapter.notifyDataSetChanged();
-                                                    ToastUtil.showToast(activity, "已同意" + messageUser + "的好友申请");
+                                                    ToastUtil.showToast(mActivity, "已同意" + messageUser + "的好友申请");
                                                 }
                                             });
                                         } catch (HyphenateException e) {
@@ -99,7 +103,7 @@ public class MessageFragment extends BaseFragment {
                                             ThreadUtils.runOnMainThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    ToastUtil.showToast(activity, "消息处理失败");
+                                                    ToastUtil.showToast(mActivity, "消息处理失败");
                                                 }
                                             });
                                         }
@@ -121,7 +125,7 @@ public class MessageFragment extends BaseFragment {
                                                     mList.remove(i - 1);
                                                     mAdapter.setDataSets(mList);
                                                     mAdapter.notifyDataSetChanged();
-                                                    ToastUtil.showToast(activity, "已拒绝" + messageUser + "的好友申请");
+                                                    ToastUtil.showToast(mActivity, "已拒绝" + messageUser + "的好友申请");
                                                 }
                                             });
                                         } catch (HyphenateException e) {
@@ -129,7 +133,7 @@ public class MessageFragment extends BaseFragment {
                                             ThreadUtils.runOnMainThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    ToastUtil.showToast(activity, "消息处理失败");
+                                                    ToastUtil.showToast(mActivity, "消息处理失败");
                                                 }
                                             });
                                         }
@@ -137,7 +141,7 @@ public class MessageFragment extends BaseFragment {
                                 });
                             }
                         });
-                    }else {
+                    } else {
                         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -148,14 +152,14 @@ public class MessageFragment extends BaseFragment {
                         });
                     }
                     builder.create().show();
-                }else {
-                    Intent intent = new Intent(activity, ChatActivity.class);
+                } else {
+                    Intent intent = new Intent(mActivity, ChatActivity.class);
                     intent.putExtra("username", username);
                     startActivity(intent);
                 }
             }
         });
-        mSlv.setOnLoadDataListener(new SuperListView.OnLoadDataListener() {
+        mLvMessage.setOnLoadDataListener(new SuperListView.OnLoadDataListener() {
             @Override
             public void onRefresh() {
                 ThreadUtils.runOnSubThread(new Runnable() {
@@ -168,42 +172,34 @@ public class MessageFragment extends BaseFragment {
                             public void run() {
                                 mAdapter.setDataSets(list);
                                 mAdapter.notifyDataSetChanged();
-                                mSlv.onRefreshFinish();
+                                mLvMessage.onRefreshFinish();
                             }
                         });
                     }
                 });
             }
         });
-
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //解除EventBus
-        EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MainThread)
-    public void hasNewMessage(Contacts contacts){
+    public void hasNewMessage(Contacts contacts) {
         mList.add(contacts);
         mAdapter.setDataSets(mList);
         mAdapter.notifyDataSetChanged();
     }
 
     @Subscribe(threadMode = ThreadMode.MainThread)
-    public void getMessage(Message message){
+    public void getMessage(Message message) {
         mAdapter.setDataSets(getList());
         mAdapter.notifyDataSetChanged();
     }
 
     public List<Contacts> getList() {
         mList.clear();
-        mList.add(new Contacts("智能小白", "最聪慧的小白,为您服务!",getResources().getDrawable(R.drawable.headicon1)));
+        mList.add(new Contacts("智能小白", "最聪慧的小白,为您服务!", getResources().getDrawable(R.drawable.headicon1)));
 
         Map<String, EMConversation> conversations = EMClient.getInstance().chatManager().getAllConversations();
-        if (conversations != null && conversations.size() > 0){
+        if (conversations != null && conversations.size() > 0) {
             ArrayList<EMConversation> contacts = new ArrayList<>();
             contacts.addAll(conversations.values());
             Collections.sort(contacts, new Comparator<EMConversation>() {
@@ -212,8 +208,8 @@ public class MessageFragment extends BaseFragment {
                     return (int) (o2.getLastMessage().getMsgTime() - o1.getLastMessage().getMsgTime());
                 }
             });
-            for (EMConversation emConversation : contacts){
-                mList.add(new Contacts(emConversation.getUserName(), emConversation.getLastMessage().getBody().toString().split(":")[1].replaceAll("\""," "),getResources().getDrawable(R.drawable.headicon1)));
+            for (EMConversation emConversation : contacts) {
+                mList.add(new Contacts(emConversation.getUserName(), emConversation.getLastMessage().getBody().toString().split(":")[1].replaceAll("\"", " "), getResources().getDrawable(R.drawable.headicon1)));
             }
         }
         return mList;

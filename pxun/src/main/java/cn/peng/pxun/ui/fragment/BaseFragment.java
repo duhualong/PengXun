@@ -8,17 +8,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import cn.peng.pxun.presenter.BasePresenter;
+import de.greenrobot.event.EventBus;
 
 /**
  * Fragment的基类
  * @author Peng
  */
 public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
-    /** Fragment所依赖的Activity */
-    protected Activity activity;
     /** 此Fragment所对应的业务操作类 */
     protected P presenter;
+    /** Fragment所依赖的Activity */
+    protected Activity mActivity;
+    // ButterKnife的解绑器
+    private Unbinder mUnbinder;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,26 +32,34 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        activity = getActivity();
-        return initView();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = initView();
+        //绑定ButterKnife
+        mUnbinder = ButterKnife.bind(this, view);
         initListener();
         initData();
-        super.onActivityCreated(savedInstanceState);
+        return view;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //解绑ButterKnife
+        if(mUnbinder != null){
+            mUnbinder.unbind();
+        }
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
+    }
 
     /**
      * 执行初始化操作,
      * @des 子类可选择复写,用来进行初始化操作
      */
     public void init(){
+        mActivity = getActivity();
         this.presenter = initPresenter();
     }
 

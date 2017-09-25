@@ -23,8 +23,4 @@ public class ThreadUtils {
         sHandler.post(runnable);
 
     }
-
-
-
-
 }

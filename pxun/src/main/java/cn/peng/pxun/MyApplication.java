@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import cn.bmob.v3.Bmob;
-import cn.peng.pxun.modle.Constant;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bean.Contacts;
 import cn.peng.pxun.modle.greendao.DaoMaster;
 import cn.peng.pxun.modle.greendao.DaoSession;
@@ -46,7 +46,6 @@ public class MyApplication extends Application {
         PlatformConfig.setSinaWeibo("3921700954", "04b48b094faeb16683c32669824ebdad", "http://sns.whalecloud.com");
     }
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -59,14 +58,14 @@ public class MyApplication extends Application {
 
         context = getApplicationContext();
         handler = new Handler();
-        sp = getSharedPreferences("config",MODE_PRIVATE);
+        sp = getSharedPreferences("userInfo",MODE_PRIVATE);
     }
 
     /**
      * 初始化Bmob后端云
      */
     private void initBmob() {
-        Bmob.initialize(this, Constant.BMOB_APP_KEY);
+        Bmob.initialize(this, AppConfig.BMOB_APP_KEY);
     }
 
     /**

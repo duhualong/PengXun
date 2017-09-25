@@ -3,25 +3,28 @@ package cn.peng.pxun.modle;
 /**
  * 保存常量字符串的类
  */
-public class Constant {
+public class AppConfig {
+    /** 是否是调试模式，用于显示log */
+    public static final boolean DEBUG_ENABLE = true;
+    /** log日志的tag */
+    public static final String DEBUG_TAG = "pxun";
+    /** SharedPreferences文件名称 */
+    public static final String SharedPreferencesName = "config";
+
     /** 网络异常 */
     public static final int NET_ERROR = -10000;
-
-    /** 注册成功 */
-    public static final int REGIST_SUCCESS = 10001;
-    /** 注册失败 */
-    public static final int REGIST_ERROR = 10003;
-    /** 登录成功 */
-    public static final int LOGIN_SUCCESS = 10002;
-    /** 登录失败 */
-    public static final int LOGIN_ERROR = 10004;
-    /** 登录成功 */
-    public static final int GROUP_SUCCESS = 10005;
-    /** 登录失败 */
-    public static final int GROUP_ERROR = 10006;
-
+    /** 成功 */
+    public static final int SUCCESS = 10000;
+    /** 错误 */
+    public static final int ERROR = 10001;
+    /** Bmob服务器错误*/
+    public static final int SERVER_ERROR = 10002;
     /** 帐号格式错误,帐号不存在 */
-    public static final int NUMBER_ERROR = 10008;
+    public static final int NUMBER_ERROR = 10010;
+
+    /** 请求码：登录到注册*/
+    public static final int LOGINTOREGIEST = 1000;
+
 
     /** BMOB后端云appkey */
     public static final String BMOB_APP_KEY = "aace143390901d901c3ce3a8c1d9d009";
@@ -36,6 +39,15 @@ public class Constant {
         "加入聊天群",
         "反馈意见",
         "设置",
+    };
+
+    public static final String[] USER_SEX = {
+            "男","女","保密"
+    };
+
+    public static final String[] CONSTELLATION = {
+            "水瓶座", "双鱼座", "白羊座", "金牛座", "双子座", "巨蟹座",
+            "狮子座", "处女座", "天秤座", "天蝎座", "射手座", "摩羯座"
     };
 
     public static final String[] BELLE_PIC = {

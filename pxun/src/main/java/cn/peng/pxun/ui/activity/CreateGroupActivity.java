@@ -18,7 +18,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
-import cn.peng.pxun.modle.Constant;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.presenter.activity.CreateGroupPresenter;
 import cn.peng.pxun.utils.ToastUtil;
 
@@ -108,14 +108,14 @@ public class CreateGroupActivity extends BaseActivity<CreateGroupPresenter> {
 
     public void onCreateGroup(int code, String groupInfo) {
         switch (code) {
-            case Constant.NET_ERROR:
+            case AppConfig.NET_ERROR:
                 ToastUtil.showToast(mActivity, "网络异常,请先检查您的网络!");
                 break;
-            case Constant.GROUP_SUCCESS:
+            case AppConfig.SUCCESS:
                 finish();
                 ToastUtil.showToast(mActivity, "创建成功,群组ID为:" + groupInfo);
                 break;
-            case Constant.GROUP_ERROR:
+            case AppConfig.ERROR:
                 ToastUtil.showToast(mActivity, "群组创建失败,错误代码:" + groupInfo);
                 break;
 

@@ -30,7 +30,7 @@ public class MainFragment extends BaseFragment {
     @Override
     public View initView() {
         mMainActivity = (MainActivity) getActivity();
-        View view = View.inflate(activity, R.layout.fragment_main, null);
+        View view = View.inflate(mActivity, R.layout.fragment_main, null);
         ButterKnife.bind(this, view);
         initFragmentList();
         return view;

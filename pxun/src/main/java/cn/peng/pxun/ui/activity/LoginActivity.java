@@ -1,10 +1,7 @@
 package cn.peng.pxun.ui.activity;
 
-import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.PermissionChecker;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,12 +16,13 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import java.util.Map;
 
 import butterknife.BindView;
-import cn.bmob.v3.BmobUser;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
-import cn.peng.pxun.modle.Constant;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.presenter.activity.LoginPresenter;
 import cn.peng.pxun.utils.ToastUtil;
+import me.weyye.hipermission.HiPermission;
+import me.weyye.hipermission.PermissionCallback;
 
 public class LoginActivity extends BaseActivity<LoginPresenter> {
     @BindView(R.id.et_login_phone)
@@ -49,6 +47,14 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     Button mBtLoginWeibo;
 
     @Override
+    protected void init() {
+        super.init();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkPermission();
+        }
+    }
+
+    @Override
     public int setLayoutRes() {
         return R.layout.activity_login;
     }
@@ -59,30 +65,15 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     }
 
     @Override
-    protected void init() {
-        super.init();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkPermission();
-        }
-    }
-
-    @Override
     protected void initView() {
         super.initView();
 
-        Intent intent = getIntent();
-        BmobUser user = (BmobUser) intent.getSerializableExtra("user");
-        if (user != null) {
-            mEtPhone.setText(user.getMobilePhoneNumber());
-            mCbLogin.setChecked(false);
-        } else {
-            String phone = MyApplication.sp.getString("phone", "");
-            mEtPhone.setText(phone);
-            String password = MyApplication.sp.getString("password", "");
-            mEtPassword.setText(password);
-            boolean isRememberPassword = MyApplication.sp.getBoolean("isRemember", false);
-            mCbLogin.setChecked(isRememberPassword);
-        }
+        String phone = MyApplication.sp.getString("phone", "");
+        mEtPhone.setText(phone);
+        String password = MyApplication.sp.getString("password", "");
+        mEtPassword.setText(password);
+        boolean isRememberPassword = MyApplication.sp.getBoolean("isRemember", false);
+        mCbLogin.setChecked(isRememberPassword);
     }
 
     @Override
@@ -108,8 +99,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, RegistActivity.class);
-                startActivity(intent);
-                finish();
+                startActivityForResult(intent, AppConfig.LOGINTOREGIEST);
             }
         });
         mTvNologin.setOnClickListener(new View.OnClickListener() {
@@ -183,9 +173,25 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
         }
     };
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK){
+            if (data != null){
+                switch (requestCode){
+                    case AppConfig.LOGINTOREGIEST:
+                        String userInfo = data.getStringExtra("userInfo");
+                        String[] info = userInfo.split(":");
+                        presenter.login(info[0], info[1]);
+                        break;
+                }
+            }
+        }
+    }
+
     public void onLogin(int code) {
         switch (code) {
-            case Constant.LOGIN_SUCCESS:
+            case AppConfig.SUCCESS:
                 boolean isRemember = mCbLogin.isChecked();
                 presenter.keepUserLoginInfo(isRemember);
 
@@ -193,23 +199,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
                 startActivity(intent);
                 finish();
                 break;
-            case Constant.LOGIN_ERROR:
-                ToastUtil.showToast(LoginActivity.this, "登录失败");
-                break;
-            case Constant.NET_ERROR:
+            case AppConfig.NET_ERROR:
                 ToastUtil.showToast(LoginActivity.this, "网络异常,请先检查您的网络!");
                 break;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        if (requestCode == 10000){
-            if (grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
-                //被授权了
-            } else {
-                //没有给予该应用权限，不让你用了
-            }
+            case AppConfig.ERROR:
+                ToastUtil.showToast(LoginActivity.this, "登录失败，请稍后重试");
+                break;
         }
     }
 
@@ -217,10 +212,31 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
      * 检查权限,动态申请权限
      */
     private void checkPermission() {
-        String[] mPermissionList = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.ACCESS_FINE_LOCATION};
-        ActivityCompat.requestPermissions(this,mPermissionList,10000);
+//        String[] mPermissionList = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                Manifest.permission.READ_PHONE_STATE,
+//                Manifest.permission.ACCESS_FINE_LOCATION};
+
+        HiPermission.create(this)
+                .checkMutiPermission(new PermissionCallback() {
+                    @Override
+                    public void onClose() {
+                        ToastUtil.showToast(mActivity, "您取消了授权");
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        ToastUtil.showToast(mActivity, "授权成功");
+                    }
+
+                    @Override
+                    public void onDeny(String permission, int position) {
+                    }
+
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+
+                    }
+                });
     }
 }

@@ -12,7 +12,6 @@ import com.hyphenate.exceptions.HyphenateException;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.bean.Contacts;
 import cn.peng.pxun.presenter.fragment.ContactPresenter;
@@ -35,8 +34,7 @@ public class ContactFragment extends BaseFragment<ContactPresenter> {
 
     @Override
     public View initView() {
-        View view = View.inflate(activity, R.layout.fragment_contact, null);
-        ButterKnife.bind(this, view);
+        View view = View.inflate(mActivity, R.layout.fragment_contact, null);
         EventBus.getDefault().register(this);
         return view;
     }
@@ -52,7 +50,7 @@ public class ContactFragment extends BaseFragment<ContactPresenter> {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String username = (String) parent.getAdapter().getItem(position);
-                Intent intent = new Intent(activity, ChatActivity.class);
+                Intent intent = new Intent(mActivity, ChatActivity.class);
                 intent.putExtra("username", username);
                 startActivity(intent);
             }
@@ -61,7 +59,7 @@ public class ContactFragment extends BaseFragment<ContactPresenter> {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final String username = (String) parent.getAdapter().getItem(position);
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle("系统消息");
                 builder.setMessage("您确定要删除好友" + username + "吗");
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -75,7 +73,7 @@ public class ContactFragment extends BaseFragment<ContactPresenter> {
                                     ThreadUtils.runOnMainThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            ToastUtil.showToast(activity, "删除好友成功");
+                                            ToastUtil.showToast(mActivity, "删除好友成功");
                                         }
                                     });
                                 } catch (HyphenateException e) {
@@ -83,7 +81,7 @@ public class ContactFragment extends BaseFragment<ContactPresenter> {
                                     ThreadUtils.runOnMainThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            ToastUtil.showToast(activity, "删除好友失败");
+                                            ToastUtil.showToast(mActivity, "删除好友失败");
                                         }
                                     });
                                 }
@@ -110,11 +108,6 @@ public class ContactFragment extends BaseFragment<ContactPresenter> {
         presenter.getContactList();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
 
     @Subscribe(threadMode = ThreadMode.MainThread)
     public void refreshContact(Contacts contacts) {

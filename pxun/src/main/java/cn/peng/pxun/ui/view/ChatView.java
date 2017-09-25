@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import cn.peng.pxun.utils.UIUtils;
+import cn.peng.pxun.utils.ScreenUtil;
 
 /**
  * Created by msi on 2017/1/1.
@@ -34,8 +34,8 @@ public class ChatView extends LinearLayout{
 
     public ImageView getImageView(int width,int height){
         ImageView iv = new ImageView(mContext);
-        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(UIUtils.dp2Px(width),UIUtils.dp2Px(height));
-        linearParams.bottomMargin = UIUtils.dp2Px(3);
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ScreenUtil.dip2px(mContext,width),ScreenUtil.dip2px(mContext,height));
+        linearParams.bottomMargin = ScreenUtil.dip2px(mContext,3);
         iv.setLayoutParams(linearParams);
         addView(iv);
         return iv;

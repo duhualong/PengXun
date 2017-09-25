@@ -7,6 +7,7 @@
     <cn.peng.pxun.ui.view.SuperListView
         android:id="@+id/lv_group"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:listSelector="@android:color/transparent"  />
 
 </LinearLayout>

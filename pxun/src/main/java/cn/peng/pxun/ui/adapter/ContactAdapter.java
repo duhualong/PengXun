@@ -8,9 +8,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
 import cn.peng.pxun.ui.adapter.holder.BaseHolder;
-import cn.peng.pxun.utils.UIUtils;
 
 /**
  * 联系人数据适配器
@@ -36,7 +36,7 @@ public class ContactAdapter extends SuperBaseApapter<String> {
 
         @Override
         public View initHolderView() {
-            View view = View.inflate(UIUtils.getContext(), R.layout.item_message, null);
+            View view = View.inflate(MyApplication.context, R.layout.item_message, null);
             ButterKnife.bind(this, view);
             return view;
         }

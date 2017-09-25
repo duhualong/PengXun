@@ -7,7 +7,6 @@ import com.hyphenate.chat.EMGroup;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import cn.peng.pxun.R;
 import cn.peng.pxun.presenter.fragment.GroupPresenter;
 import cn.peng.pxun.ui.adapter.GroupAdapter;
@@ -23,8 +22,7 @@ public class GroupFragment extends BaseFragment<GroupPresenter> {
 
     @Override
     public View initView() {
-        View view = View.inflate(activity, R.layout.fragment_group, null);
-        ButterKnife.bind(this, view);
+        View view = View.inflate(mActivity, R.layout.fragment_group, null);
         return view;
     }
 

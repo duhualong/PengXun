@@ -31,7 +31,7 @@ import java.util.List;
 import butterknife.BindView;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
-import cn.peng.pxun.modle.Constant;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.greendao.Message;
 import cn.peng.pxun.modle.greendao.MessageDao;
 import cn.peng.pxun.presenter.activity.ChatPresenter;
@@ -76,7 +76,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
     protected void init() {
         super.init();
         //初始化科大讯飞语音识别
-        SpeechUtility.createUtility(this, "appid=" + Constant.IFLYTEK_APPID);
+        SpeechUtility.createUtility(this, "appid=" + AppConfig.IFLYTEK_APPID);
         //注册EventBus
         EventBus.getDefault().register(this);
 

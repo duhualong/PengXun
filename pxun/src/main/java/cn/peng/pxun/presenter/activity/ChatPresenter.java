@@ -14,14 +14,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import cn.peng.pxun.MyApplication;
-import cn.peng.pxun.modle.Constant;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bean.TuringBean;
-import cn.peng.pxun.modle.greendao.Message;
 import cn.peng.pxun.modle.bean.VoiceBean;
+import cn.peng.pxun.modle.greendao.Message;
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.activity.ChatActivity;
-import cn.peng.pxun.utils.UIUtils;
 import turing.os.http.core.ErrorMessage;
 import turing.os.http.core.HttpConnectionListener;
 import turing.os.http.core.RequestResult;
@@ -44,7 +43,7 @@ public class ChatPresenter extends BasePresenter{
      */
     public void initTuring() {
         SDKInitBuilder builder = new SDKInitBuilder(mActivity).setSecret("77bd9b637dd3aff6").
-                setTuringKey(Constant.TURING_APP_KEY).setUniqueId("1136313078");
+                setTuringKey(AppConfig.TURING_APP_KEY).setUniqueId("1136313078");
         SDKInit.init(builder, new InitListener() {
             @Override
             public void onComplete() {
@@ -132,7 +131,7 @@ public class ChatPresenter extends BasePresenter{
      */
     public void startSpeak(String answerContent) {
         //1.创建 SpeechSynthesizer 对象, 第二个参数：本地合成时传 InitListener
-        SpeechSynthesizer mTts= SpeechSynthesizer.createSynthesizer(UIUtils.getContext(), null);
+        SpeechSynthesizer mTts= SpeechSynthesizer.createSynthesizer(mActivity, null);
         //2.合成参数设置，详见《科大讯飞MSC API手册(Android)》SpeechSynthesizer 类
         //设置发音人（更多在线发音人，用户可参见 附录12.2
         mTts.setParameter(SpeechConstant.VOICE_NAME, "xiaoyan"); //设置发音人
@@ -148,7 +147,7 @@ public class ChatPresenter extends BasePresenter{
     }
 
     public String getPicURL() {
-        String pic_url = Constant.BELLE_PIC[new Random().nextInt(Constant.BELLE_PIC.length)];
+        String pic_url = AppConfig.BELLE_PIC[new Random().nextInt(AppConfig.BELLE_PIC.length)];
         return pic_url;
     }
 }

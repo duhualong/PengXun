@@ -13,7 +13,7 @@ import cn.peng.pxun.presenter.BasePresenter;
 public class FindFragment extends BaseFragment{
     @Override
     public View initView() {
-        TextView tv =  new TextView(activity);
+        TextView tv =  new TextView(mActivity);
         tv.setGravity(Gravity.CENTER);
         tv.setTextSize(24);
         tv.setTextColor(Color.BLACK);

@@ -11,7 +11,6 @@ import com.wingsofts.dragphotoview.DragPhotoView;
 import butterknife.BindView;
 import cn.peng.pxun.R;
 import cn.peng.pxun.presenter.BasePresenter;
-import cn.peng.pxun.utils.UIUtils;
 
 public class BigPicActivity extends BaseActivity {
     @BindView(R.id.pv_bigpic)
@@ -52,7 +51,7 @@ public class BigPicActivity extends BaseActivity {
 
         Intent intent = getIntent();
         String pic_url = intent.getStringExtra("url");
-        Picasso.with(UIUtils.getContext())
+        Picasso.with(this)
                 .load(pic_url)
                 .placeholder(R.drawable.loding_pic)
                 .error(R.drawable.error_pic)

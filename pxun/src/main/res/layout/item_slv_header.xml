@@ -7,7 +7,6 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_marginLeft="80dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp">
@@ -33,7 +32,8 @@
         android:id="@+id/tv_slv_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
         android:text="下拉刷新"
         android:textColor="#FFFFFF"
         android:textSize="14sp" />

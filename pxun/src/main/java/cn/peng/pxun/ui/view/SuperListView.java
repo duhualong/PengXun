@@ -162,6 +162,10 @@ public class SuperListView extends ListView {
         }
     }
 
+    /**
+     * 平滑的恢复ListView
+     * @param value
+     */
     public void startTraslate(int value){
         final ValueAnimator va = ValueAnimator.ofInt(value,0);
         //动画更新的监听
@@ -174,7 +178,7 @@ public class SuperListView extends ListView {
         });
         //设置回弹的动画插值器
         //va.setInterpolator(new OvershootInterpolator(3));
-        va.setDuration(500);
+        va.setDuration(300);
         va.start();
     }
 
@@ -183,7 +187,7 @@ public class SuperListView extends ListView {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downY = (int) ev.getY();
-                return true;
+                break;
             case MotionEvent.ACTION_MOVE:
                 int moveY = (int) ev.getY();
                 int dy = moveY - downY;
@@ -202,20 +206,20 @@ public class SuperListView extends ListView {
                         refreshState = STATE_PULL_TO_REFRESH;
                         refreshState();
                     }
-
                     setTopPadding(headerView,topPadding);
+                    return true;
                 }
 
                 if(dy < 0 && getLastVisiblePosition() == getCount() - 1){
                     isTopPull = true;
                     int topPadding = dy/3;
                     setTopPadding(this,topPadding);
+                    return true;
                 }
-                return true;
+                break;
             case MotionEvent.ACTION_UP:
                 if (refreshState == STATE_PULL_TO_REFRESH){
                     setTopPadding(headerView,-headerViewHeight);
-
                 }else if (refreshState == STATE_RELEASE_TO_REFRESH){
                     refreshState = STATE_REFRESHING;
                     setTopPadding(headerView,0);
@@ -224,12 +228,14 @@ public class SuperListView extends ListView {
                     if (mListener != null){
                         mListener.onRefresh();
                     }
+                    return true;
                 }
                 if(isTopPull){
                     isTopPull = false;
                     startTraslate(getPaddingTop());
+                    return true;
                 }
-                return true;
+                break;
         }
         return super.onTouchEvent(ev);
     }

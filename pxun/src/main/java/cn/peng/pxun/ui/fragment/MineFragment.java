@@ -7,7 +7,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import cn.peng.pxun.R;
 import cn.peng.pxun.presenter.activity.LoginPresenter;
 import cn.peng.pxun.presenter.fragment.MinePresenter;
@@ -42,8 +41,7 @@ public class MineFragment extends BaseFragment<MinePresenter> {
 
     @Override
     public View initView() {
-        View view = View.inflate(activity, R.layout.fragment_mine, null);
-        ButterKnife.bind(this, view);
+        View view = View.inflate(mActivity, R.layout.fragment_mine, null);
         return view;
     }
 
@@ -67,13 +65,13 @@ public class MineFragment extends BaseFragment<MinePresenter> {
         mRlMineCollect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.showToast(activity,"即将开启,敬请期待!");
+                ToastUtil.showToast(mActivity,"即将开启,敬请期待!");
             }
         });
         mRlMinePurse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.showToast(activity,"即将开启,敬请期待!");
+                ToastUtil.showToast(mActivity,"即将开启,敬请期待!");
             }
         });
         mRlAboutAuthor.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +84,7 @@ public class MineFragment extends BaseFragment<MinePresenter> {
         mRlVersionInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.showToast(activity,"已经是最新版本,无需升级!");
+                ToastUtil.showToast(mActivity,"已经是最新版本,无需升级!");
             }
         });
     }

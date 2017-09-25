@@ -9,7 +9,7 @@ import com.hyphenate.exceptions.HyphenateException;
 
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
-import cn.peng.pxun.modle.Constant;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bean.Group;
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.activity.CreateGroupActivity;
@@ -27,7 +27,7 @@ public class CreateGroupPresenter extends BasePresenter{
 
     public void createGroup(final String name, final String desc, EMGroupManager.EMGroupStyle groupType, Bitmap icon) {
         if (!isNetUsable(activity)){
-            activity.onCreateGroup(Constant.NET_ERROR,null);
+            activity.onCreateGroup(AppConfig.NET_ERROR,null);
             return;
         }
 
@@ -50,20 +50,20 @@ public class CreateGroupPresenter extends BasePresenter{
                 @Override
                 public void done(String s, BmobException e) {
                     if(e==null){
-                        activity.onCreateGroup(Constant.GROUP_SUCCESS,emGroup.getGroupId());
+                        activity.onCreateGroup(AppConfig.SUCCESS,emGroup.getGroupId());
                     }else{
                         try {
                             EMClient.getInstance().groupManager().destroyGroup(emGroup.getGroupId());
                         } catch (HyphenateException e1) {
                             e1.printStackTrace();
                         }
-                        activity.onCreateGroup(Constant.GROUP_ERROR,e.toString());
+                        activity.onCreateGroup(AppConfig.ERROR,e.toString());
                     }
                 }
             });
         } catch (HyphenateException e1) {
             e1.printStackTrace();
-            activity.onCreateGroup(Constant.GROUP_ERROR,null);
+            activity.onCreateGroup(AppConfig.ERROR,null);
         }
     }
 }

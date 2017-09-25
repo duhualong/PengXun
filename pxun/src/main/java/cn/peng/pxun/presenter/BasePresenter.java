@@ -1,8 +1,6 @@
 package cn.peng.pxun.presenter;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,6 +8,7 @@ import java.util.regex.PatternSyntaxException;
 
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.fragment.BaseFragment;
+import cn.peng.pxun.utils.NetworkUtil;
 
 /**
  * presenter的基类
@@ -33,20 +32,7 @@ public abstract class BasePresenter {
      * @return true 表示网络可用
      */
     public static boolean isNetUsable(Context context) {
-        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null) {
-            NetworkInfo info = connectivity.getActiveNetworkInfo();
-            if (info != null && info.isConnected())
-            {
-                // 当前网络是连接的
-                if (info.getState() == NetworkInfo.State.CONNECTED)
-                {
-                    // 当前所连接的网络可用
-                    return true;
-                }
-            }
-        }
-        return false;
+        return NetworkUtil.isNetworkAvailable(context);
     }
 
     /**
