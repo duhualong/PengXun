@@ -9,6 +9,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.peng.pxun.presenter.BasePresenter;
 import de.greenrobot.event.EventBus;
 
@@ -20,6 +21,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     protected P presenter;
     // Activity中的上下文
     protected BaseActivity mActivity;
+    // 加载中的dialog
+    protected SweetAlertDialog loadingDialog;
 
     // 管理运行的所有的activity
     public final static List<AppCompatActivity> mActivities = new LinkedList();
@@ -72,6 +75,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         synchronized (mActivities) {
             mActivities.add(this);
         }
+        mActivity = this;
         this.presenter = initPresenter();
     }
 
@@ -106,5 +110,15 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * @return
      */
     public abstract P initPresenter();
+
+    /**
+     * 显示加载中提示框
+     */
+    protected void showLoadingDialog(String title) {
+        loadingDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        loadingDialog.setCancelable(false);
+        loadingDialog.setTitleText(title);
+        loadingDialog.show();
+    }
 
 }

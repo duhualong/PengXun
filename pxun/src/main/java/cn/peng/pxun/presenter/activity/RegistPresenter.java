@@ -10,6 +10,7 @@ import cn.peng.pxun.modle.bean.User;
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.activity.RegistActivity;
+import cn.peng.pxun.utils.MD5Util;
 import cn.peng.pxun.utils.ThreadUtils;
 
 /**
@@ -35,11 +36,11 @@ public class RegistPresenter extends BasePresenter{
      */
     public void regist(String phone, String username, final String password, String sex, String birthday, String address) {
         if (!isNetUsable(activity)){
-            activity.onRegist(AppConfig.NET_ERROR,null);
+            activity.onRegistFinish(AppConfig.NET_ERROR,"");
             return;
         }
         if (!isPhoneNumber(phone)){
-            activity.onRegist(AppConfig.NUMBER_ERROR,null);
+            activity.onRegistFinish(AppConfig.NUMBER_ERROR,"");
             return;
         }
         if("未选择".equals(sex)){
@@ -56,7 +57,7 @@ public class RegistPresenter extends BasePresenter{
         User user = new User();
         user.setMobilePhoneNumber(phone);
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(MD5Util.encode(password));
         user.setSex(sex);
         user.setBirthday(birthday);
         user.setAddress(address);
@@ -83,7 +84,7 @@ public class RegistPresenter extends BasePresenter{
             public void run() {
                 try {
                     String userNum = user.getMobilePhoneNumber();
-                    EMClient.getInstance().createAccount(userNum, password);
+                    EMClient.getInstance().createAccount(userNum, MD5Util.encode(password));
                     //注册成功
                     setResult(AppConfig.SUCCESS, userNum + ":" + password);
                 } catch (final HyphenateException e1) {
@@ -106,7 +107,7 @@ public class RegistPresenter extends BasePresenter{
         ThreadUtils.runOnMainThread(new Runnable() {
             @Override
             public void run() {
-                activity.onRegist(code, userInfo);
+                activity.onRegistFinish(code, userInfo);
             }
         });
     }

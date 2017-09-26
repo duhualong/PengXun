@@ -171,7 +171,6 @@ public class MainActivity extends BaseActivity {
                                 //清空登录信息
                                 SharedPreferences.Editor editor = MyApplication.sp.edit();
                                 editor.putBoolean("isLogin", false);
-                                editor.putString("password", "");
                                 editor.commit();
                                 //返回登录界面
                                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);

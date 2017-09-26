@@ -10,6 +10,7 @@ import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.activity.LoginActivity;
+import cn.peng.pxun.utils.MD5Util;
 import cn.peng.pxun.utils.ThreadUtils;
 
 /**
@@ -33,7 +34,7 @@ public class LoginPresenter extends BasePresenter{
      */
     public void login(String phone, final String password) {
         if (!isNetUsable(activity)){
-            activity.onLogin(AppConfig.NET_ERROR);
+            activity.onLoginFinish(AppConfig.NET_ERROR);
             return;
         }
 
@@ -41,7 +42,7 @@ public class LoginPresenter extends BasePresenter{
         this.password = password;
 
         //登录环信服务器
-        EMClient.getInstance().login(phone,password,new EMCallBack() {
+        EMClient.getInstance().login(phone, MD5Util.encode(password),new EMCallBack() {
             @Override
             public void onSuccess() {
                 EMClient.getInstance().groupManager().loadAllGroups();
@@ -65,7 +66,7 @@ public class LoginPresenter extends BasePresenter{
         ThreadUtils.runOnMainThread(new Runnable() {
             @Override
             public void run() {
-                activity.onLogin(code);
+                activity.onLoginFinish(code);
             }
         });
     }

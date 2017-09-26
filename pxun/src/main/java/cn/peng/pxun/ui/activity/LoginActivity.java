@@ -16,6 +16,7 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import java.util.Map;
 
 import butterknife.BindView;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
@@ -45,6 +46,54 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     Button mBtLoginWeixin;
     @BindView(R.id.bt_login_weibo)
     Button mBtLoginWeibo;
+
+
+
+    UMAuthListener authListener = new UMAuthListener() {
+        /**
+         * @desc 授权开始的回调
+         * @param platform 平台名称
+         */
+        @Override
+        public void onStart(SHARE_MEDIA platform) {
+            ToastUtil.showToast(mActivity, platform.name());
+        }
+
+        /**
+         * @desc 授权成功的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         * @param data 用户资料返回
+         */
+        @Override
+        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            loadingDialog.cancel();
+            ToastUtil.showToast(mActivity, "成功了");
+        }
+
+        /**
+         * @desc 授权失败的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         * @param t 错误原因
+         */
+        @Override
+        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+            loadingDialog.cancel();
+            ToastUtil.showToast(mActivity, "授权失败：" + t.getMessage());
+        }
+
+        /**
+         * @desc 授权取消的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         */
+        @Override
+        public void onCancel(SHARE_MEDIA platform, int action) {
+            loadingDialog.cancel();
+            ToastUtil.showToast(mActivity, "授权被取消");
+        }
+    };
 
     @Override
     protected void init() {
@@ -84,15 +133,15 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
                 String phone = mEtPhone.getText().toString().trim();
                 String password = mEtPassword.getText().toString().trim();
 
-                if (TextUtils.isEmpty(phone)){
-                    ToastUtil.showToast(LoginActivity.this,"帐号不能为空");
+                if (TextUtils.isEmpty(phone)) {
+                    ToastUtil.showToast(LoginActivity.this, "帐号不能为空");
                     return;
-                }else if(TextUtils.isEmpty(password)){
-                    ToastUtil.showToast(LoginActivity.this,"密码不能为空");
+                } else if (TextUtils.isEmpty(password)) {
+                    ToastUtil.showToast(LoginActivity.this, "密码不能为空");
                     return;
                 }
 
-                presenter.login(phone, password);
+                login(phone, password);
             }
         });
         mTvToRegist.setOnClickListener(new View.OnClickListener() {
@@ -113,65 +162,25 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
         mBtLoginQq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showLoadingDialog("正在授权，请稍后...");
                 MyApplication.umengApi.doOauthVerify(LoginActivity.this, SHARE_MEDIA.QQ, authListener);
             }
         });
         mBtLoginWeixin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showLoadingDialog("正在授权，请稍后...");
                 MyApplication.umengApi.doOauthVerify(LoginActivity.this, SHARE_MEDIA.WEIXIN, authListener);
             }
         });
         mBtLoginWeibo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showLoadingDialog("正在授权，请稍后...");
                 MyApplication.umengApi.doOauthVerify(LoginActivity.this, SHARE_MEDIA.SINA, authListener);
             }
         });
     }
-
-    UMAuthListener authListener = new UMAuthListener() {
-        /**
-         * @desc 授权开始的回调
-         * @param platform 平台名称
-         */
-        @Override
-        public void onStart(SHARE_MEDIA platform) {
-            ToastUtil.showToast(mActivity, platform.name());
-        }
-
-        /**
-         * @desc 授权成功的回调
-         * @param platform 平台名称
-         * @param action 行为序号，开发者用不上
-         * @param data 用户资料返回
-         */
-        @Override
-        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
-            ToastUtil.showToast(mActivity, "成功了");
-        }
-
-        /**
-         * @desc 授权失败的回调
-         * @param platform 平台名称
-         * @param action 行为序号，开发者用不上
-         * @param t 错误原因
-         */
-        @Override
-        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
-            ToastUtil.showToast(mActivity, "失败：" + t.getMessage());
-        }
-
-        /**
-         * @desc 授权取消的回调
-         * @param platform 平台名称
-         * @param action 行为序号，开发者用不上
-         */
-        @Override
-        public void onCancel(SHARE_MEDIA platform, int action) {
-            ToastUtil.showToast(mActivity, "取消了");
-        }
-    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -182,16 +191,32 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
                     case AppConfig.LOGINTOREGIEST:
                         String userInfo = data.getStringExtra("userInfo");
                         String[] info = userInfo.split(":");
-                        presenter.login(info[0], info[1]);
+                        mEtPhone.setText(info[0]);
+                        mEtPassword.setText(info[1]);
+                        mCbLogin.setChecked(true);
+                        login(info[0], info[1]);
                         break;
                 }
             }
         }
     }
 
-    public void onLogin(int code) {
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (loadingDialog.isShowing()){
+            loadingDialog.cancel();
+        }
+    }
+
+    /**
+     * 显示登陆结果
+     * @param code
+     */
+    public void onLoginFinish(int code) {
         switch (code) {
             case AppConfig.SUCCESS:
+                loadingDialog.cancel();
                 boolean isRemember = mCbLogin.isChecked();
                 presenter.keepUserLoginInfo(isRemember);
 
@@ -200,12 +225,23 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
                 finish();
                 break;
             case AppConfig.NET_ERROR:
-                ToastUtil.showToast(LoginActivity.this, "网络异常,请先检查您的网络!");
+                loadingDialog.setTitleText("登录失败")
+                        .setContentText("网络异常,请先检查您的网络!")
+                        .setConfirmText("确定")
+                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
                 break;
             case AppConfig.ERROR:
-                ToastUtil.showToast(LoginActivity.this, "登录失败，请稍后重试");
+                loadingDialog.setTitleText("登录失败")
+                        .setContentText("网络状态不稳定，请稍后重试")
+                        .setConfirmText("确定")
+                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
                 break;
         }
+    }
+
+    private void login(String phone, String password) {
+        showLoadingDialog("正在登陆...");
+        presenter.login(phone, password);
     }
 
     /**
@@ -239,4 +275,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
                     }
                 });
     }
+
+
 }

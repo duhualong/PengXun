@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 import butterknife.BindView;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.picker.City;
@@ -23,7 +24,6 @@ import cn.peng.pxun.ui.view.picker.AddressPickTask;
 import cn.peng.pxun.ui.view.picker.DatePicker;
 import cn.peng.pxun.ui.view.picker.OptionPicker;
 import cn.peng.pxun.utils.ConvertUtils;
-import cn.peng.pxun.utils.MD5Util;
 
 import static cn.peng.pxun.utils.ToastUtil.showToast;
 
@@ -86,8 +86,6 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
         mIvRegistGoback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RegistActivity.this, LoginActivity.class);
-                startActivity(intent);
                 finish();
             }
         });
@@ -117,7 +115,8 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
                 String birthday = mTvRegistBirthday.getText().toString();
                 String address = mTvRegistAddress.getText().toString();
 
-                presenter.regist(phone, username, MD5Util.encode(password) ,sex ,birthday ,address);
+                showLoadingDialog("请稍后...");
+                presenter.regist(phone, username, password ,sex ,birthday ,address);
             }
         });
         mLlRegistSex.setOnClickListener(new View.OnClickListener() {
@@ -146,25 +145,43 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
         });
     }
 
-    public void onRegist(int code, String userInfo) {
+    /**
+     * 展示注册结果
+     * @param code
+     * @param userInfo
+     */
+    public void onRegistFinish(int code, String userInfo) {
         switch (code) {
             case AppConfig.NET_ERROR:
-                showToast(RegistActivity.this, "网络异常,请先检查您的网络!");
+                loadingDialog.setTitleText("注册失败")
+                        .setContentText("网络异常,请先检查您的网络!")
+                        .setConfirmText("确定")
+                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
                 break;
             case AppConfig.SUCCESS:
+                loadingDialog.cancel();
                 Intent intent = new Intent();
                 intent.putExtra("userInfo", userInfo);
                 setResult(RESULT_OK, intent);
                 finish();
                 break;
             case AppConfig.ERROR:
-                showToast(RegistActivity.this, "用户注册失败，请稍后重试");
+                loadingDialog.setTitleText("注册失败")
+                        .setContentText("用户注册失败，请稍后重试")
+                        .setConfirmText("确定")
+                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
                 break;
             case AppConfig.SERVER_ERROR:
-                showToast(RegistActivity.this, "当前服务器连接较慢，请稍后重试");
+                loadingDialog.setTitleText("注册失败")
+                        .setContentText("当前服务器连接较慢，请稍后重试")
+                        .setConfirmText("确定")
+                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
                 break;
             case AppConfig.NUMBER_ERROR:
-                showToast(RegistActivity.this, "您输入的帐号格式有误");
+                loadingDialog.setTitleText("注册失败")
+                        .setContentText("您输入的帐号格式有误")
+                        .setConfirmText("确定")
+                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
                 break;
         }
     }
