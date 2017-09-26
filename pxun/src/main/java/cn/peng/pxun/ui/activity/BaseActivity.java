@@ -12,6 +12,9 @@ import butterknife.Unbinder;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.peng.pxun.presenter.BasePresenter;
 import de.greenrobot.event.EventBus;
+import me.weyye.hipermission.HiPermission;
+import me.weyye.hipermission.PermissionCallback;
+import me.weyye.hipermission.PermissionItem;
 
 /**
  * Activity的基类
@@ -75,7 +78,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         synchronized (mActivities) {
             mActivities.add(this);
         }
-        mActivity = this;
         this.presenter = initPresenter();
     }
 
@@ -121,4 +123,13 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         loadingDialog.show();
     }
 
+    /**
+     * 请求多个权限
+     * @param permissionItems
+     */
+    protected void requestPermission(List<PermissionItem> permissionItems, PermissionCallback callback){
+        HiPermission.create(this)
+                .permissions(permissionItems)
+                .checkMutiPermission(callback);
+    }
 }
