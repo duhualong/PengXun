@@ -3,34 +3,44 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="cn.peng.pxun">
 
-    <!-- Bmob服务器所需权限 -->
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
-    <!-- 环信所需权限 -->
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
-    <uses-permission android:name="android.permission.GET_TASKS"/>
-
-    <!-- 图灵机器人所需权限 -->
+    <!-- 网络权限,允许程序访问网络-->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <!-- 获取网络状态,获取网络信息状态-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
-    <!-- 科大讯飞语音识别所需权限 -->
+    <!-- 改变网络状态,改变网络状态如是否能联网-->
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
-
-    <!-- 友盟所需权限 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <!-- 获取WiFi状态,获取当前WiFi接入的状态以及WLAN热点的信息-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <!-- 改变WiFi状态-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <!-- 获取精确位置,通过GPS芯片接收卫星的定位信息，定位精度达10米以内-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- 获取错略位置,通过WiFi或移动基站的方式获取用户错略的经纬度信息-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 访问定位额外命令,允许程序访问额外的定位提供者指令-->
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <!-- 相机权限,允许访问摄像头进行拍照-->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- 读取外部存储,允许程序读取外部存储-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <!-- 写入外部存储,允许程序写入外部存储-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- 读取联系人,允许应用访问联系人通讯录信息-->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <!-- 读取电话状态,访问电话状态-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <!-- 录音，录制声音通过手机或耳机的麦克-->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- 修改声音设置,修改声音设置信息-->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <!-- 使用振动,允许振动-->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <!-- 唤醒锁定,允许程序在手机屏幕关闭后后台进程仍然运行-->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <!-- 挂载文件系统,挂载、反挂载外部文件系统-->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <!-- 获取任务信息,允许程序获取当前或最近运行的应用-->
+    <uses-permission android:name="android.permission.GET_TASKS"/>
 
     <application
         android:name=".MyApplication"
