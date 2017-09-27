@@ -50,8 +50,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     @BindView(R.id.bt_login_weibo)
     Button mBtLoginWeibo;
 
-
-
     UMAuthListener authListener = new UMAuthListener() {
         /**
          * @desc 授权开始的回调
@@ -207,7 +205,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     @Override
     protected void onRestart() {
         super.onRestart();
-        if (loadingDialog.isShowing()){
+        if (loadingDialog != null && loadingDialog.isShowing()){
             loadingDialog.cancel();
         }
     }
@@ -216,7 +214,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
      * 显示登陆结果
      * @param code
      */
-    public void onLoginFinish(int code) {
+    public void onLoginFinish(int code,int huanXinCode) {
         switch (code) {
             case AppConfig.SUCCESS:
                 loadingDialog.cancel();
@@ -234,10 +232,16 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
                         .changeAlertType(SweetAlertDialog.ERROR_TYPE);
                 break;
             case AppConfig.ERROR:
-                loadingDialog.setTitleText("登录失败")
-                        .setContentText("网络状态不稳定，请稍后重试")
-                        .setConfirmText("确定")
-                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                loadingDialog.setTitleText("登录失败");
+                if(huanXinCode == 202){
+                    loadingDialog.setContentText("您输入的密码有误");
+                }else if(huanXinCode == 204){
+                    loadingDialog.setContentText("该用户不存在");
+                }else{
+                    loadingDialog.setContentText("与服务器连接较慢，请稍后重试");
+                }
+                loadingDialog.setConfirmText("确定");
+                loadingDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
                 break;
         }
     }
@@ -279,6 +283,4 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
             }
         });
     }
-
-
 }

@@ -19,6 +19,8 @@ import cn.peng.pxun.utils.ThreadUtils;
 public class RegistPresenter extends BasePresenter{
 
     private RegistActivity activity;
+    //当前注册的用户
+    private User user;
 
     public RegistPresenter(BaseActivity activity) {
         super(activity);
@@ -36,11 +38,11 @@ public class RegistPresenter extends BasePresenter{
      */
     public void regist(String phone, String username, final String password, String sex, String birthday, String address) {
         if (!isNetUsable(activity)){
-            activity.onRegistFinish(AppConfig.NET_ERROR,"");
+            activity.onRegistFinish(AppConfig.NET_ERROR, 100, "");
             return;
         }
         if (!isPhoneNumber(phone)){
-            activity.onRegistFinish(AppConfig.NUMBER_ERROR,"");
+            activity.onRegistFinish(AppConfig.NUMBER_ERROR, 101, "");
             return;
         }
         if("未选择".equals(sex)){
@@ -54,7 +56,7 @@ public class RegistPresenter extends BasePresenter{
         }
 
         //注册到自己的Bmob服务器
-        User user = new User();
+        user = new User();
         user.setMobilePhoneNumber(phone);
         user.setUsername(username);
         user.setPassword(MD5Util.encode(password));
@@ -65,9 +67,9 @@ public class RegistPresenter extends BasePresenter{
             @Override
             public void done(final User user, BmobException e) {
                 if (e == null){
-                    registHuanXin(user, password);
+                    registHuanXin(password);
                 }else {
-                    setResult(AppConfig.SERVER_ERROR,"");
+                    setResult(AppConfig.SERVER_ERROR, 500, "");
                 }
             }
         });
@@ -75,24 +77,24 @@ public class RegistPresenter extends BasePresenter{
 
     /**
      * 注册环信服务器
-     * @param user
      * @param password
      */
-    private void registHuanXin(final User user, final String password) {
+    private void registHuanXin(final String password) {
         ThreadUtils.runOnSubThread(new Runnable() {
             @Override
             public void run() {
                 try {
                     String userNum = user.getMobilePhoneNumber();
                     EMClient.getInstance().createAccount(userNum, MD5Util.encode(password));
+                    EMClient.getInstance().updateCurrentUserNick(user.getUsername());
                     //注册成功
-                    setResult(AppConfig.SUCCESS, userNum + ":" + password);
-                } catch (final HyphenateException e1) {
+                    setResult(AppConfig.SUCCESS, 200, userNum + ":" + password);
+                } catch (HyphenateException e1) {
                     e1.printStackTrace();
                     //将Bmob上注册的user给删除掉
                     user.delete();
                     //注册失败
-                    setResult(AppConfig.ERROR, "");
+                    setResult(AppConfig.ERROR, e1.getErrorCode(), "");
                 }
             }
         });
@@ -103,11 +105,11 @@ public class RegistPresenter extends BasePresenter{
      * @param code
      * @param userInfo
      */
-    private void setResult (final int code, final String userInfo) {
+    private void setResult (final int code, final int huanXinCode, final String userInfo) {
         ThreadUtils.runOnMainThread(new Runnable() {
             @Override
             public void run() {
-                activity.onRegistFinish(code, userInfo);
+                activity.onRegistFinish(code, huanXinCode, userInfo);
             }
         });
     }

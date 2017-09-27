@@ -154,6 +154,8 @@ public class MessageFragment extends BaseFragment {
                     builder.create().show();
                 } else {
                     Intent intent = new Intent(mActivity, ChatActivity.class);
+                    intent.putExtra("isGroup", false);
+                    intent.putExtra("userId", username);
                     intent.putExtra("username", username);
                     startActivity(intent);
                 }

@@ -67,10 +67,19 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
     @BindView(R.id.ll_chat_spell)
     LinearLayout mLlChatSpell;
 
-    private String mUsername;
-    private boolean isSpeech = true;
+    // 消息数据集合
     private List<Message> list;
+    // 消息list的数据适配器
     private ChatAdapter mAdapter;
+    // 聊天用户名
+    private String toChatUserName;
+    // 聊天用户ID
+    private String toChatUserId;
+    // 是否是键盘输入
+    private boolean isSpeech = true;
+    // 是否是群聊
+    private boolean isGroup = false;
+
 
     @Override
     protected void init() {
@@ -80,9 +89,11 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
         //注册EventBus
         EventBus.getDefault().register(this);
 
-        mUsername = getIntent().getStringExtra("username");
+        toChatUserName = getIntent().getStringExtra("username");
+        toChatUserId = getIntent().getStringExtra("userId");
+        isGroup = getIntent().getBooleanExtra("isGroup",false);
         list = new ArrayList<>();
-        if ("智能小白".equals(mUsername)){
+        if ("智能小白".equals(toChatUserName)){
             presenter.initTuring();
             MessageDao messageDao = MyApplication.session.getMessageDao();
             QueryBuilder queryBuilder = messageDao.queryBuilder();
@@ -94,7 +105,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                                     MessageDao.Properties.ToUserID.eq(MyApplication.sp.getString("phone","")))))
                     .list();
         }else {
-            EMConversation conversation = EMClient.getInstance().chatManager().getConversation(mUsername);
+            EMConversation conversation = EMClient.getInstance().chatManager().getConversation(toChatUserId);
             if (conversation != null) {
                 EMMessage lastMessage = conversation.getLastMessage();
                 int count = 19;
@@ -135,7 +146,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
         super.initView();
         setSupportActionBar(mChatToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mTvChatTitle.setText("与"+mUsername+"聊天中");
+        mTvChatTitle.setText(toChatUserName);
         if (list != null && list.size() > 0){
             mAdapter = new ChatAdapter(list);
             mLvChat.setAdapter(mAdapter);
@@ -181,20 +192,14 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                 msg.message = spellMsg;
                 msg.fromUserID = MyApplication.sp.getString("phone","");
                 msg.messageType = Message.TEXT_TYPE;
-                if ("智能小白".equals(mUsername)) {
+                if ("智能小白".equals(toChatUserName)) {
                     msg.isTuring = true;
                     msg.toUserID = "tuling";
                     presenter.requestTuring(spellMsg);
                 }else {
                     msg.isTuring = false;
-                    msg.toUserID = mUsername;
-                    ThreadUtils.runOnSubThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            EMMessage message = EMMessage.createTxtSendMessage(spellMsg, mUsername);
-                            EMClient.getInstance().chatManager().sendMessage(message);
-                        }
-                    });
+                    msg.toUserID = toChatUserId;
+                    sendMessage(spellMsg);
                 }
                 addDataAndRefreshUi(msg,false);
             }
@@ -222,20 +227,14 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                             msg.fromUserID = MyApplication.sp.getString("phone","");
                             msg.messageType = Message.TEXT_TYPE;
 
-                            if ("智能小白".equals(mUsername)) {
+                            if ("智能小白".equals(toChatUserName)) {
                                 msg.isTuring = true;
                                 msg.toUserID = "tuling";
                                 presenter.requestTuring(speechMsg);
                             }else {
                                 msg.isTuring = false;
-                                msg.toUserID = mUsername;
-                                ThreadUtils.runOnSubThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        EMMessage message = EMMessage.createTxtSendMessage(speechMsg, mUsername);
-                                        EMClient.getInstance().chatManager().sendMessage(message);
-                                    }
-                                });
+                                msg.toUserID = toChatUserId;
+                                sendMessage(speechMsg);
                             }
                             addDataAndRefreshUi(msg,false);
                         }
@@ -250,7 +249,6 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
             }
         });
     }
-
 
     @Override
     protected void onDestroy() {
@@ -269,6 +267,23 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
     @Subscribe(threadMode = ThreadMode.MainThread)
     public void getMessage(Message msg){
         addDataAndRefreshUi(msg,false);
+    }
+
+    /**
+     * 异步发送消息
+     * @param msg
+     */
+    private void sendMessage(final String msg) {
+        ThreadUtils.runOnSubThread(new Runnable() {
+            @Override
+            public void run() {
+                EMMessage message = EMMessage.createTxtSendMessage(msg, toChatUserId);
+                if (isGroup){
+                    message.setChatType(EMMessage.ChatType.GroupChat);
+                }
+                EMClient.getInstance().chatManager().sendMessage(message);
+            }
+        });
     }
 
     /**

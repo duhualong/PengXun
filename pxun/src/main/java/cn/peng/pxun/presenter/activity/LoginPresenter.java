@@ -34,7 +34,7 @@ public class LoginPresenter extends BasePresenter{
      */
     public void login(String phone, final String password) {
         if (!isNetUsable(activity)){
-            activity.onLoginFinish(AppConfig.NET_ERROR);
+            activity.onLoginFinish(AppConfig.NET_ERROR, 100);
             return;
         }
 
@@ -47,7 +47,7 @@ public class LoginPresenter extends BasePresenter{
             public void onSuccess() {
                 EMClient.getInstance().groupManager().loadAllGroups();
                 EMClient.getInstance().chatManager().loadAllConversations();
-                setResult(AppConfig.SUCCESS);
+                setResult(AppConfig.SUCCESS, 200);
             }
 
             @Override
@@ -57,16 +57,16 @@ public class LoginPresenter extends BasePresenter{
 
             @Override
             public void onError(int code, String message) {
-                setResult(AppConfig.ERROR);
+                setResult(AppConfig.ERROR, code);
             }
         });
     }
 
-    private void setResult(final int code) {
+    private void setResult(final int code, final int huanXinCode) {
         ThreadUtils.runOnMainThread(new Runnable() {
             @Override
             public void run() {
-                activity.onLoginFinish(code);
+                activity.onLoginFinish(code, huanXinCode);
             }
         });
     }

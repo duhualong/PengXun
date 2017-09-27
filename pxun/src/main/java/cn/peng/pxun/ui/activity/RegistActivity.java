@@ -150,7 +150,7 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
      * @param code
      * @param userInfo
      */
-    public void onRegistFinish(int code, String userInfo) {
+    public void onRegistFinish(int code, int huanXinCode, String userInfo) {
         switch (code) {
             case AppConfig.NET_ERROR:
                 loadingDialog.setTitleText("注册失败")
@@ -166,10 +166,15 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
                 finish();
                 break;
             case AppConfig.ERROR:
-                loadingDialog.setTitleText("注册失败")
-                        .setContentText("用户注册失败，请稍后重试")
-                        .setConfirmText("确定")
-                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                loadingDialog.setTitleText("注册失败");
+                if (huanXinCode == 203){
+                    loadingDialog .setContentText("用户以存在");
+                    mEtRegistPhone.setText("");
+                }else{
+                    loadingDialog.setContentText("用户注册失败，请稍后重试");
+                }
+                loadingDialog.setConfirmText("确定");
+                loadingDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
                 break;
             case AppConfig.SERVER_ERROR:
                 loadingDialog.setTitleText("注册失败")
@@ -213,7 +218,7 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
         Calendar now = Calendar.getInstance();
         datePicker.setRangeStart(1970, 1, 1);
         datePicker.setRangeEnd(now.get(Calendar.YEAR), now.get(Calendar.MONTH)+1, now.get(Calendar.DAY_OF_MONTH));
-        datePicker.setSelectedItem(1990, 8, 1);
+        datePicker.setSelectedItem(1990, 1, 1);
         datePicker.setOnDatePickListener(new DatePicker.OnYearMonthDayPickListener() {
             @Override
             public void onDatePicked(String year, String month, String day) {

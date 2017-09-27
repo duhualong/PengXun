@@ -3,6 +3,7 @@ package cn.peng.pxun.ui.view;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -69,12 +70,18 @@ public class SuperListView extends ListView {
      * 下拉刷新结束,隐藏头部View
      */
     public void onRefreshFinish(){
-        refreshState = STATE_PULL_TO_REFRESH;
-        setTopPadding(headerView,-headerViewHeight);
-        tv_slv_state.setText("下拉刷新");
-        pb_slv_load.clearAnimation();
+        tv_slv_state.setText("刷新成功");
         pb_slv_load.setVisibility(INVISIBLE);
-        iv_slv_arrow.setVisibility(VISIBLE);
+        pb_slv_load.clearAnimation();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refreshState = STATE_PULL_TO_REFRESH;
+                startTraslate(headerView, 0, -headerViewHeight);
+                tv_slv_state.setText("下拉刷新");
+                iv_slv_arrow.setVisibility(VISIBLE);
+            }
+        },500);
     }
 
     public SuperListView(Context context) {
@@ -163,17 +170,18 @@ public class SuperListView extends ListView {
     }
 
     /**
-     * 平滑的恢复ListView
-     * @param value
+     * @param traslateView
+     * @param start
+     * @param end
      */
-    public void startTraslate(int value){
-        final ValueAnimator va = ValueAnimator.ofInt(value,0);
+    public void startTraslate(final View traslateView, int start,int end){
+        final ValueAnimator va = ValueAnimator.ofInt(start, end);
         //动画更新的监听
         va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 Integer animatedValue = (Integer) va.getAnimatedValue();
-                setTopPadding(SuperListView.this,animatedValue);
+                setTopPadding(traslateView, animatedValue);
             }
         });
         //设置回弹的动画插值器
@@ -232,11 +240,19 @@ public class SuperListView extends ListView {
                 }
                 if(isTopPull){
                     isTopPull = false;
-                    startTraslate(getPaddingTop());
+                    startTraslate(SuperListView.this, getPaddingTop(), 0);
                     return true;
                 }
                 break;
         }
         return super.onTouchEvent(ev);
+    }
+
+    /**
+     * 获取当前是否是正在刷新状态
+     * @return
+     */
+    public boolean isRefresh(){
+        return refreshState == STATE_REFRESHING;
     }
 }

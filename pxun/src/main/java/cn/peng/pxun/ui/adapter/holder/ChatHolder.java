@@ -45,7 +45,7 @@ public class ChatHolder extends BaseHolder<Message> {
 
     @Override
     public View initHolderView() {
-        View view = View.inflate(activity, R.layout.item_chat, null);
+        View view = View.inflate(MyApplication.context, R.layout.item_chat, null);
         ButterKnife.bind(this, view);
         setOnClick();
         return view;

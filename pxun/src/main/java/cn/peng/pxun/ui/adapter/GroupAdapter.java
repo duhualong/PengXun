@@ -1,48 +1,54 @@
 package cn.peng.pxun.ui.adapter;
 
-import android.graphics.Color;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hyphenate.chat.EMGroup;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.peng.pxun.MyApplication;
+import cn.peng.pxun.R;
+import cn.peng.pxun.ui.adapter.holder.BaseHolder;
 
 /**
  * Created by msi on 2016/12/26.
  */
-public class GroupAdapter extends BaseAdapter {
-    private List<EMGroup> list;
+public class GroupAdapter  extends SuperBaseApapter<EMGroup> {
 
-    public GroupAdapter(List<EMGroup> grouplist) {
-        list = grouplist;
+    public GroupAdapter(List<EMGroup> dataSets) {
+        super(dataSets);
     }
 
     @Override
-    public int getCount() {
-        return list.size();
+    public GroupHolder setHolder() {
+        return new GroupHolder();
     }
 
-    @Override
-    public Object getItem(int position) {
-        return list.get(position);
+    class GroupHolder extends BaseHolder<EMGroup> {
+        @BindView(R.id.iv_message_icon)
+        ImageView mIvMessageIcon;
+        @BindView(R.id.tv_message_name)
+        TextView mTvMessageName;
+        @BindView(R.id.tv_message_signature)
+        TextView mTvMessageSignature;
+
+        @Override
+        public View initHolderView() {
+            View view = View.inflate(MyApplication.context, R.layout.item_message, null);
+            ButterKnife.bind(this, view);
+            return view;
+        }
+
+        @Override
+        public void bindView() {
+            mIvMessageIcon.setImageResource(R.drawable.headicon1);
+            mTvMessageName.setText(mData.getGroupName());
+            mTvMessageSignature.setText("");
+        }
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        TextView tv_group = new TextView(MyApplication.context);
-        tv_group.setText(list.get(position).getGroupName());
-        tv_group.setTextSize(24);
-        tv_group.setTextColor(Color.parseColor("#000000"));
-        return tv_group;
-    }
 }

@@ -25,7 +25,7 @@ import de.greenrobot.event.Subscribe;
 import de.greenrobot.event.ThreadMode;
 
 /**
- * 发现界面的Fragment
+ * 联系人界面的Fragment
  */
 public class ContactFragment extends BaseFragment<ContactPresenter> {
 
@@ -119,6 +119,8 @@ public class ContactFragment extends BaseFragment<ContactPresenter> {
 
     public void bindView(List<String> usernames) {
         mLvContact.setAdapter(new ContactAdapter(usernames));
-        mLvContact.onRefreshFinish();
+        if (mLvContact.isRefresh()){
+            mLvContact.onRefreshFinish();
+        }
     }
 }
