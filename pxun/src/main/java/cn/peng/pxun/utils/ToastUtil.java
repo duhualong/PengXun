@@ -10,7 +10,7 @@ public class ToastUtil {
     public static Toast mToast;
 
     public static void showToast(Context mContext, String msg) {
-        if (mToast == null) {
+        if (mToast == null && mContext != null) {
             mToast = Toast.makeText(mContext, "", Toast.LENGTH_SHORT);
         }
         mToast.setText(msg);

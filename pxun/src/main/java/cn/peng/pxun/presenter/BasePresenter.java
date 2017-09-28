@@ -2,6 +2,8 @@ package cn.peng.pxun.presenter;
 
 import android.content.Context;
 
+import com.hyphenate.chat.EMMessage;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -24,6 +26,16 @@ public abstract class BasePresenter {
 
     public BasePresenter(BaseFragment fragment){
         this.fragment = fragment;
+    }
+
+    /**
+     * 截取环信消息，获取实际内容
+     * @param msg
+     * @return
+     */
+    public String splitEmMessage(EMMessage msg){
+        String emMsg = msg.getBody().toString();
+        return emMsg.split(":")[1].replaceAll("\"", " ");
     }
 
     /**
@@ -50,5 +62,4 @@ public abstract class BasePresenter {
         Matcher m = p.matcher(str);
         return m.matches();
     }
-
 }

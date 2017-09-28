@@ -6,6 +6,7 @@ import android.widget.AdapterView;
 
 import com.hyphenate.chat.EMGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -14,6 +15,7 @@ import cn.peng.pxun.presenter.fragment.GroupPresenter;
 import cn.peng.pxun.ui.activity.ChatActivity;
 import cn.peng.pxun.ui.adapter.GroupAdapter;
 import cn.peng.pxun.ui.view.SuperListView;
+import cn.peng.pxun.utils.ThreadUtils;
 
 /**
  * 群组页面
@@ -24,12 +26,14 @@ public class GroupFragment extends BaseFragment<GroupPresenter> {
     SuperListView mLvGroup;
 
     private List<EMGroup> groupList;
-    private GroupAdapter adapter;
+    private GroupAdapter mAdapter;
 
     @Override
-    public View initView() {
-        View view = View.inflate(mActivity, R.layout.fragment_group, null);
-        return view;
+    public void init() {
+        super.init();
+        //EventBus.getDefault().register(this);
+        groupList = new ArrayList<>();
+        presenter.getGroupList();
     }
 
     @Override
@@ -38,10 +42,15 @@ public class GroupFragment extends BaseFragment<GroupPresenter> {
     }
 
     @Override
+    public View initView() {
+        View view = View.inflate(mActivity, R.layout.fragment_group, null);
+        return view;
+    }
+
+    @Override
     public void initData() {
-        presenter.getGroupList();
-        adapter = new GroupAdapter(groupList);
-        mLvGroup.setAdapter(new GroupAdapter(groupList));
+        mAdapter = new GroupAdapter(groupList);
+        mLvGroup.setAdapter(mAdapter);
     }
 
     @Override
@@ -49,10 +58,11 @@ public class GroupFragment extends BaseFragment<GroupPresenter> {
         mLvGroup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                EMGroup group = groupList.get(position-1);
                 Intent intent = new Intent(mActivity, ChatActivity.class);
                 intent.putExtra("isGroup", true);
-                intent.putExtra("userId", groupList.get(position).getGroupId());
-                intent.putExtra("username", groupList.get(position).getGroupName());
+                intent.putExtra("userId", group.getGroupId());
+                intent.putExtra("username", group.getGroupName());
                 startActivity(intent);
             }
         });
@@ -64,12 +74,20 @@ public class GroupFragment extends BaseFragment<GroupPresenter> {
         });
     }
 
-    public void bindView(List<EMGroup> grouplist) {
-        groupList = grouplist;
-        adapter.notifyDataSetChanged();
-        if (mLvGroup.isRefresh()){
-            mLvGroup.onRefreshFinish();
-        }
+
+    public void refreshGroup(final List<EMGroup> grouplist) {
+        ThreadUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mLvGroup != null &&mAdapter != null ) {
+                    groupList = grouplist;
+                    mAdapter.setDataSets(groupList);
+                    if (mLvGroup.isRefresh()) {
+                        mLvGroup.onRefreshFinish();
+                    }
+                }
+            }
+        });
     }
 
 }

@@ -55,6 +55,7 @@ public abstract class SuperBaseApapter<DATA> extends BaseAdapter{
 
     public void setDataSets(List<DATA> list){
         dataSets = list;
+        notifyDataSetChanged();
     }
 
     /**

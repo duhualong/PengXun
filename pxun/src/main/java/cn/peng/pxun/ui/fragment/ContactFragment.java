@@ -9,20 +9,17 @@ import android.widget.AdapterView;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
-import cn.peng.pxun.modle.bean.Contacts;
 import cn.peng.pxun.presenter.fragment.ContactPresenter;
 import cn.peng.pxun.ui.activity.ChatActivity;
 import cn.peng.pxun.ui.adapter.ContactAdapter;
 import cn.peng.pxun.ui.view.SuperListView;
 import cn.peng.pxun.utils.ThreadUtils;
 import cn.peng.pxun.utils.ToastUtil;
-import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
-import de.greenrobot.event.ThreadMode;
 
 /**
  * 联系人界面的Fragment
@@ -32,11 +29,16 @@ public class ContactFragment extends BaseFragment<ContactPresenter> {
     @BindView(R.id.lv_contact)
     SuperListView mLvContact;
 
+    private List<String> contactList;
+    private ContactAdapter mAdapter;
+
+
     @Override
-    public View initView() {
-        View view = View.inflate(mActivity, R.layout.fragment_contact, null);
-        EventBus.getDefault().register(this);
-        return view;
+    public void init() {
+        super.init();
+        //EventBus.getDefault().register(this);
+        contactList = new ArrayList<>();
+        presenter.getContactList();
     }
 
     @Override
@@ -45,12 +47,27 @@ public class ContactFragment extends BaseFragment<ContactPresenter> {
     }
 
     @Override
+    public View initView() {
+        View view = View.inflate(mActivity, R.layout.fragment_contact, null);
+        return view;
+    }
+
+    @Override
+    public void initData() {
+        mAdapter = new ContactAdapter(contactList);
+        mLvContact.setAdapter(mAdapter);
+    }
+
+    @Override
     public void initListener() {
         mLvContact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String username = (String) parent.getAdapter().getItem(position);
+                String username = contactList.get(position-1);
+
                 Intent intent = new Intent(mActivity, ChatActivity.class);
+                intent.putExtra("isGroup", false);
+                intent.putExtra("userId", username);
                 intent.putExtra("username", username);
                 startActivity(intent);
             }
@@ -103,24 +120,18 @@ public class ContactFragment extends BaseFragment<ContactPresenter> {
         });
     }
 
-    @Override
-    public void initData() {
-        presenter.getContactList();
-    }
-
-
-    @Subscribe(threadMode = ThreadMode.MainThread)
-    public void refreshContact(Contacts contacts) {
-        if (contacts.signature.contains("同意")) {
-            presenter.mUsernames.add(contacts.text);
-            mLvContact.setAdapter(new ContactAdapter(presenter.mUsernames));
-        }
-    }
-
-    public void bindView(List<String> usernames) {
-        mLvContact.setAdapter(new ContactAdapter(usernames));
-        if (mLvContact.isRefresh()){
-            mLvContact.onRefreshFinish();
-        }
+    public void refreshContact(final List<String> usernames) {
+        ThreadUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mLvContact != null &&mAdapter != null ) {
+                    contactList = usernames;
+                    mAdapter.setDataSets(contactList);
+                    if (mLvContact.isRefresh()) {
+                        mLvContact.onRefreshFinish();
+                    }
+                }
+            }
+        });
     }
 }

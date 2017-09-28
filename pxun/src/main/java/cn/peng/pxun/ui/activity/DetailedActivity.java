@@ -79,9 +79,7 @@ public class DetailedActivity extends BaseActivity {
                 if(isMe){
                     ToastUtil.showToast(DetailedActivity.this,"修改资料");
                 }else{
-                    Intent intent = new Intent(DetailedActivity.this, ChatActivity.class);
-                    intent.putExtra("username", "智能小白");
-                    startActivity(intent);
+                    finish();
                 }
             }
         });

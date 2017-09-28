@@ -6,7 +6,7 @@ import com.hyphenate.exceptions.HyphenateException;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.peng.pxun.modle.AppConfig;
-import cn.peng.pxun.modle.bean.User;
+import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.activity.RegistActivity;
@@ -86,7 +86,6 @@ public class RegistPresenter extends BasePresenter{
                 try {
                     String userNum = user.getMobilePhoneNumber();
                     EMClient.getInstance().createAccount(userNum, MD5Util.encode(password));
-                    EMClient.getInstance().updateCurrentUserNick(user.getUsername());
                     //注册成功
                     setResult(AppConfig.SUCCESS, 200, userNum + ":" + password);
                 } catch (HyphenateException e1) {

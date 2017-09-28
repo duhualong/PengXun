@@ -7,7 +7,6 @@ import com.hyphenate.exceptions.HyphenateException;
 import java.util.List;
 
 import cn.peng.pxun.presenter.BasePresenter;
-import cn.peng.pxun.ui.fragment.BaseFragment;
 import cn.peng.pxun.ui.fragment.GroupFragment;
 import cn.peng.pxun.utils.ThreadUtils;
 
@@ -16,11 +15,10 @@ import cn.peng.pxun.utils.ThreadUtils;
  */
 public class GroupPresenter extends BasePresenter{
     private GroupFragment mFragment;
-    private List<EMGroup> mGrouplist;
 
-    public GroupPresenter(BaseFragment fragment) {
+    public GroupPresenter(GroupFragment fragment) {
         super(fragment);
-        mFragment = (GroupFragment) fragment;
+        mFragment = fragment;
     }
 
     /**
@@ -32,13 +30,8 @@ public class GroupPresenter extends BasePresenter{
             @Override
             public void run() {
                 try {
-                    mGrouplist = EMClient.getInstance().groupManager().getJoinedGroupsFromServer();
-                    ThreadUtils.runOnMainThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mFragment.bindView(mGrouplist);
-                        }
-                    });
+                    List<EMGroup> grouplist = EMClient.getInstance().groupManager().getJoinedGroupsFromServer();
+                    mFragment.refreshGroup(grouplist);
                 } catch (HyphenateException e) {
                     e.printStackTrace();
                 }

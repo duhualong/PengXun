@@ -258,13 +258,6 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
     }
 
     @Subscribe(threadMode = ThreadMode.MainThread)
-    public void startBigPicActivity(Intent intent){
-        intent.setClass(this,BigPicActivity.class);
-        startActivity(intent);
-        overridePendingTransition(0, 0);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MainThread)
     public void getMessage(Message msg){
         addDataAndRefreshUi(msg,false);
     }

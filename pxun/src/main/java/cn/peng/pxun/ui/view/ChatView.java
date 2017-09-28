@@ -34,7 +34,7 @@ public class ChatView extends LinearLayout{
 
     public ImageView getImageView(int width,int height){
         ImageView iv = new ImageView(mContext);
-        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(ScreenUtil.dip2px(mContext,width),ScreenUtil.dip2px(mContext,height));
+        LayoutParams linearParams = new LayoutParams(ScreenUtil.dip2px(mContext,width),ScreenUtil.dip2px(mContext,height));
         linearParams.bottomMargin = ScreenUtil.dip2px(mContext,3);
         iv.setLayoutParams(linearParams);
         addView(iv);

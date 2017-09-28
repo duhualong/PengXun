@@ -14,10 +14,10 @@ import butterknife.ButterKnife;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.greendao.Message;
+import cn.peng.pxun.ui.activity.BigPicActivity;
 import cn.peng.pxun.ui.activity.ChatActivity;
 import cn.peng.pxun.ui.activity.DetailedActivity;
 import cn.peng.pxun.ui.view.ChatView;
-import de.greenrobot.event.EventBus;
 
 /**
  * ChatActivity的ViewHolder
@@ -79,7 +79,7 @@ public class ChatHolder extends BaseHolder<Message> {
             mTvChatDate.setVisibility(View.VISIBLE);
             mLlChatAsk.setVisibility(View.VISIBLE);
 
-            mIvChatAskicon.setImageResource(R.drawable.headicon2);
+            mIvChatAskicon.setImageResource(R.drawable.head4);
             mTvChatDate.setText(mData.date);
             mCvChatAsk.removeAllViews();
             if (mData.messageType != null){
@@ -100,7 +100,7 @@ public class ChatHolder extends BaseHolder<Message> {
             mLlChatAsk.setVisibility(View.GONE);
             mLlChatReply.setVisibility(View.VISIBLE);
 
-            mIvChatReplyicon.setImageResource(R.drawable.headicon1);
+            mIvChatReplyicon.setImageResource(R.drawable.head3);
             mCvChatReply.removeAllViews();
             if (mData.messageType != null){
                 if (mData.messageType == Message.TEXT_TYPE ) {
@@ -123,14 +123,15 @@ public class ChatHolder extends BaseHolder<Message> {
                             int location[] = new int[2];
                             iv.getLocationOnScreen(location);
 
-                            Intent intent = new Intent();
+                            Intent intent = new Intent(activity,BigPicActivity.class);
                             intent.putExtra("left", location[0]);
                             intent.putExtra("top", location[1]);
                             intent.putExtra("height", iv.getHeight());
                             intent.putExtra("width", iv.getWidth());
                             intent.putExtra("url", mData.picURL);
 
-                            EventBus.getDefault().post(intent);
+                            activity.startActivity(intent);
+                            activity.overridePendingTransition(0, 0);
                         }
                     });
                 }else if (mData.messageType == Message.SPEECH_TYPE){

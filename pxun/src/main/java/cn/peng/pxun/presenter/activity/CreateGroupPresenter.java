@@ -10,7 +10,7 @@ import com.hyphenate.exceptions.HyphenateException;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.peng.pxun.modle.AppConfig;
-import cn.peng.pxun.modle.bean.Group;
+import cn.peng.pxun.modle.bmob.Group;
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.activity.CreateGroupActivity;
 

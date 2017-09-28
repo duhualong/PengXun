@@ -12,23 +12,25 @@ import butterknife.ButterKnife;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
+import cn.peng.pxun.modle.bean.ConversationBean;
 import cn.peng.pxun.ui.adapter.holder.BaseHolder;
 
 /**
- * 联系人数据适配器
+ * Created by msi on 2017/9/27.
  */
-public class ContactAdapter extends SuperBaseApapter<String> {
 
-    public ContactAdapter(List<String> dataSets) {
+public class MessageAdapter extends SuperBaseApapter {
+
+    public MessageAdapter(List dataSets) {
         super(dataSets);
     }
 
     @Override
     public BaseHolder setHolder() {
-        return new ContactHolder();
+        return new MessageHolder();
     }
 
-    class ContactHolder extends BaseHolder<String> {
+    public class MessageHolder extends BaseHolder<ConversationBean> {
         @BindView(R.id.iv_message_icon)
         ImageView mIvMessageIcon;
         @BindView(R.id.tv_message_name)
@@ -45,13 +47,9 @@ public class ContactAdapter extends SuperBaseApapter<String> {
 
         @Override
         public void bindView() {
-            if ("智能小白".equals(mData)){
-                mIvMessageIcon.setImageResource(R.drawable.head6);
-            }else{
-                mIvMessageIcon.setImageResource(AppConfig.icons[new Random().nextInt(AppConfig.icons.length)]);
-            }
-            mTvMessageName.setText(mData);
-            mTvMessageSignature.setText("");
+            mIvMessageIcon.setImageResource(AppConfig.icons[new Random().nextInt(AppConfig.icons.length)]);
+            mTvMessageName.setText(mData.userName);
+            mTvMessageSignature.setText(mData.lastMsg);
         }
     }
 }

@@ -1,4 +1,4 @@
-package cn.peng.pxun.modle.bean;
+package cn.peng.pxun.modle.bmob;
 
 import cn.bmob.v3.BmobUser;
 
@@ -21,9 +21,29 @@ public class User extends BmobUser{
     private String age;
     //生日
     private String birthday;
-    //居住地
+    //所在地
     private String address;
+    //QQ号
+    private String qqNum;
+    //微信号
+    private String wechatNum;
 
+
+    public String getQqNum() {
+        return qqNum;
+    }
+
+    public void setQqNum(String qqNum) {
+        this.qqNum = qqNum;
+    }
+
+    public String getWechatNum() {
+        return wechatNum;
+    }
+
+    public void setWechatNum(String wechatNum) {
+        this.wechatNum = wechatNum;
+    }
 
     public String getHeadIcon() {
         return headIcon;

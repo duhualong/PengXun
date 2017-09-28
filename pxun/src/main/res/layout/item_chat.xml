@@ -28,7 +28,7 @@
             android:layout_width="52dp"
             android:layout_height="52dp"
             android:layout_marginLeft="8dp"
-            android:src="@drawable/headicon1"/>
+            android:src="@drawable/head3"/>
 
         <cn.peng.pxun.ui.view.ChatView
             android:id="@+id/cv_chat_reply"
@@ -73,7 +73,7 @@
             android:layout_width="52dp"
             android:layout_height="52dp"
             android:layout_marginRight="8dp"
-            android:src="@drawable/headicon2"/>
+            android:src="@drawable/head4"/>
     </LinearLayout>
 
 

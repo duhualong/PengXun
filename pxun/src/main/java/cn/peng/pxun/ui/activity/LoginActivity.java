@@ -264,12 +264,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
         requestPermission(permissionItems, new PermissionCallback() {
             @Override
             public void onClose() {
-                ToastUtil.showToast(mActivity, "您取消了授权");
+                //ToastUtil.showToast(mActivity, "您取消了授权");
             }
 
             @Override
             public void onFinish() {
-                ToastUtil.showToast(mActivity, "授权成功");
+                //ToastUtil.showToast(mActivity, "授权成功");
             }
 
             @Override

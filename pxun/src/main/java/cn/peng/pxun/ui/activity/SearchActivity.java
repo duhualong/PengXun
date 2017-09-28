@@ -14,8 +14,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
-import cn.peng.pxun.modle.bean.Group;
-import cn.peng.pxun.modle.bean.User;
+import cn.peng.pxun.modle.bmob.Group;
+import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.activity.SearchPresenter;
 import cn.peng.pxun.ui.adapter.SearchAdapter;
 import cn.peng.pxun.utils.ToastUtil;

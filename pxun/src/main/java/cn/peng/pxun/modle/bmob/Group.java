@@ -1,4 +1,4 @@
-package cn.peng.pxun.modle.bean;
+package cn.peng.pxun.modle.bmob;
 
 import cn.bmob.v3.BmobObject;
 

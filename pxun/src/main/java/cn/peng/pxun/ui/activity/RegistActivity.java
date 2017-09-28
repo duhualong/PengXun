@@ -261,13 +261,13 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
             public void onAddressPicked(Province province, City city, County county) {
                 String address;
                 if (county == null) {
-                    if(province.getAreaName().equals(city.getAreaName())){
+                    if(province.getAreaName().equals(city.getAreaName()) || "其他".equals(province.getAreaName())){
                         address = city.getAreaName();
                     }else{
                         address = province.getAreaName() + city.getAreaName();
                     }
                 } else {
-                    if(province.getAreaName().equals(city.getAreaName())){
+                    if(province.getAreaName().equals(city.getAreaName()) || "其他".equals(province.getAreaName())){
                         address = province.getAreaName() + city.getAreaName();
                     }else{
                         address = province.getAreaName() + city.getAreaName() + county.getAreaName();

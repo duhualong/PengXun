@@ -76,6 +76,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      */
     protected void init(){
         synchronized (mActivities) {
+            mActivity = this;
             mActivities.add(this);
         }
         this.presenter = initPresenter();

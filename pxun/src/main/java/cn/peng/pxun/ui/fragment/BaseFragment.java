@@ -37,8 +37,8 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
         View view = initView();
         //绑定ButterKnife
         mUnbinder = ButterKnife.bind(this, view);
-        initListener();
         initData();
+        initListener();
         return view;
     }
 

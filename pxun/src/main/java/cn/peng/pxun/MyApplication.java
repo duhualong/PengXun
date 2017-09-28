@@ -22,7 +22,6 @@ import java.util.List;
 
 import cn.bmob.v3.Bmob;
 import cn.peng.pxun.modle.AppConfig;
-import cn.peng.pxun.modle.bean.Contacts;
 import cn.peng.pxun.modle.greendao.DaoMaster;
 import cn.peng.pxun.modle.greendao.DaoSession;
 import cn.peng.pxun.modle.greendao.Message;
@@ -105,32 +104,32 @@ public class MyApplication extends Application {
             @Override
             public void onContactAgreed(final String username) {
                 //好友请求被同意
-                Contacts admin = new Contacts();
-                admin.userName = "系统消息";
-                admin.userIcon = getResources().getDrawable(R.drawable.peng);
-                admin.signature = username +"同意了你的好友申请.";
-                EventBus.getDefault().post(admin);
+//                Contacts admin = new Contacts();
+//                admin.userName = "系统消息";
+//                admin.userIcon = getResources().getDrawable(R.drawable.peng);
+//                admin.signature = username +"同意了你的好友申请.";
+//                EventBus.getDefault().post(admin);
             }
 
             @Override
             public void onContactRefused(final String username) {
                 //好友请求被拒绝
-                Contacts admin = new Contacts();
-                admin.userName = "系统消息";
-                admin.userIcon = getResources().getDrawable(R.drawable.peng);
-                admin.signature = username +"拒绝了你的好友申请.";
-                EventBus.getDefault().post(admin);
+//                Contacts admin = new Contacts();
+//                admin.userName = "系统消息";
+//                admin.userIcon = getResources().getDrawable(R.drawable.peng);
+//                admin.signature = username +"拒绝了你的好友申请.";
+//                EventBus.getDefault().post(admin);
             }
 
             @Override
             public void onContactInvited(final String username, String reason) {
                 //收到好友邀请
-                Contacts admin = new Contacts();
-                admin.userName = "系统消息";
-                admin.userIcon = getResources().getDrawable(R.drawable.peng);
-                admin.signature = username +":请求添加你为好友,是否同意?";
-                admin.text = username;
-                EventBus.getDefault().post(admin);
+//                Contacts admin = new Contacts();
+//                admin.userName = "系统消息";
+//                admin.userIcon = getResources().getDrawable(R.drawable.peng);
+//                admin.signature = username +":请求添加你为好友,是否同意?";
+//                admin.text = username;
+//                EventBus.getDefault().post(admin);
             }
 
             @Override

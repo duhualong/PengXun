@@ -1,5 +1,7 @@
 package cn.peng.pxun.modle;
 
+import cn.peng.pxun.R;
+
 /**
  * 保存常量字符串的类
  */
@@ -48,6 +50,12 @@ public class AppConfig {
     public static final String[] CONSTELLATION = {
             "水瓶座", "双鱼座", "白羊座", "金牛座", "双子座", "巨蟹座",
             "狮子座", "处女座", "天秤座", "天蝎座", "射手座", "摩羯座"
+    };
+
+    public static final int[] icons = {
+        R.drawable.head1, R.drawable.head2, R.drawable.head3,
+        R.drawable.head4, R.drawable.head5, R.drawable.head6,
+        R.drawable.head7, R.drawable.head8, R.drawable.head9
     };
 
     public static final String[] BELLE_PIC = {

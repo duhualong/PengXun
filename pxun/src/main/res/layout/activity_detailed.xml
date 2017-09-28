@@ -25,7 +25,7 @@
                 android:id="@+id/iv_userinfo_icon"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
-                android:src="@drawable/headicon2"
+                android:src="@drawable/head5"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="24dp"/>
 

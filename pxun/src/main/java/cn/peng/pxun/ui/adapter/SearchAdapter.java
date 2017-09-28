@@ -11,8 +11,8 @@ import java.util.List;
 
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
-import cn.peng.pxun.modle.bean.Group;
-import cn.peng.pxun.modle.bean.User;
+import cn.peng.pxun.modle.bmob.Group;
+import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.ui.activity.SearchActivity;
 import cn.peng.pxun.ui.adapter.holder.SearchHolder;
 import cn.peng.pxun.utils.ThreadUtils;
