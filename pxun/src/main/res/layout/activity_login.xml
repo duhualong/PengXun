@@ -186,13 +186,6 @@
                 android:background="@drawable/login_qq"/>
 
             <Button
-                android:id="@+id/bt_login_weixin"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/login_weixin"/>
-
-            <Button
                 android:id="@+id/bt_login_weibo"
                 android:layout_width="50dp"
                 android:layout_height="50dp"

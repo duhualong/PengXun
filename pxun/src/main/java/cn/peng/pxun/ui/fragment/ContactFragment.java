@@ -54,6 +54,8 @@ public class ContactFragment extends BaseFragment<ContactPresenter> {
 
     @Override
     public void initData() {
+        contactList = new ArrayList<>();
+        contactList.add("智能小白");
         mAdapter = new ContactAdapter(contactList);
         mLvContact.setAdapter(mAdapter);
     }

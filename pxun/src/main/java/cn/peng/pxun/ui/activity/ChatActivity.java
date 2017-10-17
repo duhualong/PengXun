@@ -1,20 +1,22 @@
 package cn.peng.pxun.ui.activity;
 
 import android.content.Intent;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMConversation;
-import com.hyphenate.chat.EMMessage;
 import com.iflytek.cloud.RecognizerResult;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
@@ -22,9 +24,6 @@ import com.iflytek.cloud.SpeechUtility;
 import com.iflytek.cloud.ui.RecognizerDialog;
 import com.iflytek.cloud.ui.RecognizerDialogListener;
 
-import org.greenrobot.greendao.query.QueryBuilder;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,53 +32,65 @@ import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.greendao.Message;
-import cn.peng.pxun.modle.greendao.MessageDao;
 import cn.peng.pxun.presenter.activity.ChatPresenter;
+import cn.peng.pxun.ui.adapter.EmojiAdapter;
 import cn.peng.pxun.ui.adapter.SuperBaseApapter;
 import cn.peng.pxun.ui.adapter.holder.BaseHolder;
 import cn.peng.pxun.ui.adapter.holder.ChatHolder;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.ui.view.SmoothInputLayout;
 import cn.peng.pxun.utils.ToastUtil;
 import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
-import de.greenrobot.event.ThreadMode;
+
+import static cn.peng.pxun.R.id.ll_chat_more;
 
 /**
+ * 聊天页面
+ * @author Peng
  * Created by msi on 2016/12/30.
  */
 public class ChatActivity extends BaseActivity<ChatPresenter> {
+
+    @BindView(R.id.chat_toolbar)
+    Toolbar mChatToolbar;
     @BindView(R.id.iv_chat_goback)
     ImageView mIvChatGoback;
     @BindView(R.id.tv_chat_title)
     TextView mTvChatTitle;
-    @BindView(R.id.chat_toolbar)
-    Toolbar mChatToolbar;
     @BindView(R.id.lv_chat)
     ListView mLvChat;
-    @BindView(R.id.ib_chat_inputtype)
-    ImageButton mIbChatInputtype;
+    @BindView(R.id.sil_lyt_content)
+    SmoothInputLayout mSilLytContent;
+    @BindView(R.id.bt_chat_type)
+    AppCompatImageButton mBtChatType;
+    @BindView(R.id.bt_chat_emoji)
+    AppCompatImageButton mBtChatEmoji;
+    @BindView(R.id.bt_chat_more)
+    AppCompatImageButton mBtChatMore;
+    @BindView(R.id.et_chat_input)
+    AppCompatEditText mEtChatInput;
     @BindView(R.id.bt_chat_speech)
-    Button mBtChatSpeech;
-    @BindView(R.id.et_chat_spell)
-    EditText mEtChatSpell;
+    AppCompatButton mBtChatSpeech;
     @BindView(R.id.bt_chat_send)
-    Button mBtChatSend;
-    @BindView(R.id.ll_chat_spell)
-    LinearLayout mLlChatSpell;
+    AppCompatImageButton mBtChatSend;
+    @BindView(R.id.ll_chat_emoji)
+    LinearLayout mLlChatEmoji;
+    @BindView(ll_chat_more)
+    LinearLayout mLlChatMore;
+    private RecyclerView mRvMoreEmoji;
+    private TextView mTvMorePicture;
+    private TextView mTvMoreTakephoto;
 
     // 消息数据集合
     private List<Message> list;
     // 消息list的数据适配器
-    private ChatAdapter mAdapter;
+    private ChatAdapter chatAdapter;
+    private EmojiAdapter emojiAdapter;
     // 聊天用户名
     private String toChatUserName;
     // 聊天用户ID
     private String toChatUserId;
-    // 是否是键盘输入
-    private boolean isSpeech = true;
     // 是否是群聊
     private boolean isGroup = false;
-
 
     @Override
     protected void init() {
@@ -87,47 +98,18 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
         //初始化科大讯飞语音识别
         SpeechUtility.createUtility(this, "appid=" + AppConfig.IFLYTEK_APPID);
         //注册EventBus
-        EventBus.getDefault().register(this);
+        //EventBus.getDefault().register(this);
 
-        toChatUserName = getIntent().getStringExtra("username");
-        toChatUserId = getIntent().getStringExtra("userId");
-        isGroup = getIntent().getBooleanExtra("isGroup",false);
+        Intent intent = getIntent();
+        toChatUserName = intent.getStringExtra("username");
+        toChatUserId = intent.getStringExtra("userId");
+        isGroup = intent.getBooleanExtra("isGroup", false);
         list = new ArrayList<>();
-        if ("智能小白".equals(toChatUserName)){
+        if ("智能小白".equals(toChatUserName)) {
             presenter.initTuring();
-            MessageDao messageDao = MyApplication.session.getMessageDao();
-            QueryBuilder queryBuilder = messageDao.queryBuilder();
-            list = queryBuilder.where(queryBuilder
-                    .or(queryBuilder
-                            .and(MessageDao.Properties.FromUserID.eq(MyApplication.sp.getString("phone","")),
-                                    MessageDao.Properties.ToUserID.eq("tuling")),queryBuilder
-                            .and(MessageDao.Properties.FromUserID.eq("tuling"),
-                                    MessageDao.Properties.ToUserID.eq(MyApplication.sp.getString("phone","")))))
-                    .list();
-        }else {
-            EMConversation conversation = EMClient.getInstance().chatManager().getConversation(toChatUserId);
-            if (conversation != null) {
-                EMMessage lastMessage = conversation.getLastMessage();
-                int count = 19;
-                if (list.size() >= 19) {
-                    count = list.size() + 1;
-                }
-                List<EMMessage> messages = conversation.loadMoreMsgFromDB(lastMessage.getMsgId(), count);
-                messages.add(lastMessage);
-
-                if (messages != null && messages.size() > 0){
-                    for (EMMessage emMsg : messages) {
-                        Message msg = new Message();
-                        msg.date = getDate(emMsg.getMsgTime());
-                        msg.message = emMsg.getBody().toString().split(":")[1].replaceAll("\"", "");
-                        msg.fromUserID = emMsg.getFrom();
-                        msg.toUserID = emMsg.getTo();
-                        msg.messageType = 1;
-                        msg.isTuring = false;
-                        list.add(msg);
-                    }
-                }
-            }
+            list = presenter.getTulingMessages();
+        } else {
+            list = presenter.getHuanxinMessages(toChatUserId);
         }
     }
 
@@ -147,61 +129,106 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
         setSupportActionBar(mChatToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTvChatTitle.setText(toChatUserName);
-        if (list != null && list.size() > 0){
-            mAdapter = new ChatAdapter(list);
-            mLvChat.setAdapter(mAdapter);
-            mLvChat.setSelection(list.size()-1);
+        if (list != null && list.size() > 0) {
+            chatAdapter = new ChatAdapter(list);
+            mLvChat.setAdapter(chatAdapter);
+            mLvChat.setSelection(list.size() - 1);
         }
+        mRvMoreEmoji = (RecyclerView) mLlChatEmoji.findViewById(R.id.rv_more_emoji);
+        mRvMoreEmoji.setLayoutManager(new GridLayoutManager(this,6));
+        emojiAdapter = new EmojiAdapter(this);
+        mRvMoreEmoji.setAdapter(emojiAdapter);
+        mTvMorePicture = (TextView) mLlChatMore.findViewById(R.id.tv_more_picture);
+        mTvMoreTakephoto = (TextView) mLlChatMore.findViewById(R.id.tv_more_takephoto);
     }
 
     @Override
     protected void initListener() {
+        mSilLytContent.setOnVisibilityChangeListener(new SmoothInputLayout.OnVisibilityChangeListener() {
+            @Override
+            public void onVisibilityChange(int visibility) {
+                if (visibility == View.GONE) {
+                    mBtChatEmoji.setSelected(false);
+                } else {
+                    mBtChatEmoji.setSelected(mLlChatEmoji.getVisibility() == View.VISIBLE);
+                }
+            }
+        });
         mIvChatGoback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        mIbChatInputtype.setOnClickListener(new View.OnClickListener() {
+        mBtChatType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isSpeech){
-                    mIbChatInputtype.setBackgroundResource(R.drawable.spellinput);
-                    mLlChatSpell.setVisibility(View.GONE);
-                    mBtChatSpeech.setVisibility(View.VISIBLE);
-                }else {
-                    mIbChatInputtype.setBackgroundResource(R.drawable.speechinput);
-                    mLlChatSpell.setVisibility(View.VISIBLE);
-                    mBtChatSpeech.setVisibility(View.GONE);
+                mBtChatMore.setSelected(false);
+                mBtChatEmoji.setSelected(false);
+                if (mBtChatType.isSelected()) {
+                    mBtChatType.setSelected(false);
+                    showInputWidget();
+                } else {
+                    mBtChatType.setSelected(true);
+                    mSilLytContent.closeInputPane();
+                    mSilLytContent.closeKeyboard(true);
+                    showVoiceWidget();
                 }
-                isSpeech = !isSpeech;
+            }
+        });
+        mBtChatEmoji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBtChatMore.setSelected(false);
+                mBtChatType.setSelected(false);
+                if (mBtChatEmoji.isSelected()) {
+                    mBtChatEmoji.setSelected(false);
+                    mSilLytContent.showKeyboard();
+                } else {
+                    mBtChatEmoji.setSelected(true);
+                    showEmoji();
+                }
+            }
+        });
+        mBtChatMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBtChatEmoji.setSelected(false);
+                mBtChatType.setSelected(false);
+                if (mBtChatMore.isSelected()) {
+                    mBtChatMore.setSelected(false);
+                    mSilLytContent.showKeyboard();
+                } else {
+                    mBtChatMore.setSelected(true);
+                    showMore();
+                }
             }
         });
         mBtChatSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String spellMsg = mEtChatSpell.getText().toString().trim();
-                if (TextUtils.isEmpty(spellMsg)){
-                    ToastUtil.showToast(ChatActivity.this,"发送消息不能为空");
+                final String spellMsg = mEtChatInput.getText().toString().trim();
+                if (TextUtils.isEmpty(spellMsg)) {
+                    ToastUtil.showToast(ChatActivity.this, "发送消息不能为空");
                     return;
                 }
-                mEtChatSpell.setText("");
+                mEtChatInput.setText("");
 
                 Message msg = new Message();
-                msg.date = getDate(System.currentTimeMillis());
+                msg.date = presenter.getDate(System.currentTimeMillis());
                 msg.message = spellMsg;
-                msg.fromUserID = MyApplication.sp.getString("phone","");
+                msg.fromUserID = MyApplication.sp.getString("phone", "");
                 msg.messageType = Message.TEXT_TYPE;
                 if ("智能小白".equals(toChatUserName)) {
                     msg.isTuring = true;
                     msg.toUserID = "tuling";
                     presenter.requestTuring(spellMsg);
-                }else {
+                } else {
                     msg.isTuring = false;
                     msg.toUserID = toChatUserId;
-                    sendMessage(spellMsg);
+                    presenter.sendTextMessage(spellMsg, toChatUserId, isGroup);
                 }
-                addDataAndRefreshUi(msg,false);
+                addDataAndRefreshUi(msg, false);
             }
         });
         mBtChatSpeech.setOnClickListener(new View.OnClickListener() {
@@ -222,32 +249,102 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                             final String speechMsg = mBuffer.toString();
 
                             Message msg = new Message();
-                            msg.date = getDate(System.currentTimeMillis());
+                            msg.date = presenter.getDate(System.currentTimeMillis());
                             msg.message = speechMsg;
-                            msg.fromUserID = MyApplication.sp.getString("phone","");
+                            msg.fromUserID = MyApplication.sp.getString("phone", "");
                             msg.messageType = Message.TEXT_TYPE;
 
                             if ("智能小白".equals(toChatUserName)) {
                                 msg.isTuring = true;
                                 msg.toUserID = "tuling";
                                 presenter.requestTuring(speechMsg);
-                            }else {
+                            } else {
                                 msg.isTuring = false;
                                 msg.toUserID = toChatUserId;
-                                sendMessage(speechMsg);
+                                presenter.sendTextMessage(speechMsg, toChatUserId, isGroup);
                             }
-                            addDataAndRefreshUi(msg,false);
+                            addDataAndRefreshUi(msg, false);
                         }
                     }
 
                     @Override
                     public void onError(SpeechError error) {
-                        ToastUtil.showToast(ChatActivity.this,"语音解析失败");
+                        ToastUtil.showToast(ChatActivity.this, "语音解析失败");
                     }
                 });
                 mDialog.show();
             }
         });
+        mTvMorePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.showToast(mActivity,"相册");
+            }
+        });
+        mTvMoreTakephoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.showToast(mActivity,"拍照");
+            }
+        });
+        emojiAdapter.setOnEmojiClickListener(new EmojiAdapter.OnEmojiClickListener() {
+            @Override
+            public void onEmojiClick(int emojoId, int position) {
+                ToastUtil.showToast(mActivity,"emojo:"+position);
+            }
+        });
+        mEtChatInput.addTextChangedListener(new TextWatcher(){
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().trim().length() > 0) {
+                    mBtChatMore.setVisibility(View.GONE);
+                    mBtChatSend.setVisibility(View.VISIBLE);
+                } else {
+                    mBtChatMore.setVisibility(View.VISIBLE);
+                    mBtChatSend.setVisibility(View.GONE);
+                }
+            }
+        });
+        mEtChatInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mBtChatType.setSelected(false);
+                mBtChatEmoji.setSelected(false);
+                mBtChatMore.setSelected(false);
+                return false;
+            }
+        });
+        mLvChat.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mBtChatType.setSelected(false);
+                mBtChatEmoji.setSelected(false);
+                mBtChatMore.setSelected(false);
+                mSilLytContent.closeKeyboard(true);
+                mSilLytContent.closeInputPane();
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mSilLytContent.isInputPaneOpen()) {
+            mSilLytContent.closeInputPane();
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -257,26 +354,52 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
         EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe(threadMode = ThreadMode.MainThread)
-    public void getMessage(Message msg){
-        addDataAndRefreshUi(msg,false);
+    /**
+     * 显示输入控件
+     */
+    private void showInputWidget() {
+        if (!TextUtils.isEmpty(mEtChatInput.getText().toString())){
+            mBtChatMore.setVisibility(View.GONE);
+            mBtChatSend.setVisibility(View.VISIBLE);
+        }
+        mEtChatInput.setVisibility(View.VISIBLE);
+        mBtChatEmoji.setVisibility(View.VISIBLE);
+        mBtChatSpeech.setVisibility(View.GONE);
+        mSilLytContent.showKeyboard();
     }
 
     /**
-     * 异步发送消息
-     * @param msg
+     * 显示语音控件
      */
-    private void sendMessage(final String msg) {
-        ThreadUtils.runOnSubThread(new Runnable() {
-            @Override
-            public void run() {
-                EMMessage message = EMMessage.createTxtSendMessage(msg, toChatUserId);
-                if (isGroup){
-                    message.setChatType(EMMessage.ChatType.GroupChat);
-                }
-                EMClient.getInstance().chatManager().sendMessage(message);
-            }
-        });
+    private void showVoiceWidget() {
+        mEtChatInput.setVisibility(View.GONE);
+        mBtChatEmoji.setVisibility(View.VISIBLE);
+        mBtChatSpeech.setVisibility(View.VISIBLE);
+        mBtChatSend.setVisibility(View.GONE);
+    }
+
+    /**
+     *  显示Emoji面板
+     */
+    private void showEmoji() {
+        mEtChatInput.setVisibility(View.VISIBLE);
+        mBtChatMore.setVisibility(View.VISIBLE);
+        mBtChatSpeech.setVisibility(View.GONE);
+        mLlChatEmoji.setVisibility(View.VISIBLE);
+        mLlChatMore.setVisibility(View.GONE);
+        mSilLytContent.showInputPane(false);
+    }
+
+    /**
+     * 显示更多面板
+     */
+    private void showMore() {
+        mEtChatInput.setVisibility(View.VISIBLE);
+        mBtChatEmoji.setVisibility(View.VISIBLE);
+        mBtChatSpeech.setVisibility(View.GONE);
+        mLlChatEmoji.setVisibility(View.GONE);
+        mLlChatMore.setVisibility(View.VISIBLE);
+        mSilLytContent.showInputPane(false);
     }
 
     /**
@@ -286,39 +409,22 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
      */
     public void addDataAndRefreshUi(Message msg, boolean isSpeak) {
         list.add(msg);
-        if (mAdapter == null){
-            mAdapter = new ChatAdapter(list);
-            mLvChat.setAdapter(mAdapter);
+        if (chatAdapter == null) {
+            chatAdapter = new ChatAdapter(list);
+            mLvChat.setAdapter(chatAdapter);
         }
-        mAdapter.setDataSets(list);
-        mAdapter.notifyDataSetChanged();
-        mLvChat.setSelection(list.size()-1);
-        if (msg.isTuring){
-            keepMessage(msg);
-            if (isSpeak){
+        chatAdapter.setDataSets(list);
+        chatAdapter.notifyDataSetChanged();
+        mLvChat.setSelection(list.size() - 1);
+        if (msg.isTuring) {
+            presenter.keepMessage(msg);
+            if (isSpeak) {
                 presenter.startSpeak(msg.message);
             }
         }
     }
 
-    /**
-     * 保存聊天记录
-     */
-    private void keepMessage(Message msg) {
-        MessageDao messageDao = MyApplication.session.getMessageDao();
-        messageDao.insert(msg);
-    }
-
-    /**
-     * 获取当前时间
-     * @return
-     */
-    public String getDate(long date){
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm ");
-        return  formatter.format(date);
-    }
-
-    class ChatAdapter extends SuperBaseApapter<Message>{
+    class ChatAdapter extends SuperBaseApapter<Message> {
         public ChatAdapter(List<Message> dataSets) {
             super(dataSets);
         }

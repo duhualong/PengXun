@@ -45,8 +45,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     Toolbar mLoginToolbar;
     @BindView(R.id.bt_login_qq)
     Button mBtLoginQq;
-    @BindView(R.id.bt_login_weixin)
-    Button mBtLoginWeixin;
     @BindView(R.id.bt_login_weibo)
     Button mBtLoginWeibo;
 
@@ -165,13 +163,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
             public void onClick(View v) {
                 showLoadingDialog("正在授权，请稍后...");
                 MyApplication.umengApi.doOauthVerify(LoginActivity.this, SHARE_MEDIA.QQ, authListener);
-            }
-        });
-        mBtLoginWeixin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showLoadingDialog("正在授权，请稍后...");
-                MyApplication.umengApi.doOauthVerify(LoginActivity.this, SHARE_MEDIA.WEIXIN, authListener);
             }
         });
         mBtLoginWeibo.setOnClickListener(new View.OnClickListener() {
