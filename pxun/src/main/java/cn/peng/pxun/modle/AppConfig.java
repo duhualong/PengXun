@@ -6,6 +6,9 @@ import cn.peng.pxun.R;
  * 保存常量字符串的类
  */
 public class AppConfig {
+    /** 图林机器人是否初始化成功 */
+    public static boolean isInitTuring;
+
     /** 是否是调试模式，用于显示log */
     public static final boolean DEBUG_ENABLE = true;
     /** log日志的tag */

@@ -1,16 +1,13 @@
 package cn.peng.pxun.presenter.activity;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechSynthesizer;
-import com.turing.androidsdk.InitListener;
-import com.turing.androidsdk.SDKInit;
-import com.turing.androidsdk.SDKInitBuilder;
+import com.iflytek.cloud.ui.RecognizerDialog;
+import com.iflytek.cloud.ui.RecognizerDialogListener;
 import com.turing.androidsdk.TuringApiManager;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -45,6 +42,18 @@ public class ChatPresenter extends BasePresenter{
     public ChatPresenter(BaseActivity activity) {
         super(activity);
         mActivity = (ChatActivity) activity;
+    }
+
+    /**
+     * 显示语音录入的对话框
+     * @param listener
+     */
+    public void showSpeechDialog(RecognizerDialogListener listener) {
+        RecognizerDialog mDialog = new RecognizerDialog(mActivity, null);
+        mDialog.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
+        mDialog.setParameter(SpeechConstant.ACCENT, "mandarin");
+        mDialog.setListener(listener);
+        mDialog.show();
     }
 
     /**
@@ -90,59 +99,43 @@ public class ChatPresenter extends BasePresenter{
      * 初始化图灵机器人
      */
     public void initTuring() {
-        SDKInitBuilder builder = new SDKInitBuilder(mActivity).setSecret("77bd9b637dd3aff6").
-                setTuringKey(AppConfig.TURING_APP_KEY).setUniqueId("1136313078");
-        SDKInit.init(builder, new InitListener() {
-            @Override
-            public void onComplete() {
-                mTaManager = new TuringApiManager(mActivity);
-                mTaManager.setHttpListener(new HttpConnectionListener() {
-                    @Override
-                    public void onError(ErrorMessage message) {
-                        Message msg = new Message();
-                        msg.isTuring = true;
-                        msg.message = "对不起,你的话太深奥了!";
-                        msg.fromUserID = "tuling";
-                        msg.toUserID = MyApplication.sp.getString("phone","");
+        if(AppConfig.isInitTuring){
+            mTaManager = new TuringApiManager(mActivity);
+            mTaManager.setHttpListener(new HttpConnectionListener() {
+                @Override
+                public void onError(ErrorMessage message) {
+                    Message msg = new Message();
+                    msg.isTuring = true;
+                    msg.message = "对不起,你的话太深奥了!";
+                    msg.fromUserID = "tuling";
+                    msg.toUserID = MyApplication.sp.getString("phone","");
+                    msg.messageType = Message.TEXT_TYPE;
+
+                    mActivity.addDataAndRefreshUi(msg,false);
+                }
+
+                @Override
+                public void onSuccess(RequestResult result) {
+                    String s = result.getContent().toString();
+                    Gson gson = new Gson();
+                    TuringBean turing = gson.fromJson(s,TuringBean.class);
+
+                    Message msg = new Message();
+                    msg.isTuring = true;
+                    msg.message = turing.text;
+                    msg.fromUserID = "tuling";
+                    msg.toUserID = MyApplication.sp.getString("phone","");
+                    if (turing.code == 200000){
+                        msg.messageType = Message.PIC_TYPE;
+                        msg.picURL = getPicURL();
+                    }else {
                         msg.messageType = Message.TEXT_TYPE;
-
-                        mActivity.addDataAndRefreshUi(msg,false);
                     }
-                    @Override
-                    public void onSuccess(RequestResult result) {
-                        String s = result.getContent().toString();
-                        Gson gson = new Gson();
-                        TuringBean turing = gson.fromJson(s,TuringBean.class);
 
-                        Message msg = new Message();
-                        msg.isTuring = true;
-                        msg.message = turing.text;
-                        msg.fromUserID = "tuling";
-                        msg.toUserID = MyApplication.sp.getString("phone","");
-                        if (turing.code == 200000){
-                            msg.messageType = Message.PIC_TYPE;
-                            msg.picURL = getPicURL();
-                        }else {
-                            msg.messageType = Message.TEXT_TYPE;
-                        }
-
-                        mActivity.addDataAndRefreshUi(msg,true);
-                    }
-                });
-            }
-            @Override
-            public void onFail(String s) {
-                Log.i("ChatActivity","图灵机器人初始化失败");
-                Message msg = new Message();
-                msg.isTuring = true;
-                msg.message = "智能小白初始化失败";
-                msg.fromUserID = "tuling";
-                msg.toUserID = MyApplication.sp.getString("phone","");
-                msg.messageType = Message.TEXT_TYPE;
-
-                mActivity.addDataAndRefreshUi(msg,false);
-            }
-        });
+                    mActivity.addDataAndRefreshUi(msg,true);
+                }
+            });
+        }
     }
 
     /**

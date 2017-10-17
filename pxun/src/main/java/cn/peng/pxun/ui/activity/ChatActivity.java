@@ -1,6 +1,8 @@
 package cn.peng.pxun.ui.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
@@ -18,10 +20,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.iflytek.cloud.RecognizerResult;
-import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechUtility;
-import com.iflytek.cloud.ui.RecognizerDialog;
 import com.iflytek.cloud.ui.RecognizerDialogListener;
 
 import java.util.ArrayList;
@@ -40,6 +40,8 @@ import cn.peng.pxun.ui.adapter.holder.ChatHolder;
 import cn.peng.pxun.ui.view.SmoothInputLayout;
 import cn.peng.pxun.utils.ToastUtil;
 import de.greenrobot.event.EventBus;
+import me.weyye.hipermission.PermissionCallback;
+import me.weyye.hipermission.PermissionItem;
 
 import static cn.peng.pxun.R.id.ll_chat_more;
 
@@ -198,6 +200,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                 if (mBtChatMore.isSelected()) {
                     mBtChatMore.setSelected(false);
                     mSilLytContent.showKeyboard();
+                    checkTextIsEmpty();
                 } else {
                     mBtChatMore.setSelected(true);
                     showMore();
@@ -220,9 +223,11 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                 msg.fromUserID = MyApplication.sp.getString("phone", "");
                 msg.messageType = Message.TEXT_TYPE;
                 if ("智能小白".equals(toChatUserName)) {
-                    msg.isTuring = true;
-                    msg.toUserID = "tuling";
-                    presenter.requestTuring(spellMsg);
+                    if (AppConfig.isInitTuring){
+                        msg.isTuring = true;
+                        msg.toUserID = "tuling";
+                        presenter.requestTuring(spellMsg);
+                    }
                 } else {
                     msg.isTuring = false;
                     msg.toUserID = toChatUserId;
@@ -234,45 +239,11 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
         mBtChatSpeech.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RecognizerDialog mDialog = new RecognizerDialog(ChatActivity.this, null);
-                mDialog.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
-                mDialog.setParameter(SpeechConstant.ACCENT, "mandarin");
-                final StringBuffer mBuffer = new StringBuffer();
-                mDialog.setListener(new RecognizerDialogListener() {
-                    @Override
-                    public void onResult(RecognizerResult recognizerResult, boolean b) {
-                        String result = recognizerResult.getResultString();
-                        String resultString = presenter.processData(result);
-
-                        mBuffer.append(resultString);
-                        if (b) {
-                            final String speechMsg = mBuffer.toString();
-
-                            Message msg = new Message();
-                            msg.date = presenter.getDate(System.currentTimeMillis());
-                            msg.message = speechMsg;
-                            msg.fromUserID = MyApplication.sp.getString("phone", "");
-                            msg.messageType = Message.TEXT_TYPE;
-
-                            if ("智能小白".equals(toChatUserName)) {
-                                msg.isTuring = true;
-                                msg.toUserID = "tuling";
-                                presenter.requestTuring(speechMsg);
-                            } else {
-                                msg.isTuring = false;
-                                msg.toUserID = toChatUserId;
-                                presenter.sendTextMessage(speechMsg, toChatUserId, isGroup);
-                            }
-                            addDataAndRefreshUi(msg, false);
-                        }
-                    }
-
-                    @Override
-                    public void onError(SpeechError error) {
-                        ToastUtil.showToast(ChatActivity.this, "语音解析失败");
-                    }
-                });
-                mDialog.show();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    checkPermission();
+                }else{
+                    showSpeechDialog();
+                }
             }
         });
         mTvMorePicture.setOnClickListener(new View.OnClickListener() {
@@ -358,10 +329,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
      * 显示输入控件
      */
     private void showInputWidget() {
-        if (!TextUtils.isEmpty(mEtChatInput.getText().toString())){
-            mBtChatMore.setVisibility(View.GONE);
-            mBtChatSend.setVisibility(View.VISIBLE);
-        }
+        checkTextIsEmpty();
         mEtChatInput.setVisibility(View.VISIBLE);
         mBtChatEmoji.setVisibility(View.VISIBLE);
         mBtChatSpeech.setVisibility(View.GONE);
@@ -375,6 +343,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
         mEtChatInput.setVisibility(View.GONE);
         mBtChatEmoji.setVisibility(View.VISIBLE);
         mBtChatSpeech.setVisibility(View.VISIBLE);
+        mBtChatMore.setVisibility(View.VISIBLE);
         mBtChatSend.setVisibility(View.GONE);
     }
 
@@ -382,8 +351,9 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
      *  显示Emoji面板
      */
     private void showEmoji() {
+
+        checkTextIsEmpty();
         mEtChatInput.setVisibility(View.VISIBLE);
-        mBtChatMore.setVisibility(View.VISIBLE);
         mBtChatSpeech.setVisibility(View.GONE);
         mLlChatEmoji.setVisibility(View.VISIBLE);
         mLlChatMore.setVisibility(View.GONE);
@@ -395,11 +365,20 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
      */
     private void showMore() {
         mEtChatInput.setVisibility(View.VISIBLE);
-        mBtChatEmoji.setVisibility(View.VISIBLE);
         mBtChatSpeech.setVisibility(View.GONE);
         mLlChatEmoji.setVisibility(View.GONE);
         mLlChatMore.setVisibility(View.VISIBLE);
         mSilLytContent.showInputPane(false);
+    }
+
+    /**
+     * 检测输入框文字是否为空
+     */
+    private void checkTextIsEmpty() {
+        if (!TextUtils.isEmpty(mEtChatInput.getText().toString())){
+            mBtChatMore.setVisibility(View.GONE);
+            mBtChatSend.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -422,6 +401,79 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                 presenter.startSpeak(msg.message);
             }
         }
+    }
+
+    /**
+     * 检测是否有录音权限
+     */
+    private void checkPermission() {
+        List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
+        permissionItems.add(new PermissionItem(Manifest.permission.RECORD_AUDIO, "录音", R.drawable.permission_ic_micro_phone));
+
+        requestPermission(permissionItems, new PermissionCallback() {
+            @Override
+            public void onClose() {
+                ToastUtil.showToast(mActivity, "授权失败");
+            }
+
+            @Override
+            public void onFinish() {
+                showSpeechDialog();
+            }
+
+            @Override
+            public void onDeny(String permission, int position) {
+
+            }
+
+            @Override
+            public void onGuarantee(String permission, int position) {
+
+            }
+        });
+    }
+
+    /**
+     * 显示语音录入的对话框
+     */
+    private void showSpeechDialog() {
+        final StringBuffer mBuffer = new StringBuffer();
+        presenter.showSpeechDialog(new RecognizerDialogListener() {
+            @Override
+            public void onResult(RecognizerResult recognizerResult, boolean b) {
+                String result = recognizerResult.getResultString();
+                String resultString = presenter.processData(result);
+
+                mBuffer.append(resultString);
+                if (b) {
+                    final String speechMsg = mBuffer.toString();
+
+                    Message msg = new Message();
+                    msg.date = presenter.getDate(System.currentTimeMillis());
+                    msg.message = speechMsg;
+                    msg.fromUserID = MyApplication.sp.getString("phone", "");
+                    msg.messageType = Message.TEXT_TYPE;
+
+                    if ("智能小白".equals(toChatUserName)) {
+                        if (AppConfig.isInitTuring) {
+                            msg.isTuring = true;
+                            msg.toUserID = "tuling";
+                            presenter.requestTuring(speechMsg);
+                        }
+                    } else {
+                        msg.isTuring = false;
+                        msg.toUserID = toChatUserId;
+                        presenter.sendTextMessage(speechMsg, toChatUserId, isGroup);
+                    }
+                    addDataAndRefreshUi(msg, false);
+                }
+            }
+
+            @Override
+            public void onError(SpeechError error) {
+                ToastUtil.showToast(ChatActivity.this, "语音解析失败");
+            }
+        });
     }
 
     class ChatAdapter extends SuperBaseApapter<Message> {

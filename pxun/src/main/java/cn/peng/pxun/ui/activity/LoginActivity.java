@@ -1,6 +1,5 @@
 package cn.peng.pxun.ui.activity;
 
-import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.widget.Toolbar;
@@ -14,8 +13,6 @@ import android.widget.TextView;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -25,8 +22,8 @@ import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.presenter.activity.LoginPresenter;
 import cn.peng.pxun.utils.ToastUtil;
+import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
-import me.weyye.hipermission.PermissionItem;
 
 public class LoginActivity extends BaseActivity<LoginPresenter> {
     @BindView(R.id.et_login_phone)
@@ -246,31 +243,30 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
      * 检查权限,动态申请权限
      */
     private void checkPermission() {
-        List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
-        permissionItems.add(new PermissionItem(Manifest.permission.ACCESS_FINE_LOCATION, "定位", R.drawable.permission_ic_location));
-        permissionItems.add(new PermissionItem(Manifest.permission.READ_EXTERNAL_STORAGE, "读取存储卡", R.drawable.permission_ic_storage ));
-        permissionItems.add(new PermissionItem(Manifest.permission.WRITE_EXTERNAL_STORAGE, "写入存储卡", R.drawable.permission_ic_storage ));
-        permissionItems.add(new PermissionItem(Manifest.permission.READ_PHONE_STATE, "手机状态", R.drawable.permission_ic_phone));
+//        List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
+//        permissionItems.add(new PermissionItem(Manifest.permission.ACCESS_FINE_LOCATION, "定位", R.drawable.permission_ic_location));
+//        permissionItems.add(new PermissionItem(Manifest.permission.READ_EXTERNAL_STORAGE, "读取存储卡", R.drawable.permission_ic_storage ));
+//        permissionItems.add(new PermissionItem(Manifest.permission.WRITE_EXTERNAL_STORAGE, "写入存储卡", R.drawable.permission_ic_storage ));
+//        permissionItems.add(new PermissionItem(Manifest.permission.READ_PHONE_STATE, "手机状态", R.drawable.permission_ic_phone));
 
-        requestPermission(permissionItems, new PermissionCallback() {
-            @Override
-            public void onClose() {
-                //ToastUtil.showToast(mActivity, "您取消了授权");
-            }
+        HiPermission.create(mActivity)
+            .checkMutiPermission(new PermissionCallback() {
+                @Override
+                public void onClose() {
+                ToastUtil.showToast(mActivity, "您取消了授权");
+                }
 
-            @Override
-            public void onFinish() {
+                @Override
+                public void onFinish() {
                 //ToastUtil.showToast(mActivity, "授权成功");
-            }
+                }
 
-            @Override
-            public void onDeny(String permission, int position) {
+                @Override
+                public void onDeny(String permission, int position) {
+                }
 
-            }
-
-            @Override
-            public void onGuarantee(String permission, int position) {
-
+                @Override
+                public void onGuarantee(String permission, int position) {
             }
         });
     }

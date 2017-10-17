@@ -60,6 +60,7 @@ public class MyApplication extends Application {
         sp = getSharedPreferences("userInfo",MODE_PRIVATE);
     }
 
+
     /**
      * 初始化Bmob后端云
      */
@@ -73,6 +74,8 @@ public class MyApplication extends Application {
     private void initUMeng() {
         umengApi = UMShareAPI.get(this);
     }
+
+
 
     /**
      * 初始化环信
@@ -178,7 +181,6 @@ public class MyApplication extends Application {
         });
     }
 
-
     /**
      * 初始化数据库(GreenDao)
      */
@@ -188,7 +190,7 @@ public class MyApplication extends Application {
         session = new DaoMaster(db).newSession();
     }
 
-    /**\
+    /**
      * 获取应用的名称
      * @param pID
      * @return
