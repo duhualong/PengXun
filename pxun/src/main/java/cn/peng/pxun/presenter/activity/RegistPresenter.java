@@ -63,6 +63,8 @@ public class RegistPresenter extends BasePresenter{
         user.setSex(sex);
         user.setBirthday(birthday);
         user.setAddress(address);
+        user.setLoginType("");
+
         user.signUp(new SaveListener<User>() {
             @Override
             public void done(final User user, BmobException e) {

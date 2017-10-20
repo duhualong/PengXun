@@ -8,8 +8,14 @@ import cn.bmob.v3.BmobUser;
  */
 
 public class User extends BmobUser{
+    //三方登录id
+    private String thirdPartyID;
+    //信息背景图片
+    private String infoBackGround;
     //头像
     private String headIcon;
+    //登录类型
+    private String loginType;
     //个性签名
     private String signaTure;
 
@@ -23,26 +29,21 @@ public class User extends BmobUser{
     private String birthday;
     //所在地
     private String address;
-    //QQ号
-    private String qqNum;
-    //微信号
-    private String wechatNum;
 
-
-    public String getQqNum() {
-        return qqNum;
+    public String getThirdPartyID() {
+        return thirdPartyID;
     }
 
-    public void setQqNum(String qqNum) {
-        this.qqNum = qqNum;
+    public void setThirdPartyID(String thirdPartyID) {
+        this.thirdPartyID = thirdPartyID;
     }
 
-    public String getWechatNum() {
-        return wechatNum;
+    public String getInfoBackGround() {
+        return infoBackGround;
     }
 
-    public void setWechatNum(String wechatNum) {
-        this.wechatNum = wechatNum;
+    public void setInfoBackGround(String infoBackGround) {
+        this.infoBackGround = infoBackGround;
     }
 
     public String getHeadIcon() {
@@ -51,6 +52,14 @@ public class User extends BmobUser{
 
     public void setHeadIcon(String headIcon) {
         this.headIcon = headIcon;
+    }
+
+    public String getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(String loginType) {
+        this.loginType = loginType;
     }
 
     public String getSignaTure() {
@@ -69,20 +78,20 @@ public class User extends BmobUser{
         this.name = name;
     }
 
-    public String getAge() {
-        return age;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
-    }
-
     public String getSex() {
         return sex;
     }
 
     public void setSex(String sex) {
         this.sex = sex;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
     }
 
     public String getBirthday() {

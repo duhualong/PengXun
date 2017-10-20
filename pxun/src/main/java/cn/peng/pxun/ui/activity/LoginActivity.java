@@ -1,7 +1,9 @@
 package cn.peng.pxun.ui.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -20,7 +22,9 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
+import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.activity.LoginPresenter;
+import cn.peng.pxun.utils.MD5Util;
 import cn.peng.pxun.utils.ToastUtil;
 import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
@@ -64,7 +68,27 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
             loadingDialog.cancel();
-            ToastUtil.showToast(mActivity, "成功了");
+
+            if(data != null && data.size() > 0){
+                User user = new User();
+                user.setThirdPartyID(data.get("uid"));
+                user.setUsername(data.get("screen_name"));
+                user.setPassword(MD5Util.encode("pxun123456"));
+                user.setHeadIcon(data.get("profile_image_url"));
+                user.setSex(data.get("gender"));
+
+                if (platform == SHARE_MEDIA.QQ){
+                    user.setLoginType("QQ");
+                    user.setAddress(data.get("province")+"省-"+data.get("city")+"市");
+                }else if (platform == SHARE_MEDIA.SINA){
+                    user.setLoginType("SINA");
+                    user.setAddress(data.get("location")+"省");
+                    user.setInfoBackGround(data.get("cover_image_phone"));
+                }
+
+                showLoadingDialog("正在登陆...");
+                presenter.thirdPartyUserRegiest(user);
+            }
         }
 
         /**
@@ -95,7 +119,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     protected void init() {
         super.init();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkPermission();
+            initPermission();
         }
     }
 
@@ -159,14 +183,14 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
             @Override
             public void onClick(View v) {
                 showLoadingDialog("正在授权，请稍后...");
-                MyApplication.umengApi.doOauthVerify(LoginActivity.this, SHARE_MEDIA.QQ, authListener);
+                MyApplication.umengApi.getPlatformInfo(LoginActivity.this, SHARE_MEDIA.QQ, authListener);
             }
         });
         mBtLoginWeibo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showLoadingDialog("正在授权，请稍后...");
-                MyApplication.umengApi.doOauthVerify(LoginActivity.this, SHARE_MEDIA.SINA, authListener);
+                MyApplication.umengApi.getPlatformInfo(LoginActivity.this, SHARE_MEDIA.SINA, authListener);
             }
         });
     }
@@ -174,6 +198,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        MyApplication.umengApi.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK){
             if (data != null){
                 switch (requestCode){
@@ -242,13 +267,27 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     /**
      * 检查权限,动态申请权限
      */
-    private void checkPermission() {
+    private void initPermission() {
 //        List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
 //        permissionItems.add(new PermissionItem(Manifest.permission.ACCESS_FINE_LOCATION, "定位", R.drawable.permission_ic_location));
 //        permissionItems.add(new PermissionItem(Manifest.permission.READ_EXTERNAL_STORAGE, "读取存储卡", R.drawable.permission_ic_storage ));
 //        permissionItems.add(new PermissionItem(Manifest.permission.WRITE_EXTERNAL_STORAGE, "写入存储卡", R.drawable.permission_ic_storage ));
 //        permissionItems.add(new PermissionItem(Manifest.permission.READ_PHONE_STATE, "手机状态", R.drawable.permission_ic_phone));
 
+        if(Build.VERSION.SDK_INT>=23){
+            String[] mPermissionList = new String[]{
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.CALL_PHONE,
+                    Manifest.permission.READ_LOGS,
+                    Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.SET_DEBUG_APP,
+                    Manifest.permission.SYSTEM_ALERT_WINDOW,
+                    Manifest.permission.GET_ACCOUNTS,
+                    Manifest.permission.WRITE_APN_SETTINGS};
+            ActivityCompat.requestPermissions(this,mPermissionList,123);
+        }
         HiPermission.create(mActivity)
             .checkMutiPermission(new PermissionCallback() {
                 @Override

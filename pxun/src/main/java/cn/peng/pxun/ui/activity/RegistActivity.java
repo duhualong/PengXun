@@ -264,13 +264,13 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
                     if(province.getAreaName().equals(city.getAreaName()) || "其他".equals(province.getAreaName())){
                         address = city.getAreaName();
                     }else{
-                        address = province.getAreaName() + city.getAreaName();
+                        address = province.getAreaName() + "-" + city.getAreaName();
                     }
                 } else {
                     if(province.getAreaName().equals(city.getAreaName()) || "其他".equals(province.getAreaName())){
-                        address = province.getAreaName() + city.getAreaName();
+                        address = province.getAreaName() + "-" + city.getAreaName();
                     }else{
-                        address = province.getAreaName() + city.getAreaName() + county.getAreaName();
+                        address = province.getAreaName() + "-" + city.getAreaName() + "-" + county.getAreaName();
                     }
                 }
                 mTvRegistAddress.setText(address);
