@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
-import cn.peng.pxun.presenter.activity.LoginPresenter;
 import cn.peng.pxun.presenter.fragment.MinePresenter;
 import cn.peng.pxun.ui.activity.AboutAuthorActivity;
 import cn.peng.pxun.ui.activity.DetailedActivity;
@@ -57,7 +56,6 @@ public class MineFragment extends BaseFragment<MinePresenter> {
             public void onClick(View v) {
                 Intent intent = new Intent(mainActivity,DetailedActivity.class);
                 intent.putExtra("isMe",true);
-                intent.putExtra("username", LoginPresenter.getKeepUserPhone());
                 startActivity(intent);
 
             }

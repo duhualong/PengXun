@@ -51,7 +51,7 @@ public class SysMessageActivity extends BaseActivity<SysMessagePresenter> {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTvChatTitle.setText("系统消息");
         mRvSysMessage.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new SysMessageAdapter();
+        mAdapter = new SysMessageAdapter(this);
         mRvSysMessage.setAdapter(mAdapter);
     }
 

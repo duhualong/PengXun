@@ -11,6 +11,7 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/iv_userinfo_bg"
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:background="@drawable/userinfo_bg"/>
@@ -38,7 +39,7 @@
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="帐号:"
+                    android:text="昵称:"
                     android:textSize="16sp"
                     android:textColor="#000000"/>
 

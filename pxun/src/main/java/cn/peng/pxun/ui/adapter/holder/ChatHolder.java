@@ -2,6 +2,7 @@ package cn.peng.pxun.ui.adapter.holder;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,6 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.greendao.Message;
 import cn.peng.pxun.ui.activity.BigPicActivity;
 import cn.peng.pxun.ui.activity.ChatActivity;
@@ -57,7 +59,6 @@ public class ChatHolder extends BaseHolder<Message> {
             public void onClick(View v) {
                 Intent intent = new Intent(activity, DetailedActivity.class);
                 intent.putExtra("isMe",true);
-                intent.putExtra("username",mData.fromUserID);
                 activity.startActivity(intent);
             }
         });
@@ -66,7 +67,7 @@ public class ChatHolder extends BaseHolder<Message> {
             public void onClick(View v) {
                 Intent intent = new Intent(activity, DetailedActivity.class);
                 intent.putExtra("isMe",false);
-                intent.putExtra("username",mData.fromUserID);
+                intent.putExtra("accountNumber",mData.fromUserID);
                 activity.startActivity(intent);
             }
         });
@@ -74,12 +75,14 @@ public class ChatHolder extends BaseHolder<Message> {
 
     @Override
     public void bindView() {
-        if (MyApplication.sp.getString("phone", "").equals(mData.fromUserID)) {
+        if (AppConfig.getUserId(AppConfig.appUser).equals(mData.fromUserID)) {
             mLlChatReply.setVisibility(View.GONE);
             mTvChatDate.setVisibility(View.VISIBLE);
             mLlChatAsk.setVisibility(View.VISIBLE);
 
-            mIvChatAskicon.setImageResource(R.drawable.head4);
+            if (!TextUtils.isEmpty(AppConfig.appUser.getHeadIcon())){
+                Picasso.with(activity).load(AppConfig.appUser.getHeadIcon()).into(mIvChatAskicon);
+            }
             mTvChatDate.setText(mData.date);
             mCvChatAsk.removeAllViews();
             if (mData.messageType != null){

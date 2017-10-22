@@ -12,4 +12,11 @@ public class SysMessagePresenter extends BasePresenter{
     public SysMessagePresenter(BaseActivity activity) {
         super(activity);
     }
+
+    /**
+     * 获取系统消息列表
+     */
+    public void getSysMessageList(){
+
+    }
 }

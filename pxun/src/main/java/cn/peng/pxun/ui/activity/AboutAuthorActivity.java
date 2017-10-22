@@ -1,5 +1,6 @@
 package cn.peng.pxun.ui.activity;
 
+import android.content.Intent;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +22,8 @@ public class AboutAuthorActivity extends BaseActivity {
     ImageView mIvAutherWx;
     @BindView(R.id.iv_auther_zfb)
     ImageView mIvAutherZfb;
+    @BindView(R.id.tv_author_blog)
+    TextView mTvAutherBlog;
 
     @Override
     public int setLayoutRes() {
@@ -46,6 +49,14 @@ public class AboutAuthorActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        mTvAutherBlog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AboutAuthorActivity.this, WebActivity.class);
+                intent.putExtra("url", mTvAutherBlog.getText().toString());
+                startActivity(intent);
             }
         });
         mIvAutherWx.setOnLongClickListener(new View.OnLongClickListener() {

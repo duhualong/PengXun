@@ -1,18 +1,22 @@
 package cn.peng.pxun.ui.adapter;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.Group;
 import cn.peng.pxun.modle.bmob.User;
+import cn.peng.pxun.ui.activity.DetailedActivity;
 import cn.peng.pxun.ui.activity.SearchActivity;
 import cn.peng.pxun.ui.adapter.holder.SearchHolder;
 import cn.peng.pxun.utils.ThreadUtils;
@@ -58,15 +62,31 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchHolder>{
     public void onBindViewHolder(SearchHolder holder, int position) {
         if(searchType == SEARCH_USER){
             final User user = userData.get(position);
+            if (!TextUtils.isEmpty(user.getHeadIcon())){
+                Picasso.with(activity).load(user.getHeadIcon()).into(holder.mIvMessageIcon);
+            }
             holder.mTvMessageName.setText(user.getUsername());
             holder.mTvMessageSignature.setText(user.getSignaTure());
+            holder.mIvMessageIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(activity, DetailedActivity.class);
+                    if (AppConfig.getUserId(user).equals(AppConfig.getUserId(AppConfig.appUser))){
+                        intent.putExtra("isMe",true);
+                    } else {
+                        intent.putExtra("isMe",false);
+                    }
+                    intent.putExtra("accountNumber",AppConfig.getUserId(user));
+                    activity.startActivity(intent);
+                }
+            });
             holder.mIvAddContact.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ThreadUtils.runOnSubThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (user.getMobilePhoneNumber().equals(MyApplication.sp.getString("phone",""))){
+                            if (AppConfig.getUserId(user).equals(AppConfig.getUserId(AppConfig.appUser))){
                                 ToastUtil.showToast(activity, "无法添加自己为好友");
                                 return;
                             }

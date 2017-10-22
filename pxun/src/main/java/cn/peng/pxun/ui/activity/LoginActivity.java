@@ -1,9 +1,7 @@
 package cn.peng.pxun.ui.activity;
 
-import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -73,7 +71,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
                 User user = new User();
                 user.setThirdPartyID(data.get("uid"));
                 user.setUsername(data.get("screen_name"));
-                user.setPassword(MD5Util.encode("pxun123456"));
+                user.setPassword(MD5Util.encode(data.get("uid")));
                 user.setHeadIcon(data.get("profile_image_url"));
                 user.setSex(data.get("gender"));
 
@@ -244,6 +242,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
                         .setConfirmText("确定")
                         .changeAlertType(SweetAlertDialog.ERROR_TYPE);
                 break;
+            case AppConfig.SERVER_ERROR:
+                loadingDialog.setTitleText("登录失败")
+                        .setContentText("服务器异常,请稍后重试!")
+                        .setConfirmText("确定")
+                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                break;
             case AppConfig.ERROR:
                 loadingDialog.setTitleText("登录失败");
                 if(huanXinCode == 202){
@@ -274,20 +278,20 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
 //        permissionItems.add(new PermissionItem(Manifest.permission.WRITE_EXTERNAL_STORAGE, "写入存储卡", R.drawable.permission_ic_storage ));
 //        permissionItems.add(new PermissionItem(Manifest.permission.READ_PHONE_STATE, "手机状态", R.drawable.permission_ic_phone));
 
-        if(Build.VERSION.SDK_INT>=23){
-            String[] mPermissionList = new String[]{
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.CALL_PHONE,
-                    Manifest.permission.READ_LOGS,
-                    Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.SET_DEBUG_APP,
-                    Manifest.permission.SYSTEM_ALERT_WINDOW,
-                    Manifest.permission.GET_ACCOUNTS,
-                    Manifest.permission.WRITE_APN_SETTINGS};
-            ActivityCompat.requestPermissions(this,mPermissionList,123);
-        }
+//        if(Build.VERSION.SDK_INT>=23){
+//            String[] mPermissionList = new String[]{
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                    Manifest.permission.ACCESS_FINE_LOCATION,
+//                    Manifest.permission.CALL_PHONE,
+//                    Manifest.permission.READ_LOGS,
+//                    Manifest.permission.READ_PHONE_STATE,
+//                    Manifest.permission.READ_EXTERNAL_STORAGE,
+//                    Manifest.permission.SET_DEBUG_APP,
+//                    Manifest.permission.SYSTEM_ALERT_WINDOW,
+//                    Manifest.permission.GET_ACCOUNTS,
+//                    Manifest.permission.WRITE_APN_SETTINGS};
+//            ActivityCompat.requestPermissions(this,mPermissionList,123);
+//        }
         HiPermission.create(mActivity)
             .checkMutiPermission(new PermissionCallback() {
                 @Override

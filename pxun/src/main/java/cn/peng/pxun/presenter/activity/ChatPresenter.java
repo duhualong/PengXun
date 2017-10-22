@@ -108,7 +108,7 @@ public class ChatPresenter extends BasePresenter{
                     msg.isTuring = true;
                     msg.message = "对不起,你的话太深奥了!";
                     msg.fromUserID = "tuling";
-                    msg.toUserID = MyApplication.sp.getString("phone","");
+                    msg.toUserID = AppConfig.getUserId(AppConfig.appUser);
                     msg.messageType = Message.TEXT_TYPE;
 
                     mActivity.addDataAndRefreshUi(msg,false);
@@ -124,7 +124,7 @@ public class ChatPresenter extends BasePresenter{
                     msg.isTuring = true;
                     msg.message = turing.text;
                     msg.fromUserID = "tuling";
-                    msg.toUserID = MyApplication.sp.getString("phone","");
+                    msg.toUserID = AppConfig.getUserId(AppConfig.appUser);
                     if (turing.code == 200000){
                         msg.messageType = Message.PIC_TYPE;
                         msg.picURL = getPicURL();
@@ -147,10 +147,10 @@ public class ChatPresenter extends BasePresenter{
         QueryBuilder queryBuilder = messageDao.queryBuilder();
         List<Message> list = queryBuilder.where(queryBuilder
                 .or(queryBuilder
-                        .and(MessageDao.Properties.FromUserID.eq(MyApplication.sp.getString("phone", "")),
+                        .and(MessageDao.Properties.FromUserID.eq(AppConfig.getUserId(AppConfig.appUser)),
                                 MessageDao.Properties.ToUserID.eq("tuling")), queryBuilder
                         .and(MessageDao.Properties.FromUserID.eq("tuling"),
-                                MessageDao.Properties.ToUserID.eq(MyApplication.sp.getString("phone", "")))))
+                                MessageDao.Properties.ToUserID.eq(AppConfig.getUserId(AppConfig.appUser)))))
                 .list();
         return list;
     }

@@ -49,7 +49,7 @@ public class LoginPresenter extends BasePresenter{
             public void done(List<User> list, BmobException e) {
                 if (e == null){
                     if(list != null && list.size() > 0){
-                        loginHuanXin(user.getThirdPartyID(), MD5Util.encode("pxun123456"));
+                        loginHuanXin(user.getThirdPartyID(), user.getThirdPartyID());
                     }else{
                         regiestUser(user);
                     }
@@ -66,30 +66,29 @@ public class LoginPresenter extends BasePresenter{
      * @param user
      */
     private void regiestUser(final User user){
-        ThreadUtils.runOnSubThread(new Runnable() {
+        user.signUp(new SaveListener<User>() {
             @Override
-            public void run() {
-                try {
-                    EMClient.getInstance().createAccount(user.getThirdPartyID(), MD5Util.encode("pxun123456"));
-                    //注册成功
-                    user.signUp(new SaveListener<User>() {
+            public void done(final User user, BmobException e) {
+                if (e == null){
+                    ThreadUtils.runOnSubThread(new Runnable() {
                         @Override
-                        public void done(final User user, BmobException e) {
-                            if (e == null){
-                                loginHuanXin(user.getThirdPartyID(), MD5Util.encode("pxun123456"));
-                            }else {
-                                setResult(AppConfig.SERVER_ERROR, 500);
+                        public void run() {
+                            try {
+                                EMClient.getInstance().createAccount(user.getThirdPartyID(), MD5Util.encode(user.getThirdPartyID()));
+                                //注册成功
+                                loginHuanXin(user.getThirdPartyID(), user.getThirdPartyID());
+                            } catch (HyphenateException e1) {
+                                e1.printStackTrace();
+                                setResult(AppConfig.ERROR, e1.getErrorCode());
                             }
                         }
                     });
-                } catch (HyphenateException e1) {
-                    e1.printStackTrace();
+                }else {
                     user.delete();
-                    setResult(AppConfig.ERROR, e1.getErrorCode());
+                    setResult(AppConfig.SERVER_ERROR, e.getErrorCode());
                 }
             }
         });
-
     }
 
     /**
@@ -106,15 +105,21 @@ public class LoginPresenter extends BasePresenter{
 
         this.phone = phone;
         this.password = password;
+        this.isThirdPartyLogin = false;
 
-        //登录环信服务器、
         loginHuanXin(phone, password);
     }
 
-    private void loginHuanXin(String accountNumber, String password) {
+    /**
+     * 登录环信服务器
+     * @param accountNumber
+     * @param password
+     */
+    private void loginHuanXin(final String accountNumber, String password) {
         EMClient.getInstance().login(accountNumber, MD5Util.encode(password),new EMCallBack() {
             @Override
             public void onSuccess() {
+                keepUserId(accountNumber);
                 EMClient.getInstance().groupManager().loadAllGroups();
                 EMClient.getInstance().chatManager().loadAllConversations();
                 setResult(AppConfig.SUCCESS, 200);
@@ -147,6 +152,17 @@ public class LoginPresenter extends BasePresenter{
     }
 
     /**
+     * 保存当前登录用户的用户ID
+     * @param userId
+     */
+    private void keepUserId(String userId){
+        SharedPreferences.Editor editor = MyApplication.sp.edit();
+        editor.putString("userId",userId);
+        editor.putBoolean("isLogin",true);
+        editor.commit();
+    }
+
+    /**
      * 保存用户的登录信息
      * @param isRememberPassword
      */
@@ -155,7 +171,6 @@ public class LoginPresenter extends BasePresenter{
             SharedPreferences.Editor editor = MyApplication.sp.edit();
             editor.putString("phone",phone);
             editor.putBoolean("isRemember",isRememberPassword);
-            editor.putBoolean("isLogin",true);
             if (isRememberPassword){
                 editor.putString("password",password);
             }else {
@@ -163,14 +178,6 @@ public class LoginPresenter extends BasePresenter{
             }
             editor.commit();
         }
-    }
-
-    /**
-     * 获取已登录用户的账号
-     * @return
-     */
-    public static String getKeepUserPhone(){
-        return MyApplication.sp.getString("phone","");
     }
 
 }

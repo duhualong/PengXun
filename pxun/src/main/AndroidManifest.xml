@@ -160,6 +160,8 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity android:name=".ui.activity.SysMessageActivity">
         </activity>
+        <activity android:name=".ui.activity.WebActivity">
+        </activity>
     </application>
 
 </manifest>

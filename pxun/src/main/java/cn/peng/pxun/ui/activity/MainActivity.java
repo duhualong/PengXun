@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +19,6 @@ import android.widget.TextView;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
-import com.turing.androidsdk.InitListener;
-import com.turing.androidsdk.SDKInit;
-import com.turing.androidsdk.SDKInitBuilder;
 import com.yalantis.guillotine.animation.GuillotineAnimation;
 
 import java.util.Timer;
@@ -31,8 +27,7 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
-import cn.peng.pxun.modle.AppConfig;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.activity.MainPresenter;
 import cn.peng.pxun.ui.adapter.MenuAdapter;
 import cn.peng.pxun.ui.fragment.FindFragment;
 import cn.peng.pxun.ui.fragment.MainFragment;
@@ -40,7 +35,7 @@ import cn.peng.pxun.ui.fragment.MineFragment;
 import cn.peng.pxun.utils.ThreadUtils;
 import cn.peng.pxun.utils.ToastUtil;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity<MainPresenter> {
     @BindView(R.id.fl_root)
     FrameLayout mFlRoot;
     @BindView(R.id.tv_toolbar_title)
@@ -88,28 +83,16 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    public BasePresenter initPresenter() {
-        return null;
+    public MainPresenter initPresenter() {
+        return new MainPresenter(this);
     }
 
     @Override
     protected void init() {
         super.init();
 
-        SDKInitBuilder builder = new SDKInitBuilder(this).setSecret("77bd9b637dd3aff6").
-                setTuringKey(AppConfig.TURING_APP_KEY).setUniqueId("1136313078");
-        SDKInit.init(builder, new InitListener() {
-            @Override
-            public void onComplete() {
-                AppConfig.isInitTuring = true;
-                Log.i("ChatActivity","图灵机器人初始化成功");
-            }
-            @Override
-            public void onFail(String s) {
-                AppConfig.isInitTuring = false;
-                Log.i("ChatActivity","图灵机器人初始化失败");
-            }
-        });
+        presenter.setAppUser();
+        presenter.initTuLing();
     }
 
     @Override

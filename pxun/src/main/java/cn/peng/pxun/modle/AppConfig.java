@@ -1,6 +1,9 @@
 package cn.peng.pxun.modle;
 
+import android.text.TextUtils;
+
 import cn.peng.pxun.R;
+import cn.peng.pxun.modle.bmob.User;
 
 /**
  * 保存常量字符串的类
@@ -8,6 +11,8 @@ import cn.peng.pxun.R;
 public class AppConfig {
     /** 图林机器人是否初始化成功 */
     public static boolean isInitTuring;
+    /** 当前登录用户 */
+    public static User appUser;
 
     /** 是否是调试模式，用于显示log */
     public static final boolean DEBUG_ENABLE = true;
@@ -84,4 +89,20 @@ public class AppConfig {
         "http://p0.so.qhimg.com/bdr/1080__/t0121c248a899ad2530.jpg",
         "http://p2.so.qhimg.com/bdr/1080__/t01fb3e43c8cd9ee917.jpg",
     };
+
+    /**
+     * 获取当前登录用户的注册Id
+     * @return
+     */
+    public static String getUserId(User user){
+        if (user != null){
+            if (!TextUtils.isEmpty(user.getThirdPartyID())){
+                return user.getThirdPartyID();
+            } else {
+                return user.getMobilePhoneNumber();
+            }
+        }else{
+            return "pxun";
+        }
+    }
 }

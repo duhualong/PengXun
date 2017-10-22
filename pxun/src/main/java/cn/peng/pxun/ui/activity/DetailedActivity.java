@@ -1,17 +1,25 @@
 package cn.peng.pxun.ui.activity;
 
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import butterknife.BindView;
+import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.modle.AppConfig;
+import cn.peng.pxun.modle.bmob.User;
+import cn.peng.pxun.presenter.activity.DetailedPresenter;
 import cn.peng.pxun.utils.ToastUtil;
 
-public class DetailedActivity extends BaseActivity {
+public class DetailedActivity extends BaseActivity<DetailedPresenter> {
+    @BindView(R.id.iv_userinfo_bg)
+    ImageView mIvUserinfoBg;
     @BindView(R.id.iv_userinfo_icon)
     ImageView mIvUserinfoIcon;
     @BindView(R.id.tv_userinfo_id)
@@ -25,14 +33,15 @@ public class DetailedActivity extends BaseActivity {
     @BindView(R.id.bt_userinfo)
     Button mBtUserinfo;
     private boolean isMe;
-    private String username;
+    private String accountNumber;
+    private User mUser;
 
     @Override
     protected void init() {
         super.init();
         Intent intent = getIntent();
         isMe = intent.getBooleanExtra("isMe",false);
-        username = intent.getStringExtra("username");
+        accountNumber = intent.getStringExtra("accountNumber");
     }
 
     @Override
@@ -41,20 +50,25 @@ public class DetailedActivity extends BaseActivity {
     }
 
     @Override
-    public BasePresenter initPresenter() {
-        return null;
+    public DetailedPresenter initPresenter() {
+        return new DetailedPresenter(this);
     }
 
     @Override
     protected void initView() {
         super.initView();
-        mTvUserinfoId.setText(username);
-        mTvUserinfoSex.setText("男");
-        mTvUserinfoBirthday.setText("1999年9月9日");
-        mTvUserinfoAddress.setText("山西省忻州市原平市");
+        showLoadingDialog("加载中");
+
         if (isMe){
+            if (AppConfig.appUser != null){
+                setUserInfo(AppConfig.appUser);
+            } else {
+                accountNumber = MyApplication.sp.getString("userId","");
+                presenter.getUserInfo(accountNumber);
+            }
             mBtUserinfo.setText("修改资料卡");
         }else{
+            presenter.getUserInfo(accountNumber);
             mBtUserinfo.setText("发送消息");
         }
     }
@@ -64,13 +78,9 @@ public class DetailedActivity extends BaseActivity {
         mIvUserinfoIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isMe){
-
-                }else{
-                    Intent intent = new Intent(DetailedActivity.this, BigPicActivity.class);
-                    intent.putExtra("url", "111");
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(DetailedActivity.this, BigPicActivity.class);
+                intent.putExtra("url", mUser.getHeadIcon());
+                startActivity(intent);
             }
         });
         mBtUserinfo.setOnClickListener(new View.OnClickListener() {
@@ -83,5 +93,31 @@ public class DetailedActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    /**
+     * 设置用户信息到界面
+     * @param user
+     */
+    public void setUserInfo(User user) {
+        loadingDialog.cancel();
+        if (user != null){
+            if (isMe && AppConfig.appUser == null){
+                AppConfig.appUser = user;
+            }
+            this.mUser = user;
+            if (!TextUtils.isEmpty(user.getInfoBackGround())){
+                Picasso.with(this).load(user.getInfoBackGround()).into(mIvUserinfoBg);
+            }
+            if (!TextUtils.isEmpty(user.getHeadIcon())){
+                Picasso.with(this).load(user.getHeadIcon()).into(mIvUserinfoIcon);
+            }
+            mTvUserinfoId.setText(user.getUsername());
+            mTvUserinfoSex.setText(user.getSex());
+            mTvUserinfoBirthday.setText(user.getBirthday());
+            mTvUserinfoAddress.setText(user.getAddress());
+        }else{
+            ToastUtil.showToast(this,"用户信息加载失败");
+        }
     }
 }

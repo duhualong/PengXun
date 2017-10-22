@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.greendao.Message;
@@ -220,7 +219,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                 Message msg = new Message();
                 msg.date = presenter.getDate(System.currentTimeMillis());
                 msg.message = spellMsg;
-                msg.fromUserID = MyApplication.sp.getString("phone", "");
+                msg.fromUserID = AppConfig.getUserId(AppConfig.appUser);
                 msg.messageType = Message.TEXT_TYPE;
                 if ("智能小白".equals(toChatUserName)) {
                     if (AppConfig.isInitTuring){
@@ -451,7 +450,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                     Message msg = new Message();
                     msg.date = presenter.getDate(System.currentTimeMillis());
                     msg.message = speechMsg;
-                    msg.fromUserID = MyApplication.sp.getString("phone", "");
+                    msg.fromUserID = AppConfig.getUserId(AppConfig.appUser);
                     msg.messageType = Message.TEXT_TYPE;
 
                     if ("智能小白".equals(toChatUserName)) {
