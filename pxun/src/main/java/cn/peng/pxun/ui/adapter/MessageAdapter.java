@@ -47,7 +47,11 @@ public class MessageAdapter extends SuperBaseApapter {
 
         @Override
         public void bindView() {
-            mIvMessageIcon.setImageResource(AppConfig.icons[new Random().nextInt(AppConfig.icons.length)]);
+            if ("系统消息".equals(mData.userName)){
+                mIvMessageIcon.setImageResource(R.drawable.icon_sys_message);
+            }else{
+                mIvMessageIcon.setImageResource(AppConfig.icons[new Random().nextInt(AppConfig.icons.length)]);
+            }
             mTvMessageName.setText(mData.userName);
             mTvMessageSignature.setText(mData.lastMsg);
         }

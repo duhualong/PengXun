@@ -22,12 +22,12 @@ import cn.peng.pxun.utils.ToastUtil;
  */
 public class FeedbackActivity extends BaseActivity {
 
-    @BindView(R.id.iv_chat_goback)
-    ImageView mIvChatGoback;
-    @BindView(R.id.tv_chat_title)
-    TextView mTvChatTitle;
-    @BindView(R.id.chat_toolbar)
-    Toolbar mChatToolbar;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.iv_goback)
+    ImageView mIvGoback;
+    @BindView(R.id.tv_title)
+    TextView mTvTitle;
     @BindView(R.id.et_feedback)
     EditText mEtFeedback;
     @BindView(R.id.bt_feedback_submit)
@@ -46,14 +46,14 @@ public class FeedbackActivity extends BaseActivity {
     @Override
     protected void initView() {
         super.initView();
-        setSupportActionBar(mChatToolbar);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mTvChatTitle.setText("意见反馈");
+        mTvTitle.setText("意见反馈");
     }
 
     @Override
     protected void initListener() {
-        mIvChatGoback.setOnClickListener(new View.OnClickListener() {
+        mIvGoback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

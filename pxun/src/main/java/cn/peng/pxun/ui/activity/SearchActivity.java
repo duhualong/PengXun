@@ -27,7 +27,6 @@ public class SearchActivity extends BaseActivity<SearchPresenter> {
     public static final int SEARCH_USER = 1000;
     public static final int SEARCH_GROUP = 1001;
 
-
     @BindView(R.id.et_search_content)
     EditText mEtSearchContent;
     @BindView(R.id.tv_search_cancel)
@@ -59,7 +58,7 @@ public class SearchActivity extends BaseActivity<SearchPresenter> {
     protected void initView() {
         super.initView();
         mSearchRecycle.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new SearchAdapter(this);
+        adapter = new SearchAdapter(this, presenter);
         mSearchRecycle.setAdapter(adapter);
     }
 

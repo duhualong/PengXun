@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
-           android:id="@+id/toolbar"
+           android:id="@+id/main_toolbar"
            app:contentInsetStart="0dp"
            android:layout_height="?attr/actionBarSize"
            android:layout_width="match_parent"

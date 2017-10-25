@@ -1,7 +1,5 @@
 package cn.peng.pxun.modle;
 
-import android.text.TextUtils;
-
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.bmob.User;
 
@@ -96,7 +94,7 @@ public class AppConfig {
      */
     public static String getUserId(User user){
         if (user != null){
-            if (!TextUtils.isEmpty(user.getThirdPartyID())){
+            if ("QQ".equals(user.getLoginType()) || "SINA".equals(user.getLoginType())){
                 return user.getThirdPartyID();
             } else {
                 return user.getMobilePhoneNumber();

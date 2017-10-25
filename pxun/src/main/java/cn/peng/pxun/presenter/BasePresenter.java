@@ -11,6 +11,8 @@ import java.util.regex.PatternSyntaxException;
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.fragment.BaseFragment;
 import cn.peng.pxun.utils.NetworkUtil;
+import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.ToastUtil;
 
 /**
  * presenter的基类
@@ -61,5 +63,20 @@ public abstract class BasePresenter {
         Pattern p = Pattern.compile(regExp);
         Matcher m = p.matcher(str);
         return m.matches();
+    }
+
+    /**
+     * 在主线程弹出吐司框
+     * @param activity
+     * @param text
+     * @return
+     */
+    public void showToast(final BaseActivity activity, final String text){
+        ThreadUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtil.showToast(activity, text);
+            }
+        });
     }
 }

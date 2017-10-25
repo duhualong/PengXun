@@ -36,12 +36,13 @@ import cn.peng.pxun.utils.ThreadUtils;
 import cn.peng.pxun.utils.ToastUtil;
 
 public class MainActivity extends BaseActivity<MainPresenter> {
+
+    @BindView(R.id.main_toolbar)
+    Toolbar mToolbar;
     @BindView(R.id.fl_root)
     FrameLayout mFlRoot;
     @BindView(R.id.tv_toolbar_title)
     public TextView mTvToolbarTitle;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
     @BindView(R.id.fl_main)
     FrameLayout mFlMain;
     @BindView(R.id.iv_menu)

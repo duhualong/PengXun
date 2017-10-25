@@ -17,6 +17,10 @@ import android.widget.TextView;
 
 import cn.peng.pxun.R;
 
+/**
+ * 下拉刷新的ListView
+ * @author Peng
+ */
 public class SuperListView extends ListView {
     /** 下拉刷新的头部View */
     private View headerView;

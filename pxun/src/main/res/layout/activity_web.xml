@@ -1,16 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/web_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cn.peng.pxun.ui.activity.WebActivity">
+    android:orientation="vertical">
 
-    <include layout="@layout/app_toolbar"/>
-
-    <WebView
-        android:id="@+id/webview"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/web_toolbar"
+        android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:background="@color/chatColor">
+
+        <ImageView
+            android:id="@+id/iv_web_goback"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/goback" />
+
+        <TextView
+            android:id="@+id/tv_web_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:layout_gravity="center"/>
+
+    </android.support.v7.widget.Toolbar>
+
 
 </LinearLayout>

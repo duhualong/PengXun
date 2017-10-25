@@ -11,12 +11,13 @@ import cn.peng.pxun.presenter.BasePresenter;
 
 public class SettingActivity extends BaseActivity {
 
-    @BindView(R.id.iv_chat_goback)
-    ImageView mIvChatGoback;
-    @BindView(R.id.tv_chat_title)
-    TextView mTvChatTitle;
-    @BindView(R.id.chat_toolbar)
-    Toolbar mChatToolbar;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.iv_goback)
+    ImageView mIvGoback;
+    @BindView(R.id.tv_title)
+    TextView mTvTitle;
+
 
     @Override
     public int setLayoutRes() {
@@ -31,14 +32,14 @@ public class SettingActivity extends BaseActivity {
     @Override
     protected void initView() {
         super.initView();
-        setSupportActionBar(mChatToolbar);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mTvChatTitle.setText("设置");
+        mTvTitle.setText("设置");
     }
 
     @Override
     protected void initListener() {
-        mIvChatGoback.setOnClickListener(new View.OnClickListener() {
+        mIvGoback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

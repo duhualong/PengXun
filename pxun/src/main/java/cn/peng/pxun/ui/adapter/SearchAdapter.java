@@ -16,6 +16,7 @@ import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.Group;
 import cn.peng.pxun.modle.bmob.User;
+import cn.peng.pxun.presenter.activity.SearchPresenter;
 import cn.peng.pxun.ui.activity.DetailedActivity;
 import cn.peng.pxun.ui.activity.SearchActivity;
 import cn.peng.pxun.ui.adapter.holder.SearchHolder;
@@ -31,13 +32,14 @@ import static cn.peng.pxun.ui.activity.SearchActivity.SEARCH_USER;
 public class SearchAdapter extends RecyclerView.Adapter<SearchHolder>{
 
     private SearchActivity activity;
+    private SearchPresenter presenter;
     private List<User> userData;
     private List<Group> groupData;
     private int searchType;
 
-    public SearchAdapter(SearchActivity activity){
+    public SearchAdapter(SearchActivity activity, SearchPresenter presenter){
         this.activity = activity;
-
+        this.presenter = presenter;
     }
 
     public void setUserData(List<User> data){
@@ -83,32 +85,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchHolder>{
             holder.mIvAddContact.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ThreadUtils.runOnSubThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (AppConfig.getUserId(user).equals(AppConfig.getUserId(AppConfig.appUser))){
-                                ToastUtil.showToast(activity, "无法添加自己为好友");
-                                return;
-                            }
-                            try {
-                                EMClient.getInstance().contactManager().addContact(user.getMobilePhoneNumber(), "希望加你为好友,请同意!");
-                                ThreadUtils.runOnMainThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ToastUtil.showToast(activity, "请求发送成功");
-                                    }
-                                });
-                            } catch (HyphenateException e) {
-                                e.printStackTrace();
-                                ThreadUtils.runOnMainThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ToastUtil.showToast(activity, "没有找到改用户");
-                                    }
-                                });
-                            }
-                        }
-                    });
+                    presenter.addContact(user);
                 }
             });
         }else if (searchType == SEARCH_GROUP){

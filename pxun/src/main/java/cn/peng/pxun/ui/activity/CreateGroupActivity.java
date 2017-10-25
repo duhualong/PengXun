@@ -27,12 +27,12 @@ import cn.peng.pxun.utils.ToastUtil;
  */
 public class CreateGroupActivity extends BaseActivity<CreateGroupPresenter> {
 
-    @BindView(R.id.iv_chat_goback)
-    ImageView mIvChatGoback;
-    @BindView(R.id.tv_chat_title)
-    TextView mTvChatTitle;
-    @BindView(R.id.chat_toolbar)
-    Toolbar mChatToolbar;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.iv_goback)
+    ImageView mIvGoback;
+    @BindView(R.id.tv_title)
+    TextView mTvTitle;
     @BindView(R.id.iv_group_icon)
     ImageView mIvGroupIcon;
     @BindView(R.id.et_group_name)
@@ -57,9 +57,9 @@ public class CreateGroupActivity extends BaseActivity<CreateGroupPresenter> {
     @Override
     protected void initView() {
         super.initView();
-        setSupportActionBar(mChatToolbar);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mTvChatTitle.setText("创建聊天群");
+        mTvTitle.setText("创建聊天群");
 
         List<String> spData = new ArrayList<>();
         spData.add("公开群");
@@ -72,6 +72,12 @@ public class CreateGroupActivity extends BaseActivity<CreateGroupPresenter> {
 
     @Override
     protected void initListener() {
+        mIvGoback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         mBtGroupCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,12 +102,6 @@ public class CreateGroupActivity extends BaseActivity<CreateGroupPresenter> {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
-        mIvChatGoback.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
             }
         });
     }
