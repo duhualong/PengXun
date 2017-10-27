@@ -49,6 +49,8 @@ public class MessageAdapter extends SuperBaseApapter {
         public void bindView() {
             if ("系统消息".equals(mData.userName)){
                 mIvMessageIcon.setImageResource(R.drawable.icon_sys_message);
+            }else if ("智能小白".equals(mData.userName)){
+                mIvMessageIcon.setImageResource(R.drawable.head6);
             }else{
                 mIvMessageIcon.setImageResource(AppConfig.icons[new Random().nextInt(AppConfig.icons.length)]);
             }

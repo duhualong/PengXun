@@ -7,16 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.peng.pxun.presenter.BasePresenter;
-import cn.peng.pxun.ui.fragment.ContactFragment;
+import cn.peng.pxun.ui.fragment.FriendFragment;
 import cn.peng.pxun.utils.ThreadUtils;
 
 /**
  * Created by msi on 2016/12/26.
  */
-public class ContactPresenter extends BasePresenter {
-    private ContactFragment mFragment;
+public class FriendPresenter extends BasePresenter {
+    private FriendFragment mFragment;
 
-    public ContactPresenter(ContactFragment fragment) {
+    public FriendPresenter(FriendFragment fragment) {
         super(fragment);
         mFragment = fragment;
     }
@@ -30,7 +30,6 @@ public class ContactPresenter extends BasePresenter {
             public void run() {
                 try {
                     List<String> usernames = new ArrayList();
-                    usernames.add("智能小白");
                     usernames.addAll(EMClient.getInstance().contactManager().getAllContactsFromServer());
                     mFragment.refreshContact(usernames);
                 } catch (HyphenateException e) {

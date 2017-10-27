@@ -11,13 +11,13 @@ import cn.peng.pxun.ui.fragment.BaseFragment;
 /**
  * Created by msi on 2016/12/21.
  */
-public class MainAdapter extends FragmentPagerAdapter {
+public class HomeAdapter extends FragmentPagerAdapter {
     List<BaseFragment> list;
     private String[] tabs = {
-            "消息","联系人","群组"
+            "用户","推荐","电影"
     };
 
-    public MainAdapter(FragmentManager fm, List<BaseFragment> fragmentList) {
+    public HomeAdapter(FragmentManager fm, List<BaseFragment> fragmentList) {
         super(fm);
         list = fragmentList;
     }

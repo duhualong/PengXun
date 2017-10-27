@@ -1,28 +1,54 @@
 package cn.peng.pxun.ui.fragment;
 
-import android.graphics.Color;
-import android.view.Gravity;
+import android.content.Intent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import cn.peng.pxun.R;
 import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.ui.activity.SearchActivity;
 
 /**
  * Created by msi on 2016/12/21.
  */
-public class FindFragment extends BaseFragment{
+public class FindFragment extends BaseFragment {
+
+    @BindView(R.id.tv_title_text)
+    TextView mTvTitleText;
+    @BindView(R.id.iv_title_search)
+    ImageView mIvTitleSearch;
+
+
     @Override
     public View initView() {
-        TextView tv =  new TextView(mActivity);
-        tv.setGravity(Gravity.CENTER);
-        tv.setTextSize(24);
-        tv.setTextColor(Color.BLACK);
-        tv.setText("发现");
-        return tv;
+        View view = View.inflate(mActivity, R.layout.fragment_find, null);
+
+        return view;
     }
 
     @Override
     protected BasePresenter initPresenter() {
         return null;
+    }
+
+    @Override
+    public void initData() {
+        mTvTitleText.setText("发现");
+        mIvTitleSearch.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void initListener() {
+        mIvTitleSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mActivity, SearchActivity.class);
+                intent.putExtra("searchType", SearchActivity.SEARCH_USER);
+                startActivity(intent);
+            }
+        });
+
     }
 }

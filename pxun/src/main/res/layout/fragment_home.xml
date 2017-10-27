@@ -6,10 +6,13 @@
 
     <include layout="@layout/app_titilebar"/>
 
-    <cn.peng.pxun.ui.view.SuperListView
-        android:id="@+id/lv_message"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_fragment_home"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:listSelector="@android:color/transparent"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="75dp"/>
 </LinearLayout>

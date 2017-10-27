@@ -37,7 +37,8 @@ public class MessagePresenter extends BasePresenter{
                 SystemClock.sleep(1000);
                 Map<String, EMConversation> conversationMap = EMClient.getInstance().chatManager().getAllConversations();
                 ArrayList<ConversationBean> conversations = new ArrayList<>();
-                conversations.add(new ConversationBean("10000","系统消息"));
+                conversations.add(new ConversationBean("10000","系统消息", false));
+                conversations.add(new ConversationBean("tuling","智能小白", false));
                 if (conversationMap != null && conversationMap.size() > 0) {
                     ArrayList<EMConversation> emConversations = new ArrayList<EMConversation>();
                     emConversations.addAll(conversationMap.values());

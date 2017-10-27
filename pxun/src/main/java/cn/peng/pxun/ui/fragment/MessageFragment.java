@@ -3,6 +3,8 @@ package cn.peng.pxun.ui.fragment;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ import cn.peng.pxun.R;
 import cn.peng.pxun.modle.bean.ConversationBean;
 import cn.peng.pxun.presenter.fragment.MessagePresenter;
 import cn.peng.pxun.ui.activity.ChatActivity;
+import cn.peng.pxun.ui.activity.ContactActivity;
 import cn.peng.pxun.ui.activity.SysMessageActivity;
 import cn.peng.pxun.ui.adapter.MessageAdapter;
 import cn.peng.pxun.ui.view.SuperListView;
@@ -22,6 +25,10 @@ import cn.peng.pxun.utils.ThreadUtils;
  */
 public class MessageFragment extends BaseFragment<MessagePresenter> {
 
+    @BindView(R.id.tv_title_text)
+    TextView mTvTitleText;
+    @BindView(R.id.iv_title_friend)
+    ImageView mIvTitleFriend;
     @BindView(R.id.lv_message)
     SuperListView mLvMessage;
 
@@ -49,19 +56,28 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
 
     @Override
     public void initData() {
+        mTvTitleText.setText("消息");
+        mIvTitleFriend.setVisibility(View.VISIBLE);
         mAdapter = new MessageAdapter(messageList);
         mLvMessage.setAdapter(mAdapter);
     }
 
     @Override
     public void initListener() {
+        mIvTitleFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mActivity, ContactActivity.class);
+                startActivity(intent);
+            }
+        });
         mLvMessage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> view, View view1, final int i, long l) {
                 ConversationBean conversation = messageList.get(i - 1);
 
                 Intent intent = new Intent();
-                if ("10000".equals(conversation.userId)){
+                if ("10000".equals(conversation.userId)) {
                     intent.setClass(mActivity, SysMessageActivity.class);
                 } else {
                     intent.setClass(mActivity, ChatActivity.class);
@@ -78,7 +94,7 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
                 ThreadUtils.runOnSubThread(new Runnable() {
                     @Override
                     public void run() {
-                       presenter.getMessageList();
+                        presenter.getMessageList();
                     }
                 });
             }
@@ -89,7 +105,7 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
         ThreadUtils.runOnMainThread(new Runnable() {
             @Override
             public void run() {
-                if (mLvMessage != null && mAdapter != null ) {
+                if (mLvMessage != null && mAdapter != null) {
                     messageList = messages;
                     mAdapter.setDataSets(messageList);
                     if (mLvMessage.isRefresh()) {
@@ -99,5 +115,4 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
             }
         });
     }
-
 }

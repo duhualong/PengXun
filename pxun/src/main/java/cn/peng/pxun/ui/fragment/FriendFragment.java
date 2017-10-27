@@ -14,9 +14,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
-import cn.peng.pxun.presenter.fragment.ContactPresenter;
+import cn.peng.pxun.presenter.fragment.FriendPresenter;
 import cn.peng.pxun.ui.activity.ChatActivity;
-import cn.peng.pxun.ui.adapter.ContactAdapter;
+import cn.peng.pxun.ui.adapter.FriendAdapter;
 import cn.peng.pxun.ui.view.SuperListView;
 import cn.peng.pxun.utils.ThreadUtils;
 import cn.peng.pxun.utils.ToastUtil;
@@ -24,13 +24,13 @@ import cn.peng.pxun.utils.ToastUtil;
 /**
  * 联系人界面的Fragment
  */
-public class ContactFragment extends BaseFragment<ContactPresenter> {
+public class FriendFragment extends BaseFragment<FriendPresenter> {
 
     @BindView(R.id.lv_contact)
     SuperListView mLvContact;
 
     private List<String> contactList;
-    private ContactAdapter mAdapter;
+    private FriendAdapter mAdapter;
 
 
     @Override
@@ -42,8 +42,8 @@ public class ContactFragment extends BaseFragment<ContactPresenter> {
     }
 
     @Override
-    protected ContactPresenter initPresenter() {
-        return new ContactPresenter(this);
+    protected FriendPresenter initPresenter() {
+        return new FriendPresenter(this);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ContactFragment extends BaseFragment<ContactPresenter> {
     public void initData() {
         contactList = new ArrayList<>();
         contactList.add("智能小白");
-        mAdapter = new ContactAdapter(contactList);
+        mAdapter = new FriendAdapter(contactList);
         mLvContact.setAdapter(mAdapter);
     }
 

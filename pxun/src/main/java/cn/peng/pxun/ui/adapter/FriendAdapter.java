@@ -17,9 +17,9 @@ import cn.peng.pxun.ui.adapter.holder.BaseHolder;
 /**
  * 联系人数据适配器
  */
-public class ContactAdapter extends SuperBaseApapter<String> {
+public class FriendAdapter extends SuperBaseApapter<String> {
 
-    public ContactAdapter(List<String> dataSets) {
+    public FriendAdapter(List<String> dataSets) {
         super(dataSets);
     }
 
@@ -45,11 +45,7 @@ public class ContactAdapter extends SuperBaseApapter<String> {
 
         @Override
         public void bindView() {
-            if ("智能小白".equals(mData)){
-                mIvMessageIcon.setImageResource(R.drawable.head6);
-            }else{
-                mIvMessageIcon.setImageResource(AppConfig.icons[new Random().nextInt(AppConfig.icons.length)]);
-            }
+            mIvMessageIcon.setImageResource(AppConfig.icons[new Random().nextInt(AppConfig.icons.length)]);
             mTvMessageName.setText(mData);
             mTvMessageSignature.setText("");
         }

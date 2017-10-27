@@ -20,15 +20,12 @@ import cn.peng.pxun.utils.ToastUtil;
 public class MineFragment extends BaseFragment<MinePresenter> {
     @BindView(R.id.rl_mine_info)
     RelativeLayout mRlMineInfo;
-    @BindView(R.id.rl_mine_collect)
-    RelativeLayout mRlMineCollect;
-    @BindView(R.id.rl_mine_purse)
-    RelativeLayout mRlMinePurse;
     @BindView(R.id.rl_about_author)
     RelativeLayout mRlAboutAuthor;
     @BindView(R.id.rl_version_info)
     RelativeLayout mRlVersionInfo;
     @BindView(R.id.tv_version_name)
+
     TextView mTvMineVersionname;
     private MainActivity mainActivity;
 
@@ -58,18 +55,6 @@ public class MineFragment extends BaseFragment<MinePresenter> {
                 intent.putExtra("isMe",true);
                 startActivity(intent);
 
-            }
-        });
-        mRlMineCollect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.showToast(mActivity,"即将开启,敬请期待!");
-            }
-        });
-        mRlMinePurse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.showToast(mActivity,"即将开启,敬请期待!");
             }
         });
         mRlAboutAuthor.setOnClickListener(new View.OnClickListener() {

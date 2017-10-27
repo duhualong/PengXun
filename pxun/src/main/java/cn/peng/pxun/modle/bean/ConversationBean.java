@@ -23,8 +23,9 @@ public class ConversationBean {
 
     }
 
-    public ConversationBean(String userId, String userName) {
+    public ConversationBean(String userId, String userName, boolean isGroup) {
         this.userId = userId;
         this.userName = userName;
+        this.isGroup = isGroup;
     }
 }
