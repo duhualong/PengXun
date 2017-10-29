@@ -3,6 +3,7 @@ package cn.peng.pxun.ui.adapter;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -37,7 +38,8 @@ public class SysMessageAdapter extends RecyclerView.Adapter<SysMessageAdapter.Sy
 
     @Override
     public SysMessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = View.inflate(activity, R.layout.item_sys_message, null);
+       // View view = View.inflate(activity, R.layout.item_sys_message, null);
+        View view = LayoutInflater.from(activity).inflate(R.layout.item_sys_message, parent, false);
         return new SysMessageViewHolder(view);
     }
 

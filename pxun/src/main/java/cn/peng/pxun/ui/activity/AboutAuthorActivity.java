@@ -24,6 +24,9 @@ public class AboutAuthorActivity extends BaseActivity {
     ImageView mIvAutherZfb;
     @BindView(R.id.tv_author_blog)
     TextView mTvAutherBlog;
+    @BindView(R.id.tv_author_github)
+    TextView mTvAuthorGithub;
+
 
     @Override
     public int setLayoutRes() {
@@ -51,25 +54,33 @@ public class AboutAuthorActivity extends BaseActivity {
                 finish();
             }
         });
+        mTvAuthorGithub.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AboutAuthorActivity.this, WebActivity.class);
+                intent.putExtra("url", "https://github.com/peng1136313078/");
+                startActivity(intent);
+            }
+        });
         mTvAutherBlog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AboutAuthorActivity.this, WebActivity.class);
-                intent.putExtra("url", mTvAutherBlog.getText().toString());
+                intent.putExtra("url", "http://pengblog.club/");
                 startActivity(intent);
             }
         });
         mIvAutherWx.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ToastUtil.showToast(AboutAuthorActivity.this,"微信");
+                ToastUtil.showToast(AboutAuthorActivity.this, "微信");
                 return true;
             }
         });
         mIvAutherZfb.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ToastUtil.showToast(AboutAuthorActivity.this,"支付宝");
+                ToastUtil.showToast(AboutAuthorActivity.this, "支付宝");
                 return true;
             }
         });

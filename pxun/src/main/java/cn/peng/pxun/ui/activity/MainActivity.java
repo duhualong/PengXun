@@ -14,6 +14,7 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.presenter.activity.MainPresenter;
 import cn.peng.pxun.ui.fragment.FindFragment;
 import cn.peng.pxun.ui.fragment.HomeFragment;
@@ -23,16 +24,6 @@ import cn.peng.pxun.utils.ToastUtil;
 
 public class MainActivity extends BaseActivity<MainPresenter> {
 
-//    @BindView(R.id.fl_root)
-//    FrameLayout mFlRoot;
-//    @BindView(R.id.main_toolbar)
-//    Toolbar mMainToolbar;
-//    @BindView(R.id.iv_menu)
-//    ImageView mIvMenu;
-//    @BindView(R.id.tv_toolbar_title)
-//    TextView mTvToolbarTitle;
-//    @BindView(R.id.iv_search)
-//    ImageView mIvSearch;
     @BindView(R.id.fl_main)
     FrameLayout mFlMain;
     @BindView(R.id.ll_main_home)
@@ -62,9 +53,6 @@ public class MainActivity extends BaseActivity<MainPresenter> {
     @BindView(R.id.iv_main_create)
     ImageView mIvMainCreate;
 
-//    private GuillotineAnimation mMenu;
-//    private ListView mLv_menu;
-//    private Button mBt_loginout;
     private FragmentManager mFm;
     private HomeFragment homeFragment;
     private FindFragment findFragment;
@@ -87,27 +75,14 @@ public class MainActivity extends BaseActivity<MainPresenter> {
         super.init();
 
         presenter.setAppUser();
-        presenter.initTuLing();
+        if (!AppConfig.isInitTuring){
+            presenter.initTuLing();
+        }
     }
 
     @Override
     protected void initView() {
         super.initView();
-
-//        if (mMainToolbar != null) {
-//            setSupportActionBar(mMainToolbar);
-//            getSupportActionBar().setDisplayShowTitleEnabled(false);
-//        }
-//        View menuLayout = LayoutInflater.from(this).inflate(R.layout.menu_main, null);
-//        mFlRoot.addView(menuLayout);
-//        mMenu = new GuillotineAnimation.GuillotineBuilder(menuLayout, menuLayout.findViewById(R.id.iv_menu90), mIvMenu)
-//                .setStartDelay(200)
-//                .setActionBarViewForAnimation(mMainToolbar)
-//                .setClosedOnStart(true)
-//                .build();
-//        mBt_loginout = (Button) menuLayout.findViewById(R.id.bt_loginout);
-//        mLv_menu = (ListView) menuLayout.findViewById(R.id.lv_menu);
-//        mLv_menu.setAdapter(new MenuAdapter());
 
         if (homeFragment == null) {
             homeFragment = new HomeFragment();
@@ -129,7 +104,6 @@ public class MainActivity extends BaseActivity<MainPresenter> {
         ft.commit();
 
         //刷新ActionBar和按钮标签
-        //mTvToolbarTitle.setText("首页");
         refreshTab(mTvMainHome, mIvMainHome, mTvMainFind, mIvMainFind, mTvMainMessage, mIvMainMessage, mTvMainMine, mIvMainMine);
     }
 
@@ -181,105 +155,29 @@ public class MainActivity extends BaseActivity<MainPresenter> {
                 ToastUtil.showToast(mActivity, "新建");
             }
         });
-//        mBt_loginout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                EMClient.getInstance().logout(true, new EMCallBack() {
-//                    @Override
-//                    public void onSuccess() {
-//                        ThreadUtils.runOnMainThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                //清空登录信息
-//                                SharedPreferences.Editor editor = MyApplication.sp.edit();
-//                                editor.putBoolean("isLogin", false);
-//                                editor.commit();
-//                                //返回登录界面
-//                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-//                                startActivity(intent);
-//                                finish();
-//                            }
-//                        });
-//                    }
-//
-//                    @Override
-//                    public void onProgress(int progress, String status) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(int code, String message) {
-//                        ThreadUtils.runOnMainThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                ToastUtil.showToast(MainActivity.this, "注销帐号失败,请稍后重试!");
-//                            }
-//                        });
-//                    }
-//                });
-//            }
-//        });
-//        mLv_menu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent();
-//                switch (position) {
-//                    case 0:
-//                        intent.setClass(MainActivity.this, SearchActivity.class);
-//                        intent.putExtra("searchType", SearchActivity.SEARCH_USER);
-//                        break;
-//                    case 1:
-//                        intent.setClass(MainActivity.this, CreateGroupActivity.class);
-//                        break;
-//                    case 2:
-//                        intent.setClass(MainActivity.this, SearchActivity.class);
-//                        intent.putExtra("searchType", SearchActivity.SEARCH_GROUP);
-//                        break;
-//                    case 3:
-//                        intent.setClass(MainActivity.this, FeedbackActivity.class);
-//                        break;
-//                    case 4:
-//                        intent.setClass(MainActivity.this, SettingActivity.class);
-//                        break;
-//                }
-//                startActivity(intent);
-//            }
-//        });
-//        mIvSearch.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-//                intent.putExtra("searchType", SearchActivity.SEARCH_USER);
-//                startActivity(intent);
-//            }
-//        });
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-//            if (mMenu.isOpen) {
-//                mMenu.close();
-//            } else {
-                Timer tExit = null;
-                if (isExit == false) {
-                    isExit = true; // 准备退出
-                    ToastUtil.showToast(this, "在按一次退出鹏讯");
+            Timer tExit = null;
+            if (isExit == false) {
+                isExit = true; // 准备退出
+                ToastUtil.showToast(this, "在按一次退出鹏讯");
 
-                    tExit = new Timer();
-                    tExit.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            isExit = false; // 取消退出
-                        }
-                    }, 2000); // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
+                tExit = new Timer();
+                tExit.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        isExit = false; // 取消退出
+                    }
+                }, 2000); // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
 
-                } else {
-                    finish();
-                    System.exit(0);
-                }
+            } else {
+                finish();
+                System.exit(0);
             }
-//        }
+        }
         return false;
     }
 

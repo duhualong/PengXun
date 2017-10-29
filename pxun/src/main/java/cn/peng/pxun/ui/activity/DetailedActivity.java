@@ -57,7 +57,7 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
     @Override
     protected void initView() {
         super.initView();
-        showLoadingDialog("加载中");
+        //showLoadingDialog("加载中");
 
         if (isMe){
             if (AppConfig.appUser != null){
@@ -79,7 +79,15 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DetailedActivity.this, BigPicActivity.class);
-                intent.putExtra("url", mUser.getHeadIcon());
+                if (!TextUtils.isEmpty(mUser.getHeadIcon())){
+                    intent.putExtra("url", mUser.getHeadIcon());
+                }else{
+                    if ("tuling".equals(accountNumber)){
+                        intent.putExtra("isTuling", true);
+                    }else{
+                        intent.putExtra("isTuling", false);
+                    }
+                }
                 startActivity(intent);
             }
         });
@@ -100,7 +108,7 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
      * @param user
      */
     public void setUserInfo(User user) {
-        loadingDialog.cancel();
+//        loadingDialog.cancel();
         if (user != null){
             if (isMe && AppConfig.appUser == null){
                 AppConfig.appUser = user;
@@ -111,6 +119,8 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
             }
             if (!TextUtils.isEmpty(user.getHeadIcon())){
                 Picasso.with(this).load(user.getHeadIcon()).into(mIvUserinfoIcon);
+            } else if ("tuling".equals(accountNumber)){
+                mIvUserinfoIcon.setImageResource(R.drawable.icon_tuling);
             }
             mTvUserinfoId.setText(user.getUsername());
             mTvUserinfoSex.setText(user.getSex());

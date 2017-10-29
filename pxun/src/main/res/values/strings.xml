@@ -10,6 +10,9 @@
     <string name="authorBlog">
         <u>http://pengblog.club/</u>
     </string>
+    <string name="authorGithub">
+        <u>https://github.com/</u>
+    </string>
 
     <string name="smoothinputlayout_title">输入面板</string>
     <string name="smoothinputlayout_voice">按住 说话</string>

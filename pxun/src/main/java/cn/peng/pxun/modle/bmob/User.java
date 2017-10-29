@@ -30,6 +30,14 @@ public class User extends BmobUser{
     //所在地
     private String address;
 
+    public User(){
+    }
+
+    public User(String userId, String username){
+        setMobilePhoneNumber(userId);
+        setUsername(username);
+    }
+
     public String getThirdPartyID() {
         return thirdPartyID;
     }

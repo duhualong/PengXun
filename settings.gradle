@@ -1,1 +1,1 @@
-include ':pxun', ':guillotinemenu'
+include ':pxun'

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
+                android:layout_height="60dp"
                 android:background="@color/translucent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="48dp"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:background="@color/white">
@@ -30,8 +30,8 @@
 
                 <ImageView
                     android:id="@+id/iv_main_home"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
                     android:src="@drawable/tab_home_selector"/>
 
                 <TextView
@@ -41,7 +41,7 @@
                     android:gravity="center"
                     android:layout_marginTop="3dp"
                     android:text="首页"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:textColor="@color/tab_text_selector"/>
 
             </LinearLayout>
@@ -55,8 +55,8 @@
 
                 <ImageView
                     android:id="@+id/iv_main_find"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
                     android:src="@drawable/tab_find_selector"/>
 
                 <TextView
@@ -66,7 +66,7 @@
                     android:gravity="center"
                     android:layout_marginTop="3dp"
                     android:text="发现"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:textColor="@color/tab_text_selector"/>
 
             </LinearLayout>
@@ -86,8 +86,8 @@
 
                 <ImageView
                     android:id="@+id/iv_main_message"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
                     android:src="@drawable/tab_message_selector"/>
 
                 <TextView
@@ -97,7 +97,7 @@
                     android:gravity="center"
                     android:layout_marginTop="3dp"
                     android:text="消息"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:textColor="@color/tab_text_selector"/>
 
             </LinearLayout>
@@ -112,8 +112,8 @@
 
                 <ImageView
                     android:id="@+id/iv_main_mine"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
                     android:src="@drawable/tab_mine_selector"/>
 
                 <TextView
@@ -123,7 +123,7 @@
                     android:gravity="center"
                     android:layout_marginTop="3dp"
                     android:text="我的"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:textColor="@color/tab_text_selector"/>
 
             </LinearLayout>
@@ -139,8 +139,8 @@
 
         <ImageView
             android:id="@+id/iv_main_create"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
             android:src="@drawable/tab_icon_create"/>
 
     </LinearLayout>

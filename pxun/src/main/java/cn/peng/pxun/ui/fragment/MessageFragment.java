@@ -11,7 +11,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bean.ConversationBean;
+import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.fragment.MessagePresenter;
 import cn.peng.pxun.ui.activity.ChatActivity;
 import cn.peng.pxun.ui.activity.ContactActivity;
@@ -40,6 +42,8 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
         super.init();
         //EventBus.getDefault().register(this);
         messageList = new ArrayList<>();
+        messageList.add(new ConversationBean(new User("admin", "系统消息")));
+        messageList.add(new ConversationBean(new User("tuling", "智能小白")));
         presenter.getMessageList();
     }
 
@@ -77,13 +81,13 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
                 ConversationBean conversation = messageList.get(i - 1);
 
                 Intent intent = new Intent();
-                if ("10000".equals(conversation.userId)) {
+                if ("系统消息".equals(conversation.user.getUsername())) {
                     intent.setClass(mActivity, SysMessageActivity.class);
                 } else {
                     intent.setClass(mActivity, ChatActivity.class);
                     intent.putExtra("isGroup", conversation.isGroup);
-                    intent.putExtra("userId", conversation.userId);
-                    intent.putExtra("username", conversation.userName);
+                    intent.putExtra("userId", AppConfig.getUserId(conversation.user));
+                    intent.putExtra("username", conversation.user.getUsername());
                 }
                 startActivity(intent);
             }
@@ -94,6 +98,9 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
                 ThreadUtils.runOnSubThread(new Runnable() {
                     @Override
                     public void run() {
+                        messageList.clear();
+                        messageList.add(new ConversationBean(new User("admin", "系统消息")));
+                        messageList.add(new ConversationBean(new User("tuling", "智能小白")));
                         presenter.getMessageList();
                     }
                 });
@@ -101,18 +108,13 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
         });
     }
 
-    public void refreshMessage(final ArrayList<ConversationBean> messages) {
-        ThreadUtils.runOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                if (mLvMessage != null && mAdapter != null) {
-                    messageList = messages;
-                    mAdapter.setDataSets(messageList);
-                    if (mLvMessage.isRefresh()) {
-                        mLvMessage.onRefreshFinish();
-                    }
-                }
+    public void refreshMessage(ConversationBean conversation) {
+        if (mLvMessage != null && mAdapter != null) {
+            messageList.add(conversation);
+            mAdapter.setDataSets(messageList);
+            if (mLvMessage.isRefresh()) {
+                mLvMessage.onRefreshFinish();
             }
-        });
+        }
     }
 }

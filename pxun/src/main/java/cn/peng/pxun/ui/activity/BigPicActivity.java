@@ -3,6 +3,9 @@ package cn.peng.pxun.ui.activity;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.text.TextUtils;
 import android.view.ViewTreeObserver;
 
 import com.squareup.picasso.Picasso;
@@ -51,11 +54,20 @@ public class BigPicActivity extends BaseActivity {
 
         Intent intent = getIntent();
         String pic_url = intent.getStringExtra("url");
-        Picasso.with(this)
-                .load(pic_url)
-                .placeholder(R.drawable.loding_pic)
-                .error(R.drawable.error_pic)
-                .into(mPvBigpic);
+        if (!TextUtils.isEmpty(pic_url)){
+            Picasso.with(this)
+                    .load(pic_url)
+                    .placeholder(R.drawable.loding_pic)
+                    .error(R.drawable.error_pic)
+                    .into(mPvBigpic);
+        }else{
+            boolean isTuling = intent.getBooleanExtra("isTuling", false);
+            if (isTuling){
+                mPvBigpic.setImageResource(R.drawable.icon_tuling);
+            } else {
+                mPvBigpic.setImageResource(R.drawable.icon_nan);
+            }
+        }
     }
 
     @Override
@@ -74,6 +86,7 @@ public class BigPicActivity extends BaseActivity {
         });
         mPvBigpic.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void onGlobalLayout() {
                         mPvBigpic.getViewTreeObserver().removeOnGlobalLayoutListener(this);

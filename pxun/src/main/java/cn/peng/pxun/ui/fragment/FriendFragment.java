@@ -14,6 +14,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
+import cn.peng.pxun.modle.AppConfig;
+import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.fragment.FriendPresenter;
 import cn.peng.pxun.ui.activity.ChatActivity;
 import cn.peng.pxun.ui.adapter.FriendAdapter;
@@ -29,7 +31,7 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
     @BindView(R.id.lv_contact)
     SuperListView mLvContact;
 
-    private List<String> contactList;
+    private List<User> friendList;
     private FriendAdapter mAdapter;
 
 
@@ -37,8 +39,8 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
     public void init() {
         super.init();
         //EventBus.getDefault().register(this);
-        contactList = new ArrayList<>();
-        presenter.getContactList();
+        friendList = new ArrayList<>();
+        presenter.getFriendList();
     }
 
     @Override
@@ -54,9 +56,7 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
 
     @Override
     public void initData() {
-        contactList = new ArrayList<>();
-        contactList.add("智能小白");
-        mAdapter = new FriendAdapter(contactList);
+        mAdapter = new FriendAdapter(friendList);
         mLvContact.setAdapter(mAdapter);
     }
 
@@ -65,22 +65,22 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
         mLvContact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String username = contactList.get(position-1);
+                User user = friendList.get(position-1);
 
                 Intent intent = new Intent(mActivity, ChatActivity.class);
                 intent.putExtra("isGroup", false);
-                intent.putExtra("userId", username);
-                intent.putExtra("username", username);
+                intent.putExtra("userId", AppConfig.getUserId(user));
+                intent.putExtra("username", user.getUsername());
                 startActivity(intent);
             }
         });
         mLvContact.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final String username = (String) parent.getAdapter().getItem(position);
+                final User user = friendList.get(position-1);
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle("系统消息");
-                builder.setMessage("您确定要删除好友" + username + "吗");
+                builder.setMessage("您确定要删除好友" + user.getUsername() + "吗");
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -88,7 +88,7 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
                             @Override
                             public void run() {
                                 try {
-                                    EMClient.getInstance().contactManager().deleteContact(username);
+                                    EMClient.getInstance().contactManager().deleteContact(AppConfig.getUserId(user));
                                     ThreadUtils.runOnMainThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -117,23 +117,19 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
         mLvContact.setOnLoadDataListener(new SuperListView.OnLoadDataListener() {
             @Override
             public void onRefresh() {
-                presenter.getContactList();
+                friendList.clear();
+                presenter.getFriendList();
             }
         });
     }
 
-    public void refreshContact(final List<String> usernames) {
-        ThreadUtils.runOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                if (mLvContact != null &&mAdapter != null ) {
-                    contactList = usernames;
-                    mAdapter.setDataSets(contactList);
-                    if (mLvContact.isRefresh()) {
-                        mLvContact.onRefreshFinish();
-                    }
-                }
+    public void refreshFriend(User user) {
+        if (mLvContact != null &&mAdapter != null ) {
+            friendList.add(user);
+            mAdapter.setDataSets(friendList);
+            if (mLvContact.isRefresh()) {
+                mLvContact.onRefreshFinish();
             }
-        });
+        }
     }
 }

@@ -35,6 +35,7 @@ public class SysMessagePresenter extends BasePresenter{
     public void getSysMessageList(){
         BmobQuery<SysMessage> bmobQuery = new BmobQuery();
         bmobQuery.addWhereEqualTo("toUser", AppConfig.getUserId(AppConfig.appUser));
+        bmobQuery.order("-createdAt");
         bmobQuery.findObjects(new FindListener<SysMessage>(){
 
             @Override

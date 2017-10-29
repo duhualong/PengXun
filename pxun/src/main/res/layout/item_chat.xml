@@ -23,21 +23,24 @@
         android:layout_marginTop="6dp"
         android:layout_below="@id/tv_chat_date">
 
-        <ImageView
+        <cn.peng.pxun.ui.view.HandIconView
             android:id="@+id/iv_chat_replyicon"
             android:layout_width="52dp"
             android:layout_height="52dp"
             android:layout_marginLeft="8dp"
-            android:src="@drawable/head3"/>
+            android:src="@drawable/icon_nv"/>
 
         <cn.peng.pxun.ui.view.ChatView
             android:id="@+id/cv_chat_reply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:background="@drawable/message_left_bg"
             android:gravity="center"
             android:orientation="vertical"
+            android:layout_marginRight="60dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:paddingRight="16dp"
@@ -58,22 +61,25 @@
             android:id="@+id/cv_chat_ask"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:background="@drawable/message_right_bg"
             android:orientation="vertical"
             android:gravity="center"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:paddingLeft="16dp"
             android:paddingRight="28dp"
             android:textColor="#FFFFFF"/>
 
-        <ImageView
+        <cn.peng.pxun.ui.view.HandIconView
             android:id="@+id/iv_chat_askicon"
             android:layout_width="52dp"
             android:layout_height="52dp"
             android:layout_marginRight="8dp"
-            android:src="@drawable/head4"/>
+            android:src="@drawable/icon_nan"/>
     </LinearLayout>
 
 

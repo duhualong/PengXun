@@ -50,11 +50,6 @@ public class HomeFragment extends BaseFragment {
         mVpFragmentHome.setCurrentItem(1);
     }
 
-    @Override
-    public void initListener() {
-
-    }
-
     /**
      * 初始化Fragment
      */

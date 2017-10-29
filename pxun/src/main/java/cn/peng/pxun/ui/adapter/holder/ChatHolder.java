@@ -75,7 +75,7 @@ public class ChatHolder extends BaseHolder<Message> {
 
     @Override
     public void bindView() {
-        if (AppConfig.getUserId(AppConfig.appUser).equals(mData.fromUserID)) {
+        if (AppConfig.getUserId(AppConfig.appUser).equalsIgnoreCase(mData.fromUserID)) {
             mLlChatReply.setVisibility(View.GONE);
             mTvChatDate.setVisibility(View.VISIBLE);
             mLlChatAsk.setVisibility(View.VISIBLE);
@@ -103,7 +103,12 @@ public class ChatHolder extends BaseHolder<Message> {
             mLlChatAsk.setVisibility(View.GONE);
             mLlChatReply.setVisibility(View.VISIBLE);
 
-            mIvChatReplyicon.setImageResource(R.drawable.head3);
+            if (mData.isTuring){
+                mIvChatReplyicon.setImageResource(R.drawable.icon_tuling);
+            } else{
+                mIvChatReplyicon.setImageResource(R.drawable.icon_nan);
+            }
+
             mCvChatReply.removeAllViews();
             if (mData.messageType != null){
                 if (mData.messageType == Message.TEXT_TYPE ) {

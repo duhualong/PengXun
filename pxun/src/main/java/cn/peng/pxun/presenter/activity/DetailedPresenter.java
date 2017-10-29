@@ -35,6 +35,7 @@ public class DetailedPresenter extends BasePresenter{
             user.setBirthday("2016年11月11日");
             activity.setUserInfo(user);
         }else{
+            accountNumber = accountNumber.toUpperCase();
             BmobQuery<User> bmobQuery = new BmobQuery();
             List<BmobQuery<User>> params = new ArrayList<>();
             params.add(new BmobQuery<User>().addWhereEqualTo("thirdPartyID", accountNumber));

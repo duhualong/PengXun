@@ -7,13 +7,11 @@ import android.widget.TextView;
 import com.hyphenate.chat.EMGroup;
 
 import java.util.List;
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
-import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.ui.adapter.holder.BaseHolder;
 
 /**
@@ -47,7 +45,7 @@ public class GroupAdapter  extends SuperBaseApapter<EMGroup> {
 
         @Override
         public void bindView() {
-            mIvMessageIcon.setImageResource(AppConfig.icons[new Random().nextInt(AppConfig.icons.length)]);
+            mIvMessageIcon.setImageResource(R.drawable.icon_group);
             mTvMessageName.setText(mData.getGroupName());
             mTvMessageSignature.setText(mData.getDescription());
         }

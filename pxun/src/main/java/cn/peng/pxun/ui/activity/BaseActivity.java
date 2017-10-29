@@ -118,10 +118,14 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * 显示加载中提示框
      */
     protected void showLoadingDialog(String title) {
-        loadingDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-        loadingDialog.setCancelable(false);
-        loadingDialog.setTitleText(title);
-        loadingDialog.show();
+        try{
+            loadingDialog = new SweetAlertDialog(mActivity, SweetAlertDialog.PROGRESS_TYPE);
+            loadingDialog.setCancelable(false);
+            loadingDialog.setTitleText(title);
+            loadingDialog.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -1,39 +1,48 @@
 package cn.peng.pxun.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.presenter.fragment.MinePresenter;
 import cn.peng.pxun.ui.activity.AboutAuthorActivity;
-import cn.peng.pxun.ui.activity.DetailedActivity;
-import cn.peng.pxun.ui.activity.MainActivity;
-import cn.peng.pxun.utils.ToastUtil;
+import cn.peng.pxun.ui.activity.ContactActivity;
+import cn.peng.pxun.ui.activity.SettingActivity;
+import cn.peng.pxun.ui.activity.UserInfoActivity;
+import cn.peng.pxun.ui.view.HandIconView;
 
 /**
  * Created by msi on 2016/12/21.
  */
 public class MineFragment extends BaseFragment<MinePresenter> {
-    @BindView(R.id.rl_mine_info)
-    RelativeLayout mRlMineInfo;
-    @BindView(R.id.rl_about_author)
-    RelativeLayout mRlAboutAuthor;
-    @BindView(R.id.rl_version_info)
-    RelativeLayout mRlVersionInfo;
-    @BindView(R.id.tv_version_name)
 
-    TextView mTvMineVersionname;
-    private MainActivity mainActivity;
+    @BindView(R.id.iv_mine_icon)
+    HandIconView mIvMineIcon;
+    @BindView(R.id.tv_mine_name)
+    TextView mTvMineName;
+    @BindView(R.id.iv_mine_sex)
+    ImageView mIvMineSex;
+    @BindView(R.id.tv_mine_info)
+    TextView mTvMineInfo;
+    @BindView(R.id.tv_mine_friend)
+    TextView mTvMineFriend;
+    @BindView(R.id.tv_mine_group)
+    TextView mTvMineGroup;
+    @BindView(R.id.ll_mine_about)
+    LinearLayout mLlMineAbout;
+    @BindView(R.id.ll_mine_setting)
+    LinearLayout mLlMineSetting;
 
-    @Override
-    public void init() {
-        super.init();
-        mainActivity = (MainActivity) getActivity();
-    }
 
     @Override
     public View initView() {
@@ -46,41 +55,79 @@ public class MineFragment extends BaseFragment<MinePresenter> {
         return new MinePresenter(this);
     }
 
+    @SuppressLint("ResourceType")
     @Override
-    public void initListener() {
-        mRlMineInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mainActivity,DetailedActivity.class);
-                intent.putExtra("isMe",true);
-                startActivity(intent);
+    public void initData() {
+        if (AppConfig.appUser != null) {
+            mTvMineName.setText(AppConfig.appUser.getUsername());
 
+            if (!TextUtils.isEmpty(AppConfig.appUser.getSex())) {
+                if ("男".equals(AppConfig.appUser.getSex())) {
+                    mTvMineName.setTextColor(Color.parseColor("#33B5E5"));
+                    mIvMineSex.setImageResource(R.drawable.sex_boy);
+                    mIvMineIcon.setImageResource(R.drawable.icon_nan);
+                } else if ("女".equals(AppConfig.appUser.getSex())){
+                    mTvMineName.setTextColor(Color.parseColor("#FF4081"));
+                    mIvMineSex.setImageResource(R.drawable.sex_girl);
+                    mIvMineIcon.setImageResource(R.drawable.icon_nv);
+                }
+            } else {
+                mIvMineSex.setVisibility(View.GONE);
             }
-        });
-        mRlAboutAuthor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mainActivity,AboutAuthorActivity.class);
-                startActivity(intent);
+
+            if (!TextUtils.isEmpty(AppConfig.appUser.getHeadIcon())) {
+                Picasso.with(mActivity).load(AppConfig.appUser.getHeadIcon()).into(mIvMineIcon);
             }
-        });
-        mRlVersionInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.showToast(mActivity,"已经是最新版本,无需升级!");
-            }
-        });
+        }
     }
 
     @Override
-    public void initData() {
-        try {
-            String versionName = presenter.getVersionName();
-            mTvMineVersionname.setText("V"+versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            mTvMineVersionname.setText("版本号解析错误");
-        }
+    public void initListener() {
+        mIvMineIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mActivity, UserInfoActivity.class);
+                startActivity(intent);
+            }
+        });
+        mTvMineInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mActivity, UserInfoActivity.class);
+                startActivity(intent);
+            }
+        });
+        mTvMineFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mActivity, ContactActivity.class);
+                intent.putExtra("position", 0);
+                startActivity(intent);
 
+            }
+        });
+        mTvMineGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mActivity, ContactActivity.class);
+                intent.putExtra("position", 1);
+                startActivity(intent);
+
+            }
+        });
+        mLlMineAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mActivity, AboutAuthorActivity.class);
+                startActivity(intent);
+            }
+        });
+        mLlMineSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mActivity, SettingActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
