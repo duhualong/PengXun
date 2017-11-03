@@ -4,12 +4,6 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="用户"
-        android:textSize="24sp"
-        android:textColor="@color/black"/>
+    <include layout="@layout/app_recycleview"/>
 
 </LinearLayout>

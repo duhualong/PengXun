@@ -1,5 +1,6 @@
 package cn.peng.pxun.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.hyphenate.chat.EMMessage;
@@ -11,7 +12,7 @@ import java.util.regex.PatternSyntaxException;
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.fragment.BaseFragment;
 import cn.peng.pxun.utils.NetworkUtil;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.ThreadUtil;
 import cn.peng.pxun.utils.ToastUtil;
 
 /**
@@ -28,6 +29,7 @@ public abstract class BasePresenter {
 
     public BasePresenter(BaseFragment fragment){
         this.fragment = fragment;
+        this.context = (BaseActivity) fragment.getActivity();
     }
 
     /**
@@ -71,8 +73,8 @@ public abstract class BasePresenter {
      * @param text
      * @return
      */
-    public void showToast(final BaseActivity activity, final String text){
-        ThreadUtils.runOnMainThread(new Runnable() {
+    public void showToast(final Activity activity, final String text){
+        ThreadUtil.runOnMainThread(new Runnable() {
             @Override
             public void run() {
                 ToastUtil.showToast(activity, text);

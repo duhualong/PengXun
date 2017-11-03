@@ -57,7 +57,7 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
     @Override
     protected void initView() {
         super.initView();
-        //showLoadingDialog("加载中");
+        showLoadingDialog("加载中");
 
         if (isMe){
             if (AppConfig.appUser != null){
@@ -108,7 +108,7 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
      * @param user
      */
     public void setUserInfo(User user) {
-//        loadingDialog.cancel();
+        loadingDialog.cancel();
         if (user != null){
             if (isMe && AppConfig.appUser == null){
                 AppConfig.appUser = user;

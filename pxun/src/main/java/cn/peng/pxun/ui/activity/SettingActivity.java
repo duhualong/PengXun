@@ -77,6 +77,7 @@ public class SettingActivity extends BaseActivity<SettingPresenter> {
         mTvSettingLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showLoadingDialog("正在注销...");
                 presenter.logout();
             }
         });
@@ -94,4 +95,13 @@ public class SettingActivity extends BaseActivity<SettingPresenter> {
 
     }
 
+    /**
+     * 注销成功
+     */
+    public void onLogoutSuccess(){
+        loadingDialog.cancel();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

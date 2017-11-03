@@ -24,6 +24,10 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechUtility;
 import com.iflytek.cloud.ui.RecognizerDialogListener;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,13 +36,13 @@ import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.greendao.Message;
 import cn.peng.pxun.presenter.activity.ChatPresenter;
-import cn.peng.pxun.ui.adapter.EmojiAdapter;
 import cn.peng.pxun.ui.adapter.SuperBaseApapter;
 import cn.peng.pxun.ui.adapter.holder.BaseHolder;
 import cn.peng.pxun.ui.adapter.holder.ChatHolder;
+import cn.peng.pxun.ui.adapter.recycleview.EmojiAdapter;
 import cn.peng.pxun.ui.view.SmoothInputLayout;
+import cn.peng.pxun.utils.DateUtil;
 import cn.peng.pxun.utils.ToastUtil;
-import de.greenrobot.event.EventBus;
 import me.weyye.hipermission.PermissionCallback;
 import me.weyye.hipermission.PermissionItem;
 
@@ -99,7 +103,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
         //初始化科大讯飞语音识别
         SpeechUtility.createUtility(this, "appid=" + AppConfig.IFLYTEK_APPID);
         //注册EventBus
-        //EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
 
         Intent intent = getIntent();
         toChatUserName = intent.getStringExtra("username");
@@ -217,7 +221,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                 mEtChatInput.setText("");
 
                 Message msg = new Message();
-                msg.date = presenter.getDate(System.currentTimeMillis());
+                msg.date = DateUtil.getDate(System.currentTimeMillis());
                 msg.message = spellMsg;
                 msg.fromUserID = AppConfig.getUserId(AppConfig.appUser);
                 msg.messageType = Message.TEXT_TYPE;
@@ -448,7 +452,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                     final String speechMsg = mBuffer.toString();
 
                     Message msg = new Message();
-                    msg.date = presenter.getDate(System.currentTimeMillis());
+                    msg.date = DateUtil.getDate(System.currentTimeMillis());
                     msg.message = speechMsg;
                     msg.fromUserID = AppConfig.getUserId(AppConfig.appUser);
                     msg.messageType = Message.TEXT_TYPE;
@@ -473,6 +477,17 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                 ToastUtil.showToast(ChatActivity.this, "语音解析失败");
             }
         });
+    }
+
+    /**
+     * 收到新的消息
+     * @param msg
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void receiveMessage(Message msg) {
+        if(toChatUserId.equals(msg.fromUserID)){
+            addDataAndRefreshUi(msg, false);
+        }
     }
 
     class ChatAdapter extends SuperBaseApapter<Message> {

@@ -19,7 +19,7 @@ import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.activity.LoginActivity;
 import cn.peng.pxun.utils.MD5Util;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.ThreadUtil;
 
 /**
  * LoginActivity的业务类
@@ -70,7 +70,7 @@ public class LoginPresenter extends BasePresenter{
             @Override
             public void done(final User user, BmobException e) {
                 if (e == null){
-                    ThreadUtils.runOnSubThread(new Runnable() {
+                    ThreadUtil.runOnSubThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
@@ -143,7 +143,7 @@ public class LoginPresenter extends BasePresenter{
      * @param huanXinCode
      */
     private void setResult(final int code, final int huanXinCode) {
-        ThreadUtils.runOnMainThread(new Runnable() {
+        ThreadUtil.runOnMainThread(new Runnable() {
             @Override
             public void run() {
                 activity.onLoginFinish(code, huanXinCode);

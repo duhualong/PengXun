@@ -1,4 +1,4 @@
-package cn.peng.pxun.ui.adapter;
+package cn.peng.pxun.ui.adapter.viewpager;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,18 +9,22 @@ import java.util.List;
 import cn.peng.pxun.ui.fragment.BaseFragment;
 
 /**
- * Created by msi on 2016/12/21.
+ * Created by msi on 2017/10/27.
  */
-public class HomeAdapter extends FragmentPagerAdapter {
+
+public class ContactPagerAdapter extends FragmentPagerAdapter {
     List<BaseFragment> list;
+
     private String[] tabs = {
-            "用户","推荐","电影"
+            "好友","群组"
     };
 
-    public HomeAdapter(FragmentManager fm, List<BaseFragment> fragmentList) {
+    public ContactPagerAdapter(FragmentManager fm, List<BaseFragment> fragmentList) {
         super(fm);
         list = fragmentList;
     }
+
+
 
     @Override
     public Fragment getItem(int position) {

@@ -115,7 +115,6 @@ public class MainActivity extends BaseActivity<MainPresenter> {
                 FragmentTransaction ft = mFm.beginTransaction();
                 ft.replace(R.id.fl_main, homeFragment);
                 ft.commit();
-                //mTvToolbarTitle.setText("消息");
                 refreshTab(mTvMainHome, mIvMainHome, mTvMainFind, mIvMainFind, mTvMainMessage, mIvMainMessage, mTvMainMine, mIvMainMine);
             }
         });
@@ -125,7 +124,6 @@ public class MainActivity extends BaseActivity<MainPresenter> {
                 FragmentTransaction ft = mFm.beginTransaction();
                 ft.replace(R.id.fl_main, findFragment);
                 ft.commit();
-               // mTvToolbarTitle.setText("发现");
                 refreshTab(mTvMainFind, mIvMainFind, mTvMainHome, mIvMainHome, mTvMainMessage, mIvMainMessage, mTvMainMine, mIvMainMine);
             }
         });
@@ -135,7 +133,6 @@ public class MainActivity extends BaseActivity<MainPresenter> {
                 FragmentTransaction ft = mFm.beginTransaction();
                 ft.replace(R.id.fl_main, messageFragment);
                 ft.commit();
-                //mTvToolbarTitle.setText("消息");
                 refreshTab(mTvMainMessage, mIvMainMessage, mTvMainHome, mIvMainHome, mTvMainFind, mIvMainFind, mTvMainMine, mIvMainMine);
             }
         });
@@ -145,7 +142,6 @@ public class MainActivity extends BaseActivity<MainPresenter> {
                 FragmentTransaction ft = mFm.beginTransaction();
                 ft.replace(R.id.fl_main, mineFragment);
                 ft.commit();
-                //mTvToolbarTitle.setText("我的");
                 refreshTab(mTvMainMine, mIvMainMine, mTvMainHome, mIvMainHome, mTvMainFind, mIvMainFind, mTvMainMessage, mIvMainMessage);
             }
         });
@@ -163,7 +159,7 @@ public class MainActivity extends BaseActivity<MainPresenter> {
             Timer tExit = null;
             if (isExit == false) {
                 isExit = true; // 准备退出
-                ToastUtil.showToast(this, "在按一次退出鹏讯");
+                ToastUtil.showToast(mActivity, "在按一次退出鹏讯");
 
                 tExit = new Timer();
                 tExit.schedule(new TimerTask() {

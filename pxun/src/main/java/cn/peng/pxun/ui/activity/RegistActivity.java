@@ -23,7 +23,7 @@ import cn.peng.pxun.presenter.activity.RegistPresenter;
 import cn.peng.pxun.ui.view.picker.AddressPickTask;
 import cn.peng.pxun.ui.view.picker.DatePicker;
 import cn.peng.pxun.ui.view.picker.OptionPicker;
-import cn.peng.pxun.utils.ConvertUtils;
+import cn.peng.pxun.utils.ConvertUtil;
 
 import static cn.peng.pxun.utils.ToastUtil.showToast;
 
@@ -214,7 +214,7 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
      */
     private void initBirthdayPicker() {
         datePicker = new DatePicker(this);
-        datePicker.setTopPadding(ConvertUtils.toPx(this, 12));
+        datePicker.setTopPadding(ConvertUtil.toPx(this, 12));
         Calendar now = Calendar.getInstance();
         datePicker.setRangeStart(1970, 1, 1);
         datePicker.setRangeEnd(now.get(Calendar.YEAR), now.get(Calendar.MONTH)+1, now.get(Calendar.DAY_OF_MONTH));

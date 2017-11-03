@@ -2,9 +2,14 @@ package cn.peng.pxun;
 
 import android.app.ActivityManager;
 import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 
 import com.hyphenate.EMContactListener;
@@ -15,6 +20,7 @@ import com.hyphenate.chat.EMOptions;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.greendao.database.Database;
 
 import java.util.Iterator;
@@ -25,7 +31,10 @@ import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.greendao.DaoMaster;
 import cn.peng.pxun.modle.greendao.DaoSession;
 import cn.peng.pxun.modle.greendao.Message;
-import de.greenrobot.event.EventBus;
+import cn.peng.pxun.ui.activity.SysMessageActivity;
+import cn.peng.pxun.utils.DateUtil;
+
+import static android.R.id.message;
 
 public class MyApplication extends Application {
     /** 全局唯一的上下文 */
@@ -102,34 +111,20 @@ public class MyApplication extends Application {
     private void initHuanXinListener() {
         EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
             @Override
-            public void onContactAgreed(final String username) {
+            public void onContactAgreed(String username) {
                 //好友请求被同意
-//                Contacts admin = new Contacts();
-//                admin.userName = "系统消息";
-//                admin.userIcon = getResources().getDrawable(R.drawable.peng);
-//                admin.signature = username +"同意了你的好友申请.";
-//                EventBus.getDefault().post(admin);
+                sendSystemNotify();
             }
 
             @Override
-            public void onContactRefused(final String username) {
+            public void onContactRefused(String username) {
                 //好友请求被拒绝
-//                Contacts admin = new Contacts();
-//                admin.userName = "系统消息";
-//                admin.userIcon = getResources().getDrawable(R.drawable.peng);
-//                admin.signature = username +"拒绝了你的好友申请.";
-//                EventBus.getDefault().post(admin);
             }
 
             @Override
-            public void onContactInvited(final String username, String reason) {
+            public void onContactInvited(String username, String reason) {
                 //收到好友邀请
-//                Contacts admin = new Contacts();
-//                admin.userName = "系统消息";
-//                admin.userIcon = getResources().getDrawable(R.drawable.peng);
-//                admin.signature = username +":请求添加你为好友,是否同意?";
-//                admin.text = username;
-//                EventBus.getDefault().post(admin);
+                sendSystemNotify();
             }
 
             @Override
@@ -147,12 +142,16 @@ public class MyApplication extends Application {
             public void onMessageReceived(final List<EMMessage> messages) {
                 //收到消息
                 if (messages != null && messages.size() > 0) {
-                    Message message = new Message();
-                    message.fromUserID = messages.get(0).getFrom();
-                    message.toUserID = messages.get(0).getTo();
-                    message.message = messages.get(0).getBody().toString().split(":")[1].replaceAll("\""," ");
-                    message.messageType = Message.TEXT_TYPE;
-                    EventBus.getDefault().post(message);
+                    for (EMMessage emMsg : messages) {
+                        Message msg = new Message();
+                        msg.date = DateUtil.getDate(emMsg.getMsgTime());
+                        msg.message = emMsg.getBody().toString().split(":")[1].replaceAll("\"", "");
+                        msg.fromUserID = emMsg.getFrom();
+                        msg.toUserID = emMsg.getTo();
+                        msg.messageType = Message.TEXT_TYPE;
+                        msg.isTuring = false;
+                        EventBus.getDefault().post(message);
+                    }
                 }
             }
 
@@ -210,5 +209,26 @@ public class MyApplication extends Application {
             }
         }
         return processName;
+    }
+
+    /**
+     * 发送系统通知
+     */
+    public void sendSystemNotify(){
+        Intent intent = new Intent(this, SysMessageActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        //1.获取系统通知的管理者
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        //2.用notification工厂 创建一个notification
+        Notification noti = new Notification.Builder(this)
+                .setContentTitle("通知")
+                .setContentText("您有新的消息，点击查看。")
+                .setSmallIcon(R.mipmap.peng)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
+                .setContentIntent(contentIntent)
+                .build();
+        //3.把notification显示出来
+        nm.notify(1, noti);
     }
 }

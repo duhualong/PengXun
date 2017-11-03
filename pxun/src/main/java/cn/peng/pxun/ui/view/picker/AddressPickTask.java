@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.peng.pxun.modle.picker.Province;
-import cn.peng.pxun.utils.ConvertUtils;
+import cn.peng.pxun.utils.ConvertUtil;
 
 /**
  * 获取地址数据并显示地址选择器
@@ -72,7 +72,7 @@ public class AddressPickTask extends AsyncTask<String, Void, ArrayList<Province>
         }
         ArrayList<Province> data = new ArrayList<>();
         try {
-            String json = ConvertUtils.toString(activity.getAssets().open("city.json"));
+            String json = ConvertUtil.toString(activity.getAssets().open("city.json"));
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
             Type classType = new TypeToken<List<Province>>() {}.getType();
             ArrayList<Province> dataLsit = gson.fromJson(json,classType);

@@ -41,6 +41,7 @@ public class WebActivity extends BaseAgentWebActivity {
 
         setSupportActionBar(mWebToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mTvWebTitle.setText("加载中...");
         mIvWebGoback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

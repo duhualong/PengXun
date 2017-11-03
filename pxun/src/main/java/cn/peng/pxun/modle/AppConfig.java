@@ -6,6 +6,9 @@ import cn.peng.pxun.modle.bmob.User;
  * 保存常量字符串的类
  */
 public class AppConfig {
+    /** 豆瓣接口根路径 */
+    public static final String BASE_MOVIE_URL = "https://api.douban.com/v2/movie/";
+
     /** 图林机器人是否初始化成功 */
     public static boolean isInitTuring;
     /** 当前登录用户 */
@@ -28,10 +31,8 @@ public class AppConfig {
     public static final int SERVER_ERROR = 10002;
     /** 帐号格式错误,帐号不存在 */
     public static final int NUMBER_ERROR = 10010;
-
     /** 请求码：登录到注册*/
     public static final int LOGINTOREGIEST = 1000;
-
 
     /** BMOB后端云appkey */
     public static final String BMOB_APP_KEY = "aace143390901d901c3ce3a8c1d9d009";
@@ -39,14 +40,6 @@ public class AppConfig {
     public static final String TURING_APP_KEY = "93ae478490f141f6ad870b4d3b191068";
     /** 科大讯飞appid */
     public static final String IFLYTEK_APPID = "57fce417";
-
-    public static final String[] MENU_ITEMS = {
-        "添加好友",
-        "创建聊天群",
-        "加入聊天群",
-        "反馈意见",
-        "设置",
-    };
 
     public static final String[] USER_SEX = {
             "男","女","保密"

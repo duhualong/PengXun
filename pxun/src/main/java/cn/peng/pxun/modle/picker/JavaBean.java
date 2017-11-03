@@ -6,7 +6,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import cn.peng.pxun.utils.LogUtils;
+import cn.peng.pxun.utils.LogUtil;
 
 
 /**
@@ -47,7 +47,7 @@ public class JavaBean implements Serializable {
                 sb.append(obj);
                 sb.append("\n");
             } catch (IllegalAccessException e) {
-                LogUtils.error(e);
+                LogUtil.e(e.toString());
             }
         }
         return sb.toString();

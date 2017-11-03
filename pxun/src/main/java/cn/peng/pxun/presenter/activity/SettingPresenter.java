@@ -1,6 +1,5 @@
 package cn.peng.pxun.presenter.activity;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -10,9 +9,8 @@ import com.hyphenate.chat.EMClient;
 
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.presenter.BasePresenter;
-import cn.peng.pxun.ui.activity.LoginActivity;
 import cn.peng.pxun.ui.activity.SettingActivity;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.ThreadUtil;
 import cn.peng.pxun.utils.ToastUtil;
 
 
@@ -46,7 +44,7 @@ public class SettingPresenter extends BasePresenter{
         EMClient.getInstance().logout(true, new EMCallBack() {
                 @Override
                 public void onSuccess() {
-                    ThreadUtils.runOnMainThread(new Runnable() {
+                    ThreadUtil.runOnMainThread(new Runnable() {
                         @Override
                         public void run() {
                             //清空登录信息
@@ -54,9 +52,8 @@ public class SettingPresenter extends BasePresenter{
                             editor.putBoolean("isLogin", false);
                             editor.commit();
                             //返回登录界面
-                            Intent intent = new Intent(activity, LoginActivity.class);
-                            activity.startActivity(intent);
-                            activity.finish();
+                            activity.onLogoutSuccess();
+
                         }
                     });
                 }
@@ -68,7 +65,7 @@ public class SettingPresenter extends BasePresenter{
 
                 @Override
                 public void onError(int code, String message) {
-                    ThreadUtils.runOnMainThread(new Runnable() {
+                    ThreadUtil.runOnMainThread(new Runnable() {
                         @Override
                         public void run() {
                             ToastUtil.showToast(activity, "注销帐号失败,请稍后重试!");

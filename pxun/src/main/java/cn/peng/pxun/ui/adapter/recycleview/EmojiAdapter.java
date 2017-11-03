@@ -1,4 +1,4 @@
-package cn.peng.pxun.ui.adapter;
+package cn.peng.pxun.ui.adapter.recycleview;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

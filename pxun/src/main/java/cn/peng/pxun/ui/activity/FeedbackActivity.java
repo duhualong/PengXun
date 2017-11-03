@@ -14,7 +14,7 @@ import com.hyphenate.chat.EMMessage;
 import butterknife.BindView;
 import cn.peng.pxun.R;
 import cn.peng.pxun.presenter.BasePresenter;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.ThreadUtil;
 import cn.peng.pxun.utils.ToastUtil;
 
 /**
@@ -68,7 +68,7 @@ public class FeedbackActivity extends BaseActivity {
                     return;
                 }
 
-                ThreadUtils.runOnSubThread(new Runnable() {
+                ThreadUtil.runOnSubThread(new Runnable() {
                     @Override
                     public void run() {
                         EMMessage message = EMMessage.createTxtSendMessage(suggestion, "18888888888");

@@ -12,7 +12,6 @@ import com.turing.androidsdk.TuringApiManager;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -26,7 +25,8 @@ import cn.peng.pxun.modle.greendao.MessageDao;
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.activity.ChatActivity;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.DateUtil;
+import cn.peng.pxun.utils.ThreadUtil;
 import turing.os.http.core.ErrorMessage;
 import turing.os.http.core.HttpConnectionListener;
 import turing.os.http.core.RequestResult;
@@ -175,11 +175,11 @@ public class ChatPresenter extends BasePresenter{
             if (messages != null && messages.size() > 0) {
                 for (EMMessage emMsg : messages) {
                     Message msg = new Message();
-                    msg.date = getDate(emMsg.getMsgTime());
-                    msg.message = emMsg.getBody().toString().split(":")[1].replaceAll("\"", "");
+                    msg.date = DateUtil.getDate(emMsg.getMsgTime());
+                    msg.message = splitEmMessage(emMsg);
                     msg.fromUserID = emMsg.getFrom();
                     msg.toUserID = emMsg.getTo();
-                    msg.messageType = 1;
+                    msg.messageType = Message.TEXT_TYPE;
                     msg.isTuring = false;
                     list.add(msg);
                 }
@@ -203,7 +203,7 @@ public class ChatPresenter extends BasePresenter{
      * @param msg
      */
     public void sendTextMessage(final String msg, final String toChatUserId, final boolean isGroup) {
-        ThreadUtils.runOnSubThread(new Runnable() {
+        ThreadUtil.runOnSubThread(new Runnable() {
             @Override
             public void run() {
                 EMMessage message = EMMessage.createTxtSendMessage(msg, toChatUserId);
@@ -222,15 +222,6 @@ public class ChatPresenter extends BasePresenter{
     public String getPicURL() {
         String pic_url = AppConfig.BELLE_PIC[new Random().nextInt(AppConfig.BELLE_PIC.length)];
         return pic_url;
-    }
-
-    /**
-     * 获取当前时间
-     * @return
-     */
-    public String getDate(long date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm ");
-        return formatter.format(date);
     }
 
     /**

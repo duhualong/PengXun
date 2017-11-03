@@ -1,4 +1,4 @@
-package cn.peng.pxun.ui.adapter;
+package cn.peng.pxun.ui.adapter.recycleview;
 
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;

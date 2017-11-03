@@ -1,10 +1,12 @@
-package cn.peng.pxun.ui.adapter;
+package cn.peng.pxun.ui.adapter.recycleview;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
@@ -19,8 +21,7 @@ import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.activity.SearchPresenter;
 import cn.peng.pxun.ui.activity.DetailedActivity;
 import cn.peng.pxun.ui.activity.SearchActivity;
-import cn.peng.pxun.ui.adapter.holder.SearchHolder;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.ThreadUtil;
 import cn.peng.pxun.utils.ToastUtil;
 
 import static cn.peng.pxun.ui.activity.SearchActivity.SEARCH_GROUP;
@@ -29,7 +30,7 @@ import static cn.peng.pxun.ui.activity.SearchActivity.SEARCH_USER;
 /**
  * Created by msi on 2017/9/23.
  */
-public class SearchAdapter extends RecyclerView.Adapter<SearchHolder>{
+public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchHolder>{
 
     private SearchActivity activity;
     private SearchPresenter presenter;
@@ -101,7 +102,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchHolder>{
                     }
                     try {
                         EMClient.getInstance().groupManager().joinGroup(group.getGroupNum());
-                        ThreadUtils.runOnMainThread(new Runnable() {
+                        ThreadUtil.runOnMainThread(new Runnable() {
                             @Override
                             public void run() {
                                 ToastUtil.showToast(activity, "请求发送成功");
@@ -109,7 +110,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchHolder>{
                         });
                     } catch (HyphenateException e) {
                         e.printStackTrace();
-                        ThreadUtils.runOnMainThread(new Runnable() {
+                        ThreadUtil.runOnMainThread(new Runnable() {
                             @Override
                             public void run() {
                                 ToastUtil.showToast(activity, "请求发送失败");
@@ -133,6 +134,22 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchHolder>{
                 return 0;
             }
             return userData.size();
+        }
+    }
+
+    class SearchHolder extends RecyclerView.ViewHolder {
+
+        public ImageView mIvMessageIcon;
+        public TextView mTvMessageName;
+        public TextView mTvMessageSignature;
+        public ImageView mIvAddContact;
+
+        public SearchHolder(View itemView) {
+            super(itemView);
+            mIvMessageIcon = (ImageView) itemView.findViewById(R.id.iv_message_icon);
+            mTvMessageName = (TextView) itemView.findViewById(R.id.tv_message_name);
+            mTvMessageSignature = (TextView) itemView.findViewById(R.id.tv_message_signature);
+            mIvAddContact = (ImageView) itemView.findViewById(R.id.iv_add_contact);
         }
     }
 }

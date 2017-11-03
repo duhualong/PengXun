@@ -11,7 +11,7 @@ import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.activity.RegistActivity;
 import cn.peng.pxun.utils.MD5Util;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.ThreadUtil;
 
 /**
  * RegistActivity的业务类
@@ -82,7 +82,7 @@ public class RegistPresenter extends BasePresenter{
      * @param password
      */
     private void registHuanXin(final String password) {
-        ThreadUtils.runOnSubThread(new Runnable() {
+        ThreadUtil.runOnSubThread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -107,7 +107,7 @@ public class RegistPresenter extends BasePresenter{
      * @param userInfo
      */
     private void setResult (final int code, final int huanXinCode, final String userInfo) {
-        ThreadUtils.runOnMainThread(new Runnable() {
+        ThreadUtil.runOnMainThread(new Runnable() {
             @Override
             public void run() {
                 activity.onRegistFinish(code, huanXinCode, userInfo);

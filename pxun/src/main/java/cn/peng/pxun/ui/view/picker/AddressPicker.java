@@ -13,7 +13,6 @@ import cn.peng.pxun.modle.picker.City;
 import cn.peng.pxun.modle.picker.County;
 import cn.peng.pxun.modle.picker.Province;
 import cn.peng.pxun.ui.view.WheelView;
-import cn.peng.pxun.utils.LogUtils;
 
 /**
  * 地址选择器（包括省级、地级、县级），地址数据见示例项目assets目录下。
@@ -160,7 +159,6 @@ public class AddressPicker extends LinkagePicker<Province, City, County> {
                 if (onWheelListener != null) {
                     onWheelListener.onProvinceWheeled(selectedFirstIndex, selectedFirstItem);
                 }
-                LogUtils.verbose(this, "change cities after province wheeled: index=" + index);
                 selectedSecondIndex = 0;//重置地级索引
                 selectedThirdIndex = 0;//重置县级索引
                 //根据省份获取地市
@@ -195,7 +193,6 @@ public class AddressPicker extends LinkagePicker<Province, City, County> {
                 if (onWheelListener != null) {
                     onWheelListener.onCityWheeled(selectedSecondIndex, selectedSecondItem);
                 }
-                LogUtils.verbose(this, "change counties after city wheeled: index=" + index);
                 selectedThirdIndex = 0;//重置县级索引
                 //根据地市获取区县
                 //noinspection unchecked

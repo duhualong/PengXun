@@ -15,7 +15,7 @@ import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.SysMessage;
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.activity.SysMessageActivity;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.ThreadUtil;
 
 /**
  * Created by tofirst on 2017/9/28.
@@ -54,7 +54,7 @@ public class SysMessagePresenter extends BasePresenter{
      * @param sysMsg
      */
     public void agreeAddContact(final SysMessage sysMsg) {
-        ThreadUtils.runOnMainThread(new Runnable() {
+        ThreadUtil.runOnMainThread(new Runnable() {
             @Override
             public void run() {
                 try {

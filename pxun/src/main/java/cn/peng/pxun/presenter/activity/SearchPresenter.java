@@ -16,7 +16,7 @@ import cn.peng.pxun.modle.bmob.SysMessage;
 import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.activity.SearchActivity;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.ThreadUtil;
 import cn.peng.pxun.utils.ToastUtil;
 
 /**
@@ -109,7 +109,7 @@ public class SearchPresenter extends BasePresenter {
             return;
         }
 
-        ThreadUtils.runOnSubThread(new Runnable() {
+        ThreadUtil.runOnSubThread(new Runnable() {
             @Override
             public void run() {
                 try {

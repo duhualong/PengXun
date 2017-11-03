@@ -6,6 +6,10 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +18,14 @@ import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bean.ConversationBean;
 import cn.peng.pxun.modle.bmob.User;
+import cn.peng.pxun.modle.greendao.Message;
 import cn.peng.pxun.presenter.fragment.MessagePresenter;
 import cn.peng.pxun.ui.activity.ChatActivity;
 import cn.peng.pxun.ui.activity.ContactActivity;
 import cn.peng.pxun.ui.activity.SysMessageActivity;
-import cn.peng.pxun.ui.adapter.MessageAdapter;
+import cn.peng.pxun.ui.adapter.listview.MessageAdapter;
 import cn.peng.pxun.ui.view.SuperListView;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.ThreadUtil;
 
 /**
  * 消息界面的Fragment
@@ -40,7 +45,7 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
     @Override
     public void init() {
         super.init();
-        //EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
         messageList = new ArrayList<>();
         messageList.add(new ConversationBean(new User("admin", "系统消息")));
         messageList.add(new ConversationBean(new User("tuling", "智能小白")));
@@ -95,7 +100,7 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
         mLvMessage.setOnLoadDataListener(new SuperListView.OnLoadDataListener() {
             @Override
             public void onRefresh() {
-                ThreadUtils.runOnSubThread(new Runnable() {
+                ThreadUtil.runOnSubThread(new Runnable() {
                     @Override
                     public void run() {
                         messageList.clear();
@@ -108,6 +113,10 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
         });
     }
 
+    /**
+     * 刷新消息界面
+     * @param conversation
+     */
     public void refreshMessage(ConversationBean conversation) {
         if (mLvMessage != null && mAdapter != null) {
             messageList.add(conversation);
@@ -116,5 +125,14 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
                 mLvMessage.onRefreshFinish();
             }
         }
+    }
+
+    /**
+     * 收到新的消息
+     * @param msg
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void receiveMessage(Message msg) {
+
     }
 }

@@ -29,8 +29,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import cn.peng.pxun.modle.picker.WheelItem;
-import cn.peng.pxun.utils.ConvertUtils;
-import cn.peng.pxun.utils.LogUtils;
+import cn.peng.pxun.utils.ConvertUtil;
+import cn.peng.pxun.utils.LogUtil;
 
 
 /**
@@ -320,7 +320,7 @@ public class WheelView extends View {
     }
 
     public void setTextPadding(int textPadding) {
-        this.textPadding = ConvertUtils.toPx(getContext(), textPadding);
+        this.textPadding = ConvertUtil.toPx(getContext(), textPadding);
     }
 
     public void setUseWeight(boolean useWeight) {
@@ -409,14 +409,14 @@ public class WheelView extends View {
         } else {
             measuredWidth = maxTextWidth;
             if (textPadding < 0) {
-                textPadding = ConvertUtils.toPx(getContext(), ITEM_PADDING);
+                textPadding = ConvertUtil.toPx(getContext(), ITEM_PADDING);
             }
             measuredWidth += textPadding * 2;
             if (!TextUtils.isEmpty(label)) {
                 measuredWidth += obtainTextWidth(paintCenterText, label);
             }
         }
-        LogUtils.debug("measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
+        LogUtil.d("measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
         //计算两条横线 和 选中项画笔的基线Y位置
         firstLineY = (measuredHeight - itemHeight) / 2.0F;
         secondLineY = (measuredHeight + itemHeight) / 2.0F;
@@ -709,7 +709,7 @@ public class WheelView extends View {
                 drawCenterContentStart = (int) ((measuredWidth - rect.width()) * 0.5);
                 break;
             case Gravity.LEFT:
-                drawCenterContentStart = ConvertUtils.toPx(getContext(), 8);
+                drawCenterContentStart = ConvertUtil.toPx(getContext(), 8);
                 break;
             case Gravity.RIGHT://添加偏移量
                 drawCenterContentStart = measuredWidth - rect.width() - (int) centerContentOffset;
@@ -725,7 +725,7 @@ public class WheelView extends View {
                 drawOutContentStart = (int) ((measuredWidth - rect.width()) * 0.5);
                 break;
             case Gravity.LEFT:
-                drawOutContentStart = ConvertUtils.toPx(getContext(), 8);
+                drawOutContentStart = ConvertUtil.toPx(getContext(), 8);
                 break;
             case Gravity.RIGHT:
                 drawOutContentStart = measuredWidth - rect.width() - (int) centerContentOffset;

@@ -18,9 +18,9 @@ import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.fragment.FriendPresenter;
 import cn.peng.pxun.ui.activity.ChatActivity;
-import cn.peng.pxun.ui.adapter.FriendAdapter;
+import cn.peng.pxun.ui.adapter.listview.FriendAdapter;
 import cn.peng.pxun.ui.view.SuperListView;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.ThreadUtil;
 import cn.peng.pxun.utils.ToastUtil;
 
 /**
@@ -84,12 +84,12 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ThreadUtils.runOnSubThread(new Runnable() {
+                        ThreadUtil.runOnSubThread(new Runnable() {
                             @Override
                             public void run() {
                                 try {
                                     EMClient.getInstance().contactManager().deleteContact(AppConfig.getUserId(user));
-                                    ThreadUtils.runOnMainThread(new Runnable() {
+                                    ThreadUtil.runOnMainThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             ToastUtil.showToast(mActivity, "删除好友成功");
@@ -97,7 +97,7 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
                                     });
                                 } catch (HyphenateException e) {
                                     e.printStackTrace();
-                                    ThreadUtils.runOnMainThread(new Runnable() {
+                                    ThreadUtil.runOnMainThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             ToastUtil.showToast(mActivity, "删除好友失败");
@@ -124,7 +124,7 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
     }
 
     public void refreshFriend(User user) {
-        if (mLvContact != null &&mAdapter != null ) {
+        if (mLvContact != null && mAdapter != null ) {
             friendList.add(user);
             mAdapter.setDataSets(friendList);
             if (mLvContact.isRefresh()) {

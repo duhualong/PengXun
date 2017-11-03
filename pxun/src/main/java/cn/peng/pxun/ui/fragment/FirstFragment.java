@@ -12,7 +12,8 @@ import cn.peng.pxun.presenter.BasePresenter;
 public class FirstFragment extends BaseFragment{
     @Override
     public View initView() {
-        View view = View.inflate(mActivity, R.layout.fragment_first, null);
+       // View view = View.inflate(mActivity, R.layout.fragment_first, null);
+        View view = View.inflate(mActivity, R.layout.app_page_empty, null);
         return view;
     }
 

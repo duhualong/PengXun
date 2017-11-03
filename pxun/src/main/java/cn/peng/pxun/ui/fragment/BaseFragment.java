@@ -8,10 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.peng.pxun.presenter.BasePresenter;
-import de.greenrobot.event.EventBus;
 
 /**
  * Fragment的基类

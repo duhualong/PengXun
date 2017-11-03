@@ -16,7 +16,7 @@ import cn.peng.pxun.modle.bean.ConversationBean;
 import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.fragment.MessageFragment;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.ThreadUtil;
 
 /**
  * Created by msi on 2017/9/27.
@@ -34,7 +34,7 @@ public class MessagePresenter extends BasePresenter{
      * 获取会话列表
      */
     public void getMessageList() {
-        ThreadUtils.runOnSubThread(new Runnable() {
+        ThreadUtil.runOnSubThread(new Runnable() {
             @Override
             public void run() {
                 Map<String, EMConversation> conversationMap = EMClient.getInstance().chatManager().getAllConversations();

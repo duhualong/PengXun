@@ -14,7 +14,7 @@ import butterknife.BindView;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.bmob.SysMessage;
 import cn.peng.pxun.presenter.activity.SysMessagePresenter;
-import cn.peng.pxun.ui.adapter.SysMessageAdapter;
+import cn.peng.pxun.ui.adapter.recycleview.SysMessageAdapter;
 import cn.peng.pxun.utils.ToastUtil;
 
 public class SysMessageActivity extends BaseActivity<SysMessagePresenter> {

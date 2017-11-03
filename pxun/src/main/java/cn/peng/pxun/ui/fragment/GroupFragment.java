@@ -13,9 +13,8 @@ import butterknife.BindView;
 import cn.peng.pxun.R;
 import cn.peng.pxun.presenter.fragment.GroupPresenter;
 import cn.peng.pxun.ui.activity.ChatActivity;
-import cn.peng.pxun.ui.adapter.GroupAdapter;
+import cn.peng.pxun.ui.adapter.listview.GroupAdapter;
 import cn.peng.pxun.ui.view.SuperListView;
-import cn.peng.pxun.utils.ThreadUtils;
 
 /**
  * 群组页面
@@ -75,19 +74,20 @@ public class GroupFragment extends BaseFragment<GroupPresenter> {
     }
 
 
-    public void refreshGroup(final List<EMGroup> grouplist) {
-        ThreadUtils.runOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                if (mLvGroup != null &&mAdapter != null ) {
-                    groupList = grouplist;
-                    mAdapter.setDataSets(groupList);
-                    if (mLvGroup.isRefresh()) {
-                        mLvGroup.onRefreshFinish();
-                    }
-                }
+    public void refreshGroup(List<EMGroup> grouplist) {
+        if (mLvGroup != null &&mAdapter != null ) {
+            if (grouplist == null || grouplist.size() == 0){
+                View view = View.inflate(mActivity, R.layout.app_page_empty, null);
+                mLvGroup.setEmptyView(view);
+                return;
             }
-        });
+            groupList = grouplist;
+            mAdapter.setDataSets(groupList);
+            if (mLvGroup.isRefresh()) {
+                mLvGroup.onRefreshFinish();
+            }
+        }
+
     }
 
 }

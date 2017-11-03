@@ -17,7 +17,6 @@ import cn.peng.pxun.modle.picker.LinkageFirst;
 import cn.peng.pxun.modle.picker.LinkageSecond;
 import cn.peng.pxun.modle.picker.LinkageThird;
 import cn.peng.pxun.ui.view.WheelView;
-import cn.peng.pxun.utils.LogUtils;
 
 /**
  * 两级、三级联动选择器。默认只初始化第一级数据，第二三级数据由联动获得。
@@ -118,7 +117,6 @@ public class LinkagePicker<Fst extends LinkageFirst<Snd>, Snd extends LinkageSec
             }
             i++;
         }
-        LogUtils.verbose("init select first: " + fst.getName() + ", index:" + selectedFirstIndex);
         //noinspection unchecked
         List<Snd> snds = provider.linkageSecondData(selectedFirstIndex);
         int j = 0;
@@ -132,7 +130,6 @@ public class LinkagePicker<Fst extends LinkageFirst<Snd>, Snd extends LinkageSec
             }
             j++;
         }
-        LogUtils.verbose("init select second: " + snd.getName() + ", index:" + selectedSecondIndex);
         if (provider.isOnlyTwo()) {
             return;//仅仅二级联动
         }
@@ -153,7 +150,6 @@ public class LinkagePicker<Fst extends LinkageFirst<Snd>, Snd extends LinkageSec
             }
             k++;
         }
-        LogUtils.verbose("init select third: " + trd + ", index:" + selectedThirdIndex);
     }
 
     public void setLabel(String firstLabel, String secondLabel) {
@@ -308,7 +304,6 @@ public class LinkagePicker<Fst extends LinkageFirst<Snd>, Snd extends LinkageSec
                 //noinspection unchecked
                 selectedFirstItem = (Fst) provider.initFirstData().get(index);
                 selectedFirstIndex = index;
-                LogUtils.verbose(this, "change second data after first wheeled");
                 selectedSecondIndex = 0;//重置第二级索引
                 selectedThirdIndex = 0;//重置第三级索引
                 //根据第一级数据获取第二级数据
@@ -340,7 +335,6 @@ public class LinkagePicker<Fst extends LinkageFirst<Snd>, Snd extends LinkageSec
                 selectedSecondItem = (Snd) provider.linkageSecondData(selectedFirstIndex).get(index);
                 selectedSecondIndex = index;
                 if (!provider.isOnlyTwo()) {
-                    LogUtils.verbose(this, "change third data after second wheeled");
                     selectedThirdIndex = 0;//重置第三级索引
                     //noinspection unchecked
                     List<Trd> trds = provider.linkageThirdData(selectedFirstIndex, selectedSecondIndex);

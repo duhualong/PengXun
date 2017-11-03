@@ -19,7 +19,7 @@ import java.util.Locale;
  * @author 李玉江[QQ:1023694760]
  * @since 2015/8/5
  */
-public class DateUtils extends android.text.format.DateUtils {
+public class DateUtil extends android.text.format.DateUtils {
     public static final int Second = 0;
     public static final int Minute = 1;
     public static final int Hour = 2;
@@ -223,4 +223,13 @@ public class DateUtils extends android.text.format.DateUtils {
         return formatDate(Calendar.getInstance(Locale.CHINA).getTime(), format);
     }
 
+    /**
+     * 获取时间戳的字符串
+     * @param date
+     * @return
+     */
+    public static String getDate(long date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm ");
+        return formatter.format(date);
+    }
 }

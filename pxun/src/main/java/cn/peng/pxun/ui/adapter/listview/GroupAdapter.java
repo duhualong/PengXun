@@ -1,4 +1,4 @@
-package cn.peng.pxun.ui.adapter;
+package cn.peng.pxun.ui.adapter.listview;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -12,6 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
+import cn.peng.pxun.ui.adapter.SuperBaseApapter;
 import cn.peng.pxun.ui.adapter.holder.BaseHolder;
 
 /**

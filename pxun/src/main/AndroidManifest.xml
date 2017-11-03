@@ -81,6 +81,14 @@
         </activity>
         <activity android:name=".ui.activity.CreateGroupActivity">
         </activity>
+        <activity android:name=".ui.activity.SysMessageActivity">
+        </activity>
+        <activity android:name=".ui.activity.WebActivity">
+        </activity>
+        <activity android:name=".ui.activity.ContactActivity">
+        </activity>
+        <activity android:name=".ui.activity.UserInfoActivity">
+        </activity>
 
         <!-- 设置环信应用的AppKey -->
         <meta-data
@@ -158,14 +166,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-        <activity android:name=".ui.activity.SysMessageActivity">
-        </activity>
-        <activity android:name=".ui.activity.WebActivity">
-        </activity>
-        <activity android:name=".ui.activity.ContactActivity">
-        </activity>
-        <activity android:name=".ui.activity.UserInfoActivity">
-        </activity>
     </application>
 
 </manifest>

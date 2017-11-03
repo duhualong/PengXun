@@ -1,4 +1,4 @@
-package cn.peng.pxun.ui.adapter;
+package cn.peng.pxun.ui.adapter.listview;
 
 import android.text.TextUtils;
 import android.view.View;
@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.bmob.User;
+import cn.peng.pxun.ui.adapter.SuperBaseApapter;
 import cn.peng.pxun.ui.adapter.holder.BaseHolder;
 
 /**

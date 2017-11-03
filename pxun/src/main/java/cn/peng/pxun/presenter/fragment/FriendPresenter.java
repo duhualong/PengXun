@@ -1,8 +1,5 @@
 package cn.peng.pxun.presenter.fragment;
 
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.exceptions.HyphenateException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,14 +7,13 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.peng.pxun.modle.bmob.User;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.BaseUserPresenter;
 import cn.peng.pxun.ui.fragment.FriendFragment;
-import cn.peng.pxun.utils.ThreadUtils;
 
 /**
  * Created by msi on 2016/12/26.
  */
-public class FriendPresenter extends BasePresenter {
+public class FriendPresenter extends BaseUserPresenter {
     private FriendFragment mFragment;
 
     public FriendPresenter(FriendFragment fragment) {
@@ -29,19 +25,10 @@ public class FriendPresenter extends BasePresenter {
      * 从环信获取好友列表
      */
     public void getFriendList() {
-        ThreadUtils.runOnSubThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    List<String> userIds = EMClient.getInstance().contactManager().getAllContactsFromServer();
-                    for (String userId : userIds){
-                        getUserFromBmob(userId);
-                    }
-                } catch (HyphenateException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        List<String> userIds = getFriendListFromHuanXin();
+        for (String userId : userIds){
+            getUserFromBmob(userId);
+        }
     }
 
     /**

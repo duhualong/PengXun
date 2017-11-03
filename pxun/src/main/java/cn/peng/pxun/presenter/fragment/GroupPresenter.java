@@ -8,7 +8,7 @@ import java.util.List;
 
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.fragment.GroupFragment;
-import cn.peng.pxun.utils.ThreadUtils;
+import cn.peng.pxun.utils.ThreadUtil;
 
 /**
  * Created by msi on 2016/12/26.
@@ -26,12 +26,17 @@ public class GroupPresenter extends BasePresenter{
      * @return
      */
     public void getGroupList() {
-        ThreadUtils.runOnSubThread(new Runnable() {
+        ThreadUtil.runOnSubThread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    List<EMGroup> grouplist = EMClient.getInstance().groupManager().getJoinedGroupsFromServer();
-                    mFragment.refreshGroup(grouplist);
+                    final List<EMGroup> grouplist = EMClient.getInstance().groupManager().getJoinedGroupsFromServer();
+                    ThreadUtil.runOnMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mFragment.refreshGroup(grouplist);
+                        }
+                    });
                 } catch (HyphenateException e) {
                     e.printStackTrace();
                 }

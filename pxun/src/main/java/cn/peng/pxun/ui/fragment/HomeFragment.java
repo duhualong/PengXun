@@ -11,7 +11,7 @@ import java.util.List;
 import butterknife.BindView;
 import cn.peng.pxun.R;
 import cn.peng.pxun.presenter.BasePresenter;
-import cn.peng.pxun.ui.adapter.HomeAdapter;
+import cn.peng.pxun.ui.adapter.viewpager.HomeAdapter;
 
 /**
  * Created by tofirst on 2017/10/27.

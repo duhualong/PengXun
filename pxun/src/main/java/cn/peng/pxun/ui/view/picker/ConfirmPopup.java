@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import cn.peng.pxun.utils.ConvertUtils;
+import cn.peng.pxun.utils.ConvertUtil;
 
 
 /**
@@ -302,10 +302,10 @@ public abstract class ConfirmPopup<V extends View> extends BasicPopup<View> {
         int lr = 0;
         int tb = 0;
         if (contentLeftAndRightPadding > 0) {
-            lr = ConvertUtils.toPx(activity, contentLeftAndRightPadding);
+            lr = ConvertUtil.toPx(activity, contentLeftAndRightPadding);
         }
         if (contentTopAndBottomPadding > 0) {
-            tb = ConvertUtils.toPx(activity, contentTopAndBottomPadding);
+            tb = ConvertUtil.toPx(activity, contentTopAndBottomPadding);
         }
         centerView.setPadding(lr, tb, lr, tb);
         ViewGroup vg = (ViewGroup) centerView.getParent();
@@ -327,7 +327,7 @@ public abstract class ConfirmPopup<V extends View> extends BasicPopup<View> {
             return headerView;
         }
         RelativeLayout topButtonLayout = new RelativeLayout(activity);
-        int height = ConvertUtils.toPx(activity, topHeight);
+        int height = ConvertUtil.toPx(activity, topHeight);
         topButtonLayout.setLayoutParams(new RelativeLayout.LayoutParams(MATCH_PARENT, height));
         topButtonLayout.setBackgroundColor(topBackgroundColor);
         topButtonLayout.setGravity(Gravity.CENTER_VERTICAL);
@@ -340,12 +340,12 @@ public abstract class ConfirmPopup<V extends View> extends BasicPopup<View> {
         cancelButton.setLayoutParams(cancelParams);
         cancelButton.setBackgroundColor(Color.TRANSPARENT);
         cancelButton.setGravity(Gravity.CENTER);
-        int padding = ConvertUtils.toPx(activity, topPadding);
+        int padding = ConvertUtil.toPx(activity, topPadding);
         cancelButton.setPadding(padding, 0, padding, 0);
         if (!TextUtils.isEmpty(cancelText)) {
             cancelButton.setText(cancelText);
         }
-        cancelButton.setTextColor(ConvertUtils.toColorStateList(cancelTextColor, pressedTextColor));
+        cancelButton.setTextColor(ConvertUtil.toColorStateList(cancelTextColor, pressedTextColor));
         if (cancelTextSize != 0) {
             cancelButton.setTextSize(cancelTextSize);
         }
@@ -361,7 +361,7 @@ public abstract class ConfirmPopup<V extends View> extends BasicPopup<View> {
         if (null == titleView) {
             TextView textView = new TextView(activity);
             RelativeLayout.LayoutParams titleParams = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-            int margin = ConvertUtils.toPx(activity, topPadding);
+            int margin = ConvertUtil.toPx(activity, topPadding);
             titleParams.leftMargin = margin;
             titleParams.rightMargin = margin;
             titleParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
@@ -390,7 +390,7 @@ public abstract class ConfirmPopup<V extends View> extends BasicPopup<View> {
         if (!TextUtils.isEmpty(submitText)) {
             submitButton.setText(submitText);
         }
-        submitButton.setTextColor(ConvertUtils.toColorStateList(submitTextColor, pressedTextColor));
+        submitButton.setTextColor(ConvertUtil.toColorStateList(submitTextColor, pressedTextColor));
         if (submitTextSize != 0) {
             submitButton.setTextSize(submitTextSize);
         }

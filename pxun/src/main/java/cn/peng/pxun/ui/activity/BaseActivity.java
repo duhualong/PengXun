@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,7 +13,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.peng.pxun.presenter.BasePresenter;
-import de.greenrobot.event.EventBus;
 import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
 import me.weyye.hipermission.PermissionItem;

@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import cn.peng.pxun.ui.view.WheelView;
-import cn.peng.pxun.utils.ConvertUtils;
+import cn.peng.pxun.utils.ConvertUtil;
 
 
 /**
@@ -113,7 +113,7 @@ public class SinglePicker<T> extends WheelPicker {
     public void setItemWidth(int itemWidth) {
         if (null != wheelView) {
             ViewGroup.LayoutParams params = wheelView.getLayoutParams();
-            params.width = ConvertUtils.toPx(activity, itemWidth);
+            params.width = ConvertUtil.toPx(activity, itemWidth);
             wheelView.setLayoutParams(params);
         } else {
             this.itemWidth = itemWidth;
@@ -169,7 +169,7 @@ public class SinglePicker<T> extends WheelPicker {
         });
         if (itemWidth != ITEM_WIDTH_UNKNOWN) {
             ViewGroup.LayoutParams params = wheelView.getLayoutParams();
-            params.width = ConvertUtils.toPx(activity, itemWidth);
+            params.width = ConvertUtil.toPx(activity, itemWidth);
             wheelView.setLayoutParams(params);
         }
         return layout;
