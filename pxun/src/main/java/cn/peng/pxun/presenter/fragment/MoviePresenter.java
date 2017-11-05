@@ -37,7 +37,7 @@ public class MoviePresenter extends BaseMoviePresenter {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
                         if (!isNetUsable(mContext)) {
-                            showToast(mContext, "网络不可用");
+                            showToast("网络不可用");
                         }
                     }
                 })

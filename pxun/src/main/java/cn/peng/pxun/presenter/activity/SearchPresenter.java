@@ -128,15 +128,15 @@ public class SearchPresenter extends BasePresenter {
                         @Override
                         public void done(String s, BmobException e) {
                             if (e == null){
-                                showToast(activity, "好友申请发送成功");
+                                showToast("好友申请发送成功");
                             }else{
-                                showToast(activity, "服务器连接较慢，请稍后重试");
+                                showToast("服务器连接较慢，请稍后重试");
                             }
                         }
                     });
                 } catch (HyphenateException e) {
                     e.printStackTrace();
-                    showToast(activity, "消息发送失败");
+                    showToast("消息发送失败");
                 }
             }
         });

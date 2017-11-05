@@ -34,7 +34,6 @@ public class ContactActivity extends BaseActivity {
     @BindView(R.id.vp_contact)
     ViewPager mVpContact;
 
-
     private List<BaseFragment> fragmentList;
 
     @Override

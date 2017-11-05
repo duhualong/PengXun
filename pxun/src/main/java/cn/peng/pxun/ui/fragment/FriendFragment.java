@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
@@ -20,8 +21,8 @@ import cn.peng.pxun.presenter.fragment.FriendPresenter;
 import cn.peng.pxun.ui.activity.ChatActivity;
 import cn.peng.pxun.ui.adapter.listview.FriendAdapter;
 import cn.peng.pxun.ui.view.SuperListView;
+import cn.peng.pxun.utils.LogUtil;
 import cn.peng.pxun.utils.ThreadUtil;
-import cn.peng.pxun.utils.ToastUtil;
 
 /**
  * 联系人界面的Fragment
@@ -30,10 +31,13 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
 
     @BindView(R.id.lv_contact)
     SuperListView mLvContact;
+    @BindView(R.id.page_empty)
+    View emptyView;
+    @BindView(R.id.tv_empty_text)
+    TextView tvEmptyText;
 
     private List<User> friendList;
     private FriendAdapter mAdapter;
-
 
     @Override
     public void init() {
@@ -56,6 +60,7 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
 
     @Override
     public void initData() {
+        tvEmptyText.setText("您还没有好友");
         mAdapter = new FriendAdapter(friendList);
         mLvContact.setAdapter(mAdapter);
     }
@@ -89,20 +94,10 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
                             public void run() {
                                 try {
                                     EMClient.getInstance().contactManager().deleteContact(AppConfig.getUserId(user));
-                                    ThreadUtil.runOnMainThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            ToastUtil.showToast(mActivity, "删除好友成功");
-                                        }
-                                    });
+                                    presenter.showToast("删除好友成功");
                                 } catch (HyphenateException e) {
                                     e.printStackTrace();
-                                    ThreadUtil.runOnMainThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            ToastUtil.showToast(mActivity, "删除好友失败");
-                                        }
-                                    });
+                                    LogUtil.e(e.toString());
                                 }
                             }
                         });
@@ -110,15 +105,19 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
                 });
                 builder.setNegativeButton("取消", null);
                 builder.create().show();
-
                 return true;
             }
         });
         mLvContact.setOnLoadDataListener(new SuperListView.OnLoadDataListener() {
             @Override
             public void onRefresh() {
-                friendList.clear();
-                presenter.getFriendList();
+                emptyView.setVisibility(View.GONE);
+                if (!presenter.isLoadingFriend()){
+                    friendList.clear();
+                    presenter.getFriendList();
+                }else {
+                    mLvContact.onRefreshFinish();
+                }
             }
         });
     }
@@ -127,9 +126,16 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
         if (mLvContact != null && mAdapter != null ) {
             friendList.add(user);
             mAdapter.setDataSets(friendList);
-            if (mLvContact.isRefresh()) {
+
+            if (mLvContact.isRefresh() && !presenter.isLoadingFriend()) {
                 mLvContact.onRefreshFinish();
             }
+        }
+    }
+
+    public void setEmptyPage() {
+        if (mLvContact != null && mAdapter != null ) {
+            emptyView.setVisibility(View.VISIBLE);
         }
     }
 }

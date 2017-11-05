@@ -11,7 +11,8 @@
         android:id="@+id/ll_setting_clear"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/tab_item_selector">
 
         <ImageView
             android:layout_width="32dp"
@@ -44,7 +45,8 @@
         android:id="@+id/ll_setting_feedback"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/tab_item_selector">
 
         <ImageView
             android:layout_width="32dp"
@@ -78,7 +80,8 @@
         android:id="@+id/ll_setting_version"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/tab_item_selector">
 
         <ImageView
             android:layout_width="32dp"
@@ -115,9 +118,9 @@
         android:layout_height="45dp"
         android:layout_margin="20dp"
         android:gravity="center"
-        android:background="@color/selectColor"
         android:text="注销"
         android:textSize="16sp"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        android:background="@drawable/bt_regiest_selector"/>
 
 </LinearLayout>

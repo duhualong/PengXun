@@ -12,6 +12,7 @@ import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.fragment.BaseFragment;
 import cn.peng.pxun.utils.LogUtil;
+import cn.peng.pxun.utils.ThreadUtil;
 
 /**
  * Created by tofirst on 2017/11/3.
@@ -19,6 +20,9 @@ import cn.peng.pxun.utils.LogUtil;
 
 public class BaseUserPresenter extends BasePresenter{
     private UserInfoListener userInfoListener;
+    private FriendListListener friendListListener;
+
+    protected List<String> friendIds;
 
     public BaseUserPresenter(BaseActivity activity) {
         super(activity);
@@ -33,41 +37,50 @@ public class BaseUserPresenter extends BasePresenter{
      * @param userId
      */
     public void getUser(String userId){
-        if (isNetUsable(context)){
-            BmobQuery<User> bmobQuery = new BmobQuery();
-            if (isPhoneNumber(userId)){
-                bmobQuery.addWhereEqualTo("mobilePhoneNumber", userId);
-            }else{
-                userId = userId.toUpperCase();
-                bmobQuery.addWhereEqualTo("thirdPartyID", userId);
-            }
-            bmobQuery.findObjects(new FindListener<User>(){
-                @Override
-                public void done(List<User> list, BmobException e) {
-                    if (e == null && userInfoListener != null) {
-                        User user = list.get(0);
-                        userInfoListener.onGetUser(user);
-                    } else {
-                        LogUtil.e(e.toString());
-                    }
-                }
-            });
+        if (!isNetUsable(context)) {
+            return;
         }
+        BmobQuery<User> bmobQuery = new BmobQuery();
+        if (isPhoneNumber(userId)){
+            bmobQuery.addWhereEqualTo("mobilePhoneNumber", userId);
+        }else{
+            userId = userId.toUpperCase();
+            bmobQuery.addWhereEqualTo("thirdPartyID", userId);
+        }
+        bmobQuery.findObjects(new FindListener<User>(){
+            @Override
+            public void done(List<User> list, BmobException e) {
+                if (e == null && userInfoListener != null) {
+                    User user = list.get(0);
+                    userInfoListener.onGetUser(user);
+                } else {
+                    LogUtil.e(e.toString());
+                }
+            }
+        });
     }
 
     /**
      * 从环信获取我的好友集合
      * @return
      */
-    public List<String> getFriendListFromHuanXin(){
-        if (isNetUsable(context)) {
-            try {
-                return EMClient.getInstance().contactManager().getAllContactsFromServer();
-            } catch (HyphenateException e) {
-                e.printStackTrace();
-            }
+    public void getFriendListFromHuanXin(){
+        if (!isNetUsable(context)) {
+            return;
         }
-        return null;
+        ThreadUtil.runOnSubThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    friendIds = EMClient.getInstance().contactManager().getAllContactsFromServer();
+                    if (friendListListener != null){
+                        friendListListener.onGetFriendList(friendIds);
+                    }
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
@@ -76,8 +89,7 @@ public class BaseUserPresenter extends BasePresenter{
      * @return
      */
     public boolean isMyFriend(String userId){
-        if (isNetUsable(context)) {
-            List<String> friendIds = getFriendListFromHuanXin();
+        if (friendIds != null && friendIds.size() > 0){
             for (String friendId : friendIds){
                 if (userId.equals(friendId)){
                     return true;
@@ -95,7 +107,19 @@ public class BaseUserPresenter extends BasePresenter{
         this.userInfoListener = listener;
     }
 
-    interface UserInfoListener{
+    public interface UserInfoListener{
         void onGetUser(User user);
+    }
+
+    /**
+     * 添加获取好友列表的监听
+     * @param listener
+     */
+    public void addFriendListListener(FriendListListener listener){
+        this.friendListListener = listener;
+    }
+
+    public interface FriendListListener{
+        void onGetFriendList(List<String> userIds);
     }
 }

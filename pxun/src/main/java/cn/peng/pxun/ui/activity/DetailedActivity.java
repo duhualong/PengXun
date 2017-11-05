@@ -32,6 +32,8 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
     TextView mTvUserinfoAddress;
     @BindView(R.id.bt_userinfo)
     Button mBtUserinfo;
+
+    private boolean isFriend;
     private boolean isMe;
     private String accountNumber;
     private User mUser;
@@ -42,6 +44,7 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
         Intent intent = getIntent();
         isMe = intent.getBooleanExtra("isMe",false);
         accountNumber = intent.getStringExtra("accountNumber");
+        mUser = (User) intent.getSerializableExtra("user");
     }
 
     @Override
@@ -58,19 +61,6 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
     protected void initView() {
         super.initView();
         showLoadingDialog("加载中");
-
-        if (isMe){
-            if (AppConfig.appUser != null){
-                setUserInfo(AppConfig.appUser);
-            } else {
-                accountNumber = MyApplication.sp.getString("userId","");
-                presenter.getUserInfo(accountNumber);
-            }
-            mBtUserinfo.setText("修改资料卡");
-        }else{
-            presenter.getUserInfo(accountNumber);
-            mBtUserinfo.setText("发送消息");
-        }
     }
 
     @Override
@@ -95,12 +85,48 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
             @Override
             public void onClick(View v) {
                 if(isMe){
-                    ToastUtil.showToast(DetailedActivity.this,"修改资料");
+                    Intent intent = new Intent(mActivity, UserInfoActivity.class);
+                    startActivity(intent);
                 }else{
-                    finish();
+                    if (isFriend){
+                        Intent intent = new Intent(mActivity, ChatActivity.class);
+                        intent.putExtra("isGroup", false);
+                        intent.putExtra("userId", AppConfig.getUserId(mUser));
+                        intent.putExtra("username", mUser.getUsername());
+                        startActivity(intent);
+                    }else {
+                        presenter.showToast("添加好友");
+                    }
                 }
             }
         });
+    }
+
+    /**
+     * 开始初始化
+     */
+    public void startInit() {
+        isFriend = presenter.isMyFriend(AppConfig.getUserId(mUser));
+        if (isMe){
+            if (AppConfig.appUser != null){
+                setUserInfo(AppConfig.appUser);
+            } else {
+                accountNumber = MyApplication.sp.getString("userId","");
+                presenter.getUserInfo(accountNumber);
+            }
+            mBtUserinfo.setText("修改资料卡");
+        }else{
+            if (mUser == null){
+                presenter.getUserInfo(accountNumber);
+            }else {
+                setUserInfo(mUser);
+            }
+            if (isFriend){
+                mBtUserinfo.setText("发送消息");
+            } else {
+                mBtUserinfo.setText("添加好友");
+            }
+        }
     }
 
     /**
@@ -130,4 +156,5 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
             ToastUtil.showToast(this,"用户信息加载失败");
         }
     }
+
 }

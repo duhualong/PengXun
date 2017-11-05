@@ -1,6 +1,5 @@
 package cn.peng.pxun.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.hyphenate.chat.EMMessage;
@@ -69,15 +68,14 @@ public abstract class BasePresenter {
 
     /**
      * 在主线程弹出吐司框
-     * @param activity
      * @param text
      * @return
      */
-    public void showToast(final Activity activity, final String text){
+    public void showToast(final String text){
         ThreadUtil.runOnMainThread(new Runnable() {
             @Override
             public void run() {
-                ToastUtil.showToast(activity, text);
+                ToastUtil.showToast(context, text);
             }
         });
     }

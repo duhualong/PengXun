@@ -5,6 +5,8 @@
     <color name="bgColor">#181818</color>
     <color name="itemColor">#DDDDDD</color>
     <color name="selectColor">#FB4E30</color>
+    <color name="regiestColor">#FF3942</color>
+    <color name="tabColor">#EEEEEE</color>
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>

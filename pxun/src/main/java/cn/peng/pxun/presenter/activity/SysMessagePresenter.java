@@ -43,7 +43,7 @@ public class SysMessagePresenter extends BasePresenter{
                 if (e == null) {
                     activity.onloadFinish(list);
                 } else {
-                    showToast(activity, "数据加载失败");
+                    showToast("数据加载失败");
                 }
             }
         });
@@ -72,13 +72,13 @@ public class SysMessagePresenter extends BasePresenter{
                                 newMsg.setMsgState("1");
                                 addNewSysMessage(newMsg);
                             }else{
-                                showToast(activity, "服务器连接较慢，请稍后重试");
+                                showToast("服务器连接较慢，请稍后重试");
                             }
                         }
                     });
                 } catch (HyphenateException e1) {
                     e1.printStackTrace();
-                    showToast(activity, "消息处理失败");
+                    showToast("消息处理失败");
                 }
             }
         });
@@ -89,9 +89,9 @@ public class SysMessagePresenter extends BasePresenter{
             @Override
             public void done(String s, BmobException e) {
                 if (e == null){
-                    showToast(activity, "消息处理成功");
+                    showToast("消息处理成功");
                 }else{
-                    showToast(activity, "服务器连接较慢，请稍后重试");
+                    showToast("服务器连接较慢，请稍后重试");
                 }
             }
         });

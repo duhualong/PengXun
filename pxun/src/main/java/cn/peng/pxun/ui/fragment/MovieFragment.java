@@ -1,5 +1,6 @@
 package cn.peng.pxun.ui.fragment;
 
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -15,8 +16,8 @@ import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bean.MovieBean;
 import cn.peng.pxun.presenter.fragment.MoviePresenter;
+import cn.peng.pxun.ui.activity.MovieInfoActivity;
 import cn.peng.pxun.ui.adapter.recycleview.MovieAdapter;
-import cn.peng.pxun.utils.ToastUtil;
 
 /**
  * Created by tofirst on 2017/10/27.
@@ -70,9 +71,8 @@ public class MovieFragment extends BaseFragment<MoviePresenter> {
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter baseQuickAdapter, View view, int position) {
-                ToastUtil.showToast(mActivity, "onItemClick:"+position);
-//                Intent intent = new Intent();
-//                startActivity(intent);
+                Intent intent = new Intent(mActivity, MovieInfoActivity.class);
+                startActivity(intent);
             }
         });
         adapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {

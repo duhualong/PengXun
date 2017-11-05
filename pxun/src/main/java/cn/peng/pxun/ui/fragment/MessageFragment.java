@@ -25,7 +25,6 @@ import cn.peng.pxun.ui.activity.ContactActivity;
 import cn.peng.pxun.ui.activity.SysMessageActivity;
 import cn.peng.pxun.ui.adapter.listview.MessageAdapter;
 import cn.peng.pxun.ui.view.SuperListView;
-import cn.peng.pxun.utils.ThreadUtil;
 
 /**
  * 消息界面的Fragment
@@ -100,15 +99,14 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
         mLvMessage.setOnLoadDataListener(new SuperListView.OnLoadDataListener() {
             @Override
             public void onRefresh() {
-                ThreadUtil.runOnSubThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        messageList.clear();
-                        messageList.add(new ConversationBean(new User("admin", "系统消息")));
-                        messageList.add(new ConversationBean(new User("tuling", "智能小白")));
-                        presenter.getMessageList();
-                    }
-                });
+                if (!presenter.isLoadingMessage()){
+                    messageList.clear();
+                    messageList.add(new ConversationBean(new User("admin", "系统消息")));
+                    messageList.add(new ConversationBean(new User("tuling", "智能小白")));
+                    presenter.getMessageList();
+                }else {
+                    mLvMessage.onRefreshFinish();
+                }
             }
         });
     }
@@ -119,10 +117,13 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
      */
     public void refreshMessage(ConversationBean conversation) {
         if (mLvMessage != null && mAdapter != null) {
-            messageList.add(conversation);
-            mAdapter.setDataSets(messageList);
-            if (mLvMessage.isRefresh()) {
+            if (mLvMessage.isRefresh() && !presenter.isLoadingMessage()) {
                 mLvMessage.onRefreshFinish();
+            }
+
+            if (conversation != null){
+                messageList.add(conversation);
+                mAdapter.setDataSets(messageList);
             }
         }
     }

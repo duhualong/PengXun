@@ -47,7 +47,7 @@ public class HomeFragment extends BaseFragment {
         HomeAdapter mAdapter = new HomeAdapter(getChildFragmentManager(), fragmentList);
         mVpFragmentHome.setAdapter(mAdapter);//给ViewPager设置适配器
         mTabTitle.setupWithViewPager(mVpFragmentHome);//将TabLayout和ViewPager关联起来。
-        mVpFragmentHome.setCurrentItem(1);
+        mVpFragmentHome.setCurrentItem(2);
     }
 
     /**

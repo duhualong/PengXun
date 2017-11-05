@@ -11,7 +11,7 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="156dp"
             android:background="@drawable/userinfo_bg"/>
 
         <LinearLayout
@@ -28,15 +28,15 @@
 
                 <cn.peng.pxun.ui.view.HandIconView
                     android:id="@+id/iv_mine_icon"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
                     android:src="@drawable/icon_nan"
                     app:civ_border_width="3dp"
                     app:civ_border_color="@color/white"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="72dp"
                     android:orientation="vertical"
                     android:layout_marginLeft="20dp">
 
@@ -51,7 +51,7 @@
                             android:id="@+id/tv_mine_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="用户昵称"
+                            android:text="未登录"
                             android:textSize="13sp"
                             android:textColor="@color/chatColor"/>
 
@@ -68,11 +68,11 @@
                     <TextView
                         android:id="@+id/tv_mine_info"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:layout_marginBottom="5dp"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom"
+                        android:layout_marginBottom="10dp"
                         android:text="查看或编辑个人资料"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
                         android:textColor="@color/black"/>
                 </LinearLayout>
 
@@ -94,7 +94,8 @@
                     android:gravity="center"
                     android:text="好友"
                     android:textColor="@color/black"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:background="@drawable/tab_item_selector"/>
 
                 <TextView
                     android:id="@+id/tv_mine_group"
@@ -104,7 +105,8 @@
                     android:gravity="center"
                     android:text="群组"
                     android:textColor="@color/black"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:background="@drawable/tab_item_selector"/>
 
             </LinearLayout>
 
@@ -120,8 +122,10 @@
             <LinearLayout
                 android:id="@+id/ll_mine_about"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal">
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:background="@drawable/tab_item_selector">
 
                 <ImageView
                     android:layout_width="32dp"
@@ -158,8 +162,10 @@
             <LinearLayout
                 android:id="@+id/ll_mine_setting"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal">
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:background="@drawable/tab_item_selector">
 
                 <ImageView
                     android:layout_width="32dp"

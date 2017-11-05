@@ -3,6 +3,7 @@ package cn.peng.pxun.ui.fragment;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
 import com.hyphenate.chat.EMGroup;
 
@@ -23,6 +24,10 @@ import cn.peng.pxun.ui.view.SuperListView;
 public class GroupFragment extends BaseFragment<GroupPresenter> {
     @BindView(R.id.lv_group)
     SuperListView mLvGroup;
+    @BindView(R.id.page_empty)
+    View emptyView;
+    @BindView(R.id.tv_empty_text)
+    TextView tvEmptyText;
 
     private List<EMGroup> groupList;
     private GroupAdapter mAdapter;
@@ -48,6 +53,7 @@ public class GroupFragment extends BaseFragment<GroupPresenter> {
 
     @Override
     public void initData() {
+        tvEmptyText.setText("您还没有群组");
         mAdapter = new GroupAdapter(groupList);
         mLvGroup.setAdapter(mAdapter);
     }
@@ -68,6 +74,7 @@ public class GroupFragment extends BaseFragment<GroupPresenter> {
         mLvGroup.setOnLoadDataListener(new SuperListView.OnLoadDataListener() {
             @Override
             public void onRefresh() {
+                emptyView.setVisibility(View.GONE);
                 presenter.getGroupList();
             }
         });
@@ -77,8 +84,7 @@ public class GroupFragment extends BaseFragment<GroupPresenter> {
     public void refreshGroup(List<EMGroup> grouplist) {
         if (mLvGroup != null &&mAdapter != null ) {
             if (grouplist == null || grouplist.size() == 0){
-                View view = View.inflate(mActivity, R.layout.app_page_empty, null);
-                mLvGroup.setEmptyView(view);
+                emptyView.setVisibility(View.VISIBLE);
                 return;
             }
             groupList = grouplist;
