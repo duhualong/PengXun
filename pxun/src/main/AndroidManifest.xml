@@ -89,6 +89,8 @@
         </activity>
         <activity android:name=".ui.activity.UserInfoActivity">
         </activity>
+        <activity android:name=".ui.activity.ClipActivity">
+        </activity>
 
         <!-- 设置环信应用的AppKey -->
         <meta-data

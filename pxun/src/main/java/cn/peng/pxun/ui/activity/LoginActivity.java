@@ -22,6 +22,7 @@ import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.activity.LoginPresenter;
+import cn.peng.pxun.utils.AppUtil;
 import cn.peng.pxun.utils.MD5Util;
 import cn.peng.pxun.utils.ToastUtil;
 import me.weyye.hipermission.HiPermission;
@@ -137,10 +138,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
 
         String phone = MyApplication.sp.getString("phone", "");
         mEtPhone.setText(phone);
-        String password = MyApplication.sp.getString("password", "");
-        mEtPassword.setText(password);
         boolean isRememberPassword = MyApplication.sp.getBoolean("isRemember", false);
         mCbLogin.setChecked(isRememberPassword);
+        if (isRememberPassword){
+            String password = MyApplication.sp.getString("password", "");
+            mEtPassword.setText(password);
+        }
     }
 
     @Override
@@ -231,6 +234,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
                 loadingDialog.cancel();
                 boolean isRemember = mCbLogin.isChecked();
                 presenter.keepUserLoginInfo(isRemember);
+                AppUtil.setAppUser();
 
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);

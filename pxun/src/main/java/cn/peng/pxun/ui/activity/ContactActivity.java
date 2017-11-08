@@ -1,6 +1,5 @@
 package cn.peng.pxun.ui.activity;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
@@ -34,6 +33,7 @@ public class ContactActivity extends BaseActivity {
     @BindView(R.id.vp_contact)
     ViewPager mVpContact;
 
+    private AlertDialog.Builder builder;
     private List<BaseFragment> fragmentList;
 
     @Override
@@ -50,6 +50,7 @@ public class ContactActivity extends BaseActivity {
     protected void initView() {
         super.initView();
         initFragmentList();
+        initDialog();
         mIvTitleGoback.setVisibility(View.VISIBLE);
         mIvTitleMore.setVisibility(View.VISIBLE);
 
@@ -73,7 +74,7 @@ public class ContactActivity extends BaseActivity {
         mIvTitleMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createDialog();
+                builder.show();
             }
         });
         mVpContact.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -102,20 +103,11 @@ public class ContactActivity extends BaseActivity {
         fragmentList.add(groupFragment);
     }
 
-    private void changeText(int position) {
-        if (position == 0) {
-            mTvTitleText.setText("好友");
-        } else if (position == 1) {
-            mTvTitleText.setText("群组");
-        }
-    }
+    private void initDialog() {
+        String items[] = {"添加好友", "加入群组", "创建群组"};
 
-    @SuppressLint("ResourceType")
-    private void createDialog() {
-        final String items[] = {"添加好友", "加入群组", "创建群组"};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this,3);
-        builder.setTitle("选择操作:");
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle("选择操作");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -134,6 +126,14 @@ public class ContactActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
-        builder.create().show();
+        builder.create();
+    }
+
+    private void changeText(int position) {
+        if (position == 0) {
+            mTvTitleText.setText("好友");
+        } else if (position == 1) {
+            mTvTitleText.setText("群组");
+        }
     }
 }

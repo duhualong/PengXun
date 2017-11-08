@@ -1,5 +1,7 @@
 package cn.peng.pxun.modle;
 
+import android.os.Environment;
+
 import cn.peng.pxun.modle.bmob.User;
 
 /**
@@ -8,6 +10,8 @@ import cn.peng.pxun.modle.bmob.User;
 public class AppConfig {
     /** 豆瓣接口根路径 */
     public static final String BASE_MOVIE_URL = "https://api.douban.com/v2/movie/";
+    /** 缓存根路径 */
+    public static final String CACHEPATH = Environment.getExternalStorageDirectory().toString() + "/pxun/";
 
     /** 图林机器人是否初始化成功 */
     public static boolean isInitTuring;
@@ -33,6 +37,12 @@ public class AppConfig {
     public static final int NUMBER_ERROR = 10010;
     /** 请求码：登录到注册*/
     public static final int LOGINTOREGIEST = 1000;
+    /** 请求码：用户信息到拍照 */
+    public static final int USERINFOTOCAMERA = 1001;
+    /** 请求码：用户信息到图库 */
+    public static final int USERINFOTOPIC = 1002;
+    /** 请求码：用户信息到图片裁剪 */
+    public static final int USERINFOTOCLIP = 1003;
 
     /** BMOB后端云appkey */
     public static final String BMOB_APP_KEY = "aace143390901d901c3ce3a8c1d9d009";

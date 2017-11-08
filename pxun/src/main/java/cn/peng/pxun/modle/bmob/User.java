@@ -7,7 +7,7 @@ import cn.bmob.v3.BmobUser;
  * Created by msi on 2016/12/24.
  */
 
-public class User extends BmobUser{
+public class User extends BmobUser implements Cloneable {
     //三方登录id
     private String thirdPartyID;
     //信息背景图片
@@ -30,10 +30,10 @@ public class User extends BmobUser{
     //所在地
     private String address;
 
-    public User(){
+    public User() {
     }
 
-    public User(String userId, String username){
+    public User(String userId, String username) {
         setMobilePhoneNumber(userId);
         setUsername(username);
     }
@@ -116,5 +116,16 @@ public class User extends BmobUser{
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public Object clone() {
+        User user = null;
+        try {
+            user = (User) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 }

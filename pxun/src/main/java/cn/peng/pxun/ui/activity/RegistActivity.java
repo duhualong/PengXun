@@ -222,7 +222,7 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
         datePicker.setOnDatePickListener(new DatePicker.OnYearMonthDayPickListener() {
             @Override
             public void onDatePicked(String year, String month, String day) {
-                String birthday = year + "年" + month + "月" + day + "日";
+                String birthday = year + "-" + month + "-" + day;
                 mTvRegistBirthday.setText(birthday);
             }
         });

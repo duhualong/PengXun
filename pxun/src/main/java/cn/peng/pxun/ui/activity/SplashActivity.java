@@ -7,9 +7,10 @@ import android.os.Handler;
 
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
+import cn.peng.pxun.utils.AppUtil;
 
 public class SplashActivity extends Activity {
-    private static final int REQUEST_SDCARD = 1;
+    private  boolean isLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +18,11 @@ public class SplashActivity extends Activity {
         setTheme(R.style.SplashTheme);
         setContentView(R.layout.activity_splash);
 
+        isLogin = MyApplication.sp.getBoolean("isLogin", false);
         loadActivity();
+        if (isLogin){
+            AppUtil.setAppUser();
+        }
     }
 
     /**
@@ -28,7 +33,6 @@ public class SplashActivity extends Activity {
             @Override
             public void run() {
                 Intent intent;
-                boolean isLogin = MyApplication.sp.getBoolean("isLogin", false);
                 if (isLogin){
                     intent = new Intent(SplashActivity.this,MainActivity.class);
                 }else {
@@ -39,5 +43,4 @@ public class SplashActivity extends Activity {
             }
         },2000);
     }
-
 }

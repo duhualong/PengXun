@@ -27,7 +27,7 @@
             android:text="头像"
             android:textColor="@color/bgColor"/>
 
-        <ImageView
+        <cn.peng.pxun.ui.view.HandIconView
             android:id="@+id/iv_user_info_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -71,6 +71,7 @@
             android:gravity="center_vertical|right"
             android:layout_marginRight="12dp"
             android:paddingRight="12dp"
+            android:lines="1"
             android:textColor="@color/black"/>
 
         <ImageView
@@ -163,6 +164,7 @@
             android:gravity="center_vertical|right"
             android:layout_marginRight="12dp"
             android:paddingRight="12dp"
+            android:lines="1"
             android:textColor="@color/black"/>
 
         <ImageView
@@ -202,6 +204,7 @@
             android:gravity="center_vertical|right"
             android:layout_marginRight="12dp"
             android:paddingRight="12dp"
+            android:lines="1"
             android:textColor="@color/black"/>
 
         <ImageView
@@ -241,6 +244,7 @@
             android:gravity="center_vertical|right"
             android:layout_marginRight="12dp"
             android:paddingRight="12dp"
+            android:lines="1"
             android:textColor="@color/black"/>
 
         <ImageView

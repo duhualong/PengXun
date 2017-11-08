@@ -16,7 +16,6 @@ import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.BasePresenter;
-import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.activity.LoginActivity;
 import cn.peng.pxun.utils.MD5Util;
 import cn.peng.pxun.utils.ThreadUtil;
@@ -30,9 +29,9 @@ public class LoginPresenter extends BasePresenter{
     private String password;
     private boolean isThirdPartyLogin = false;
 
-    public LoginPresenter(BaseActivity activity) {
+    public LoginPresenter(LoginActivity activity) {
         super(activity);
-        this.activity = (LoginActivity)activity;
+        this.activity = activity;
     }
 
     /**
@@ -104,7 +103,6 @@ public class LoginPresenter extends BasePresenter{
         }
 
         this.phone = phone;
-        this.password = password;
         this.isThirdPartyLogin = false;
 
         loginHuanXin(phone, password);
@@ -116,6 +114,7 @@ public class LoginPresenter extends BasePresenter{
      * @param password
      */
     private void loginHuanXin(final String accountNumber, String password) {
+        this.password = password;
         EMClient.getInstance().login(accountNumber, MD5Util.encode(password),new EMCallBack() {
             @Override
             public void onSuccess() {
@@ -167,17 +166,17 @@ public class LoginPresenter extends BasePresenter{
      * @param isRememberPassword
      */
     public void keepUserLoginInfo(boolean isRememberPassword) {
+        SharedPreferences.Editor editor = MyApplication.sp.edit();
         if (!isThirdPartyLogin){
-            SharedPreferences.Editor editor = MyApplication.sp.edit();
+            editor.putBoolean("isThird",false);
             editor.putString("phone",phone);
+            editor.putString("password",password);
             editor.putBoolean("isRemember",isRememberPassword);
-            if (isRememberPassword){
-                editor.putString("password",password);
-            }else {
-                editor.putString("password","");
-            }
-            editor.commit();
+        }else {
+            editor.putBoolean("isThird",true);
+            editor.putString("thirdpwd",password);
         }
+        editor.commit();
     }
 
 }

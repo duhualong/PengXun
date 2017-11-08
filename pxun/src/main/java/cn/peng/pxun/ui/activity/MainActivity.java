@@ -74,7 +74,6 @@ public class MainActivity extends BaseActivity<MainPresenter> {
     protected void init() {
         super.init();
 
-        presenter.setAppUser();
         if (!AppConfig.isInitTuring){
             presenter.initTuLing();
         }

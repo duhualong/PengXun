@@ -6,15 +6,7 @@ import com.turing.androidsdk.InitListener;
 import com.turing.androidsdk.SDKInit;
 import com.turing.androidsdk.SDKInitBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
-import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.modle.AppConfig;
-import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.ui.activity.BaseActivity;
 
@@ -26,28 +18,6 @@ public class MainPresenter extends BasePresenter{
 
     public MainPresenter(BaseActivity activity) {
         super(activity);
-    }
-
-    /**
-     * 获取已登录的用户信息
-     */
-    public void setAppUser() {
-        String userId = MyApplication.sp.getString("userId","");
-        BmobQuery<User> bmobQuery = new BmobQuery();
-        List<BmobQuery<User>> params = new ArrayList<>();
-        params.add(new BmobQuery<User>().addWhereEqualTo("thirdPartyID", userId));
-        params.add(new BmobQuery<User>().addWhereEqualTo("mobilePhoneNumber", userId));
-        bmobQuery.or(params);
-        bmobQuery.setLimit(50);
-        bmobQuery.findObjects(new FindListener<User>(){
-
-            @Override
-            public void done(List<User> list, BmobException e) {
-                if (e == null) {
-                    AppConfig.appUser = list.get(0);
-                }
-            }
-        });
     }
 
     /**

@@ -3,7 +3,7 @@ apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "cn.peng.pxun"
@@ -81,4 +81,6 @@ dependencies {
     compile 'com.just.agentweb:agentweb:2.0.1'
     /* recycleviewAdapter */
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+    /* 图片裁剪 */
+    compile 'com.githang:clipimageview:0.1'
 }
