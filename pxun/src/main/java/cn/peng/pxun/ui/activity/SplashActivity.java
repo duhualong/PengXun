@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import java.io.File;
+
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.utils.AppUtil;
 
 public class SplashActivity extends Activity {
@@ -19,10 +22,11 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.activity_splash);
 
         isLogin = MyApplication.sp.getBoolean("isLogin", false);
-        loadActivity();
         if (isLogin){
             AppUtil.setAppUser();
         }
+        loadActivity();
+        checkCachePath();
     }
 
     /**
@@ -42,5 +46,15 @@ public class SplashActivity extends Activity {
                 finish();
             }
         },2000);
+    }
+
+    /**
+     * 检测缓存目录是否存在
+     */
+    private void checkCachePath() {
+        File file = new File(AppConfig.CACHE_PATH);
+        if (!file.exists()){
+            file.mkdir();
+        }
     }
 }

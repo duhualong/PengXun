@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorRipple">#803f51b5</color>
+
     <color name="appColor">#121212</color>
     <color name="chatColor">#33B5E5</color>
     <color name="bgColor">#181818</color>
@@ -7,17 +13,15 @@
     <color name="selectColor">#FB4E30</color>
     <color name="regiestColor">#FF3942</color>
     <color name="tabColor">#EEEEEE</color>
+    <color name="btn_blue_normal">#0076EE</color>
+    <color name="btn_blue_pressed">#0055FF</color>
 
+    <color name="translucent">#00000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="red">#FFFF0000</color>
     <color name="green">#FF00FF00</color>
     <color name="blue">#FF0000FF</color>
-
-    <color name="translucent">#00000000</color>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorRipple">#803f51b5</color>
+    <color name="grey">#888888</color>
 
 </resources>

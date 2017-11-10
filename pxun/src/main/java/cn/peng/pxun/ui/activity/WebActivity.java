@@ -19,6 +19,9 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.peng.pxun.R;
 
+/**
+ * Web页面
+ */
 public class WebActivity extends BaseAgentWebActivity {
 
     @BindView(R.id.web_toolbar)

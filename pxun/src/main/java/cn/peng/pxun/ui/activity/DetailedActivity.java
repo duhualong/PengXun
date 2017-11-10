@@ -17,6 +17,9 @@ import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.activity.DetailedPresenter;
 import cn.peng.pxun.utils.ToastUtil;
 
+/**
+ * 用户详情页面
+ */
 public class DetailedActivity extends BaseActivity<DetailedPresenter> {
     @BindView(R.id.iv_userinfo_bg)
     ImageView mIvUserinfoBg;
@@ -134,7 +137,7 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
      * @param user
      */
     public void setUserInfo(User user) {
-        loadingDialog.cancel();
+        dismissLoadingDialog();
         if (user != null){
             if (isMe && AppConfig.appUser == null){
                 AppConfig.appUser = user;

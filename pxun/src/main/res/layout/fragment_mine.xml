@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<cn.peng.pxun.ui.view.DampView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:id="@+id/dv_mine_parent"
             xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/white">
 
         <ImageView
+            android:id="@+id/iv_mine_bg"
             android:layout_width="match_parent"
             android:layout_height="156dp"
             android:background="@drawable/userinfo_bg"/>
@@ -17,66 +20,66 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="120dp">
+            android:orientation="horizontal"
+            android:layout_marginTop="-36dp"
+            android:paddingLeft="20dp">
+
+            <cn.peng.pxun.ui.view.HandIconView
+                android:id="@+id/iv_mine_icon"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/icon_nan"
+                app:civ_border_width="3dp"
+                app:civ_border_color="@color/white"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_height="72dp"
+                android:orientation="vertical"
                 android:layout_marginLeft="20dp">
-
-                <cn.peng.pxun.ui.view.HandIconView
-                    android:id="@+id/iv_mine_icon"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:src="@drawable/icon_nan"
-                    app:civ_border_width="3dp"
-                    app:civ_border_color="@color/white"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="20dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp">
-
-                        <TextView
-                            android:id="@+id/tv_mine_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="未登录"
-                            android:textSize="13sp"
-                            android:textColor="@color/chatColor"/>
-
-                        <ImageView
-                            android:id="@+id/iv_mine_sex"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:src="@drawable/sex_boy"
-                            android:layout_marginLeft="15dp"
-                            android:layout_gravity="center_vertical"/>
-
-                    </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp">
 
                     <TextView
-                        android:id="@+id/tv_mine_info"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="bottom"
-                        android:layout_marginBottom="10dp"
-                        android:text="查看或编辑个人资料"
-                        android:textSize="14sp"
-                        android:textColor="@color/black"/>
+                        android:id="@+id/tv_mine_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="未登录"
+                        android:textSize="13sp"
+                        android:textColor="@color/chatColor"/>
+
+                    <ImageView
+                        android:id="@+id/iv_mine_sex"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/sex_boy"
+                        android:layout_marginLeft="15dp"
+                        android:layout_gravity="center_vertical"/>
+
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/tv_mine_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="bottom"
+                    android:layout_marginBottom="10dp"
+                    android:text="查看或编辑个人资料"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"/>
             </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -110,14 +113,10 @@
 
             </LinearLayout>
 
-            <ImageView style="@style/DivisionLine"/>
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
                 android:background="@color/itemColor"/>
-
-            <ImageView style="@style/DivisionLine"/>
 
             <LinearLayout
                 android:id="@+id/ll_mine_about"
@@ -195,8 +194,6 @@
 
             </LinearLayout>
 
-            <ImageView style="@style/DivisionLine"/>
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
@@ -204,6 +201,6 @@
 
         </LinearLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
-</ScrollView>
+</cn.peng.pxun.ui.view.DampView>

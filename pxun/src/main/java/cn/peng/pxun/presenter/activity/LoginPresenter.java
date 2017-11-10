@@ -83,7 +83,6 @@ public class LoginPresenter extends BasePresenter{
                         }
                     });
                 }else {
-                    user.delete();
                     setResult(AppConfig.SERVER_ERROR, e.getErrorCode());
                 }
             }

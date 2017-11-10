@@ -134,6 +134,8 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void receiveMessage(Message msg) {
+        for (ConversationBean conversation : messageList){
 
+        }
     }
 }

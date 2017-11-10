@@ -20,6 +20,9 @@ import cn.peng.pxun.ui.fragment.BaseFragment;
 import cn.peng.pxun.ui.fragment.FriendFragment;
 import cn.peng.pxun.ui.fragment.GroupFragment;
 
+/**
+ * 联系人（好友，群组）页面
+ */
 public class ContactActivity extends BaseActivity {
 
     @BindView(R.id.iv_title_goback)

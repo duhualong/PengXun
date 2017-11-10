@@ -27,6 +27,9 @@ import cn.peng.pxun.utils.ConvertUtil;
 
 import static cn.peng.pxun.utils.ToastUtil.showToast;
 
+/**
+ * 注册页面
+ */
 public class RegistActivity extends BaseActivity<RegistPresenter> {
     @BindView(R.id.et_regist_phone)
     EditText mEtRegistPhone;
@@ -159,7 +162,7 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
                         .changeAlertType(SweetAlertDialog.ERROR_TYPE);
                 break;
             case AppConfig.SUCCESS:
-                loadingDialog.cancel();
+                dismissLoadingDialog();
                 Intent intent = new Intent();
                 intent.putExtra("userInfo", userInfo);
                 setResult(RESULT_OK, intent);

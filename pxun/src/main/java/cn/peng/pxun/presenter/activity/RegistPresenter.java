@@ -5,6 +5,7 @@ import com.hyphenate.exceptions.HyphenateException;
 
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.BasePresenter;
@@ -93,7 +94,12 @@ public class RegistPresenter extends BasePresenter{
                 } catch (HyphenateException e1) {
                     e1.printStackTrace();
                     //将Bmob上注册的user给删除掉
-                    user.delete();
+                    user.delete(new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+
+                        }
+                    });
                     //注册失败
                     setResult(AppConfig.ERROR, e1.getErrorCode(), "");
                 }

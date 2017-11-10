@@ -17,6 +17,9 @@ import cn.peng.pxun.presenter.activity.SysMessagePresenter;
 import cn.peng.pxun.ui.adapter.recycleview.SysMessageAdapter;
 import cn.peng.pxun.utils.ToastUtil;
 
+/**
+ * 系统消息页面
+ */
 public class SysMessageActivity extends BaseActivity<SysMessagePresenter> {
 
     @BindView(R.id.toolbar)

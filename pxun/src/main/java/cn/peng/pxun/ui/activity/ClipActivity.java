@@ -27,7 +27,9 @@ import java.io.IOException;
 import cn.peng.pxun.R;
 import cn.peng.pxun.utils.IOUtil;
 
-
+/**
+ * 图片裁剪页面
+ */
 public class ClipActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ClipImageView mClipImageView;

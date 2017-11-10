@@ -8,6 +8,8 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.UpdateListener;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.fragment.BaseFragment;
@@ -18,8 +20,9 @@ import cn.peng.pxun.utils.ThreadUtil;
  * Created by tofirst on 2017/11/3.
  */
 
-public class BaseUserPresenter extends BasePresenter{
+public class BaseUserPresenter extends BasePhotoPresenter{
     private UserInfoListener userInfoListener;
+    private UpdataUserListener updataUserListener;
     private FriendListListener friendListListener;
 
     protected List<String> friendIds;
@@ -30,6 +33,25 @@ public class BaseUserPresenter extends BasePresenter{
 
     public BaseUserPresenter(BaseFragment fragment) {
         super(fragment);
+    }
+
+    /**
+     * 更新用户信息
+     * @param user
+     */
+    public void upDataUser(User user){
+        user.update(new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+               if (updataUserListener != null){
+                   if (e == null){
+                       updataUserListener.onResult(AppConfig.SUCCESS);
+                   }else {
+                       updataUserListener.onResult(AppConfig.SERVER_ERROR);
+                   }
+               }
+            }
+        });
     }
 
     /**
@@ -73,9 +95,14 @@ public class BaseUserPresenter extends BasePresenter{
             public void run() {
                 try {
                     friendIds = EMClient.getInstance().contactManager().getAllContactsFromServer();
-                    if (friendListListener != null){
-                        friendListListener.onGetFriendList(friendIds);
-                    }
+                    ThreadUtil.runOnMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (friendListListener != null){
+                                friendListListener.onGetFriendList(friendIds);
+                            }
+                        }
+                    });
                 } catch (HyphenateException e) {
                     e.printStackTrace();
                 }
@@ -109,6 +136,18 @@ public class BaseUserPresenter extends BasePresenter{
 
     public interface UserInfoListener{
         void onGetUser(User user);
+    }
+
+    /**
+     * 添加获取用户的监听
+     * @param listener
+     */
+    public void addUpdataUserListener(UpdataUserListener listener){
+        this.updataUserListener = listener;
+    }
+
+    public interface UpdataUserListener{
+        void onResult(int result);
     }
 
     /**

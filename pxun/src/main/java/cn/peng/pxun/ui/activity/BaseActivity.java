@@ -2,7 +2,9 @@ package cn.peng.pxun.ui.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -12,7 +14,9 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import cn.peng.pxun.R;
 import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.ui.view.NumberProgressBar;
 import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
 import me.weyye.hipermission.PermissionItem;
@@ -27,6 +31,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     protected BaseActivity mActivity;
     // 加载中的dialog
     protected SweetAlertDialog loadingDialog;
+    private AlertDialog progressDialog;
+    protected NumberProgressBar progressBar;
 
     // 管理运行的所有的activity
     public final static List<AppCompatActivity> mActivities = new LinkedList();
@@ -60,11 +66,13 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        dismissProgressDialog();
+        dismissLoadingDialog();
         //解绑ButterKnife
-        if(mUnbinder != null){
+        if (mUnbinder != null){
             mUnbinder.unbind();
         }
-        if(EventBus.getDefault().isRegistered(this)){
+        if (EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
         }
         synchronized (mActivities) {
@@ -116,11 +124,19 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     public abstract P initPresenter();
 
     /**
+     * 获取加载中dialog
+     * @return
+     */
+    public SweetAlertDialog getLoadingDialog(){
+        return loadingDialog;
+    }
+
+    /**
      * 显示加载中提示框
      */
-    protected void showLoadingDialog(String title) {
+    public void showLoadingDialog(String title) {
         try{
-            loadingDialog = new SweetAlertDialog(mActivity, SweetAlertDialog.PROGRESS_TYPE);
+            loadingDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
             loadingDialog.setCancelable(false);
             loadingDialog.setTitleText(title);
             loadingDialog.show();
@@ -130,10 +146,50 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     }
 
     /**
+     * 关闭进度条提示框
+     */
+    public void dismissLoadingDialog(){
+        if (loadingDialog != null){
+            loadingDialog.dismiss();
+        }
+    }
+
+    /**
+     * 获取进度条控件
+     * @return
+     */
+    public NumberProgressBar getProgressBar(){
+        return progressBar;
+    }
+
+    /**
+     * 显示进度条对话框
+     */
+    public void showProgressDialog(String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        View view = View.inflate(this, R.layout.dialog_progressbar, null);
+        builder.setCancelable(false);
+        builder.setView(view);
+        progressBar = (NumberProgressBar) view.findViewById(R.id.app_progress);
+        progressDialog = builder.create();
+        progressDialog.show();
+    }
+
+    /**
+     * 关闭进度条对话框
+     */
+    public void dismissProgressDialog(){
+        if (progressDialog != null){
+            progressDialog.dismiss();
+        }
+    }
+
+    /**
      * 请求多个权限
      * @param permissionItems
      */
-    protected void requestPermission(List<PermissionItem> permissionItems, PermissionCallback callback){
+    public void requestPermission(List<PermissionItem> permissionItems, PermissionCallback callback){
         HiPermission.create(this)
                 .permissions(permissionItems)
                 .checkMutiPermission(callback);

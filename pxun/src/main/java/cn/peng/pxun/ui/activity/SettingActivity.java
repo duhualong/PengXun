@@ -12,6 +12,9 @@ import cn.peng.pxun.R;
 import cn.peng.pxun.presenter.activity.SettingPresenter;
 import cn.peng.pxun.utils.ToastUtil;
 
+/**
+ * 设置页面
+ */
 public class SettingActivity extends BaseActivity<SettingPresenter> {
 
     @BindView(R.id.iv_title_goback)

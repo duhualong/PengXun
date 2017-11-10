@@ -58,8 +58,6 @@ public class MovieFragment extends BaseFragment<MoviePresenter> {
     public void initData() {
         presenter.getMovieList(start, end);
         adapter = new MovieAdapter(R.layout.item_movie, movieList);
-        // 开启加载更多
-        adapter.setEnableLoadMore(true);
         // 设置预加载 当列表滑动到倒数第3时加载更多
         adapter.setPreLoadNumber(3);
         mRecycleview.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
@@ -92,6 +90,7 @@ public class MovieFragment extends BaseFragment<MoviePresenter> {
                 }else{
                     start = 0;
                     end = 20;
+                    // 开启加载更多
                     adapter.setEnableLoadMore(true);
                     presenter.getMovieList(start, end);
                 }
@@ -104,6 +103,7 @@ public class MovieFragment extends BaseFragment<MoviePresenter> {
             if (data != null){
                 if (mRefreshLayout!= null && mRefreshLayout.isRefreshing()){
                     movieList.clear();
+                    adapter.setNewData(movieList);
                     mRefreshLayout.setRefreshing(false);
                 }
                 movieList.addAll(data.subjects);

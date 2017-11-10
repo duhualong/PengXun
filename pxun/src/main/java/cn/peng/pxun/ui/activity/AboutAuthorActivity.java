@@ -11,6 +11,9 @@ import cn.peng.pxun.R;
 import cn.peng.pxun.presenter.BasePresenter;
 import cn.peng.pxun.utils.ToastUtil;
 
+/**
+ * 关于作者页面
+ */
 public class AboutAuthorActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;

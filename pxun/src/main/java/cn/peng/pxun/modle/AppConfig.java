@@ -11,7 +11,7 @@ public class AppConfig {
     /** 豆瓣接口根路径 */
     public static final String BASE_MOVIE_URL = "https://api.douban.com/v2/movie/";
     /** 缓存根路径 */
-    public static final String CACHEPATH = Environment.getExternalStorageDirectory().toString() + "/pxun/";
+    public static final String CACHE_PATH = Environment.getExternalStorageDirectory().toString() + "/pxun/";
 
     /** 图林机器人是否初始化成功 */
     public static boolean isInitTuring;
@@ -38,11 +38,15 @@ public class AppConfig {
     /** 请求码：登录到注册*/
     public static final int LOGINTOREGIEST = 1000;
     /** 请求码：用户信息到拍照 */
-    public static final int USERINFOTOCAMERA = 1001;
+    public static final int MINETOPIC = 1001;
+    /** 请求码：用户信息到拍照 */
+    public static final int USERINFOTOCAMERA = 1002;
     /** 请求码：用户信息到图库 */
-    public static final int USERINFOTOPIC = 1002;
+    public static final int USERINFOTOPIC = 1003;
+    /** 请求码：用户信息到修改信息 */
+    public static final int USERINFOTOMODIFY = 1004;
     /** 请求码：用户信息到图片裁剪 */
-    public static final int USERINFOTOCLIP = 1003;
+    public static final int USERINFOTOCLIP = 1005;
 
     /** BMOB后端云appkey */
     public static final String BMOB_APP_KEY = "aace143390901d901c3ce3a8c1d9d009";

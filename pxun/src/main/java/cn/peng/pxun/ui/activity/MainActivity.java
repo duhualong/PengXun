@@ -1,5 +1,6 @@
 package cn.peng.pxun.ui.activity;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
@@ -174,6 +175,14 @@ public class MainActivity extends BaseActivity<MainPresenter> {
             }
         }
         return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConfig.MINETOPIC){
+            mineFragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     /**

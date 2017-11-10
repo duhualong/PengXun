@@ -170,6 +170,8 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity android:name=".ui.activity.MovieInfoActivity">
         </activity>
+        <activity android:name=".ui.activity.ModifyUserInfoActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -23,7 +23,7 @@ import cn.peng.pxun.presenter.activity.CreateGroupPresenter;
 import cn.peng.pxun.utils.ToastUtil;
 
 /**
- * 创建群组界面
+ * 创建群组页面
  */
 public class CreateGroupActivity extends BaseActivity<CreateGroupPresenter> {
 

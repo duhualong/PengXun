@@ -32,8 +32,13 @@ import cn.peng.pxun.ui.view.picker.DatePicker;
 import cn.peng.pxun.utils.ConvertUtil;
 import cn.peng.pxun.utils.ToastUtil;
 
+import static cn.peng.pxun.ui.activity.ModifyUserInfoActivity.TYPE_SIGNATURE;
+import static cn.peng.pxun.ui.activity.ModifyUserInfoActivity.TYPE_USERNAME;
 import static cn.peng.pxun.utils.ToastUtil.showToast;
 
+/**
+ * 用户信息界面
+ */
 public class UserInfoActivity extends BaseActivity<UserInfoPresenter> {
 
     @BindView(R.id.toolbar)
@@ -125,7 +130,10 @@ public class UserInfoActivity extends BaseActivity<UserInfoPresenter> {
         mLlUserInfoName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(mActivity, ModifyUserInfoActivity.class);
+                intent.putExtra("modifyType", TYPE_USERNAME);
+                intent.putExtra("content", mUser.getUsername());
+                startActivityForResult(intent, AppConfig.USERINFOTOMODIFY);
             }
         });
         mLlUserInfoBirthday.setOnClickListener(new View.OnClickListener() {
@@ -143,7 +151,10 @@ public class UserInfoActivity extends BaseActivity<UserInfoPresenter> {
         mLlUserInfoSignature.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(mActivity, ModifyUserInfoActivity.class);
+                intent.putExtra("modifyType", TYPE_SIGNATURE);
+                intent.putExtra("content", mUser.getSignaTure());
+                startActivityForResult(intent,AppConfig.USERINFOTOMODIFY);
             }
         });
         mRgUserInfoSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -171,7 +182,7 @@ public class UserInfoActivity extends BaseActivity<UserInfoPresenter> {
                 case AppConfig.USERINFOTOCAMERA:
                     ClipActivity.prepare()
                             .aspectX(3).aspectY(3)//裁剪框横向及纵向上的比例
-                            .inputPath(AppConfig.CACHEPATH + "temp.jpg").outputPath(AppConfig.CACHEPATH+"/usericon.png")//要裁剪的图片地址及裁剪后保存的地址
+                            .inputPath(AppConfig.CACHE_PATH + "temp.jpg").outputPath(AppConfig.CACHE_PATH +AppConfig.getUserId(AppConfig.appUser)+"_icon.png")//要裁剪的图片地址及裁剪后保存的地址
                             .startForResult(this, AppConfig.USERINFOTOCLIP);
                     break;
                 case AppConfig.USERINFOTOPIC:
@@ -180,15 +191,25 @@ public class UserInfoActivity extends BaseActivity<UserInfoPresenter> {
 
                     ClipActivity.prepare()
                             .aspectX(3).aspectY(3)//裁剪框横向及纵向上的比例
-                            .inputPath(imagePath).outputPath(AppConfig.CACHEPATH+"/usericon.png")//要裁剪的图片地址及裁剪后保存的地址
+                            .inputPath(imagePath).outputPath(AppConfig.CACHE_PATH +AppConfig.getUserId(AppConfig.appUser)+"_icon.png")//要裁剪的图片地址及裁剪后保存的地址
                             .startForResult(this, AppConfig.USERINFOTOCLIP);
                     break;
                 case AppConfig.USERINFOTOCLIP:
                     String path = ClipActivity.ClipOptions.createFromBundle(data).getOutputPath();
                     if (path != null) {
-                        showLoadingDialog("正在上传头像...");
-                        presenter.upLoadIcon(path);
+                        showProgressDialog("正在上传图片");
+                        presenter.upLoadFile(path);
                     }
+                    break;
+                case AppConfig.USERINFOTOMODIFY:
+                    String content = data.getStringExtra("content");
+                    int modifyType = data.getIntExtra("modifyType", TYPE_USERNAME);
+                    if (modifyType == TYPE_USERNAME) {
+                        mUser.setUsername(content);
+                    } else if (modifyType == TYPE_SIGNATURE) {
+                        mUser.setSignaTure(content);
+                    }
+                    upDataUserInfo();
                     break;
             }
         }
@@ -332,7 +353,7 @@ public class UserInfoActivity extends BaseActivity<UserInfoPresenter> {
     private void upDataUserInfo() {
         if (presenter.isNetUsable(this)){
             showLoadingDialog("保存用户信息...");
-            presenter.upDataUserInfo(mUser);
+            presenter.upDataUser(mUser);
         }else{
             ToastUtil.showToast(this, "请检查网络连接");
         }
@@ -359,12 +380,17 @@ public class UserInfoActivity extends BaseActivity<UserInfoPresenter> {
     /**
      * 上传头像完成
      */
-    public void onupLoadIconFinish(String iconPath) {
+    public void onIconUploadFinish(String iconPath) {
+        mActivity.dismissLoadingDialog();
         if (!TextUtils.isEmpty(iconPath)){
             mUser.setHeadIcon(iconPath);
             upDataUserInfo();
         } else {
             ToastUtil.showToast(this, "头像上传失败");
         }
+    }
+
+    public void onIconUploadProgress(int value) {
+        progressBar.setProgress(value);
     }
 }

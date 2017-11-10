@@ -28,6 +28,9 @@ import cn.peng.pxun.utils.ToastUtil;
 import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
 
+/**
+ * 登录页面
+ */
 public class LoginActivity extends BaseActivity<LoginPresenter> {
     @BindView(R.id.et_login_phone)
     EditText mEtPhone;
@@ -66,7 +69,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
          */
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
-            loadingDialog.cancel();
+            dismissLoadingDialog();
 
             if(data != null && data.size() > 0){
                 User user = new User();
@@ -98,7 +101,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
          */
         @Override
         public void onError(SHARE_MEDIA platform, int action, Throwable t) {
-            loadingDialog.cancel();
+            dismissLoadingDialog();
             ToastUtil.showToast(mActivity, "授权失败：" + t.getMessage());
         }
 
@@ -109,7 +112,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
          */
         @Override
         public void onCancel(SHARE_MEDIA platform, int action) {
-            loadingDialog.cancel();
+            dismissLoadingDialog();
             ToastUtil.showToast(mActivity, "授权被取消");
         }
     };
@@ -219,9 +222,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     @Override
     protected void onRestart() {
         super.onRestart();
-        if (loadingDialog != null && loadingDialog.isShowing()){
-            loadingDialog.cancel();
-        }
+        dismissLoadingDialog();
     }
 
     /**
@@ -231,7 +232,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     public void onLoginFinish(int code,int huanXinCode) {
         switch (code) {
             case AppConfig.SUCCESS:
-                loadingDialog.cancel();
+                dismissLoadingDialog();
                 boolean isRemember = mCbLogin.isChecked();
                 presenter.keepUserLoginInfo(isRemember);
                 AppUtil.setAppUser();

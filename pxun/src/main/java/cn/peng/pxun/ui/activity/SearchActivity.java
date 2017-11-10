@@ -73,6 +73,7 @@ public class SearchActivity extends BaseActivity<SearchPresenter> {
                         ToastUtil.showToast(mActivity,"搜索内容不能为空!");
                         return true;
                     }
+                    showLoadingDialog("正在搜索...");
                     presenter.search(searchType,content);
                     return true;
                 }
@@ -105,6 +106,7 @@ public class SearchActivity extends BaseActivity<SearchPresenter> {
     }
 
     public void onUserSearch(List<User> list) {
+        dismissLoadingDialog();
         if(list == null || list.size() == 0){
             ToastUtil.showToast(mActivity,"没有找到符合条件的用户");
             adapter.setUserData(null);
@@ -114,6 +116,7 @@ public class SearchActivity extends BaseActivity<SearchPresenter> {
     }
 
     public void onGroupSearch(List<Group> list) {
+        dismissLoadingDialog();
         if(list == null || list.size() == 0){
             ToastUtil.showToast(mActivity,"没有找到符合条件的群组");
             adapter.setUserData(null);

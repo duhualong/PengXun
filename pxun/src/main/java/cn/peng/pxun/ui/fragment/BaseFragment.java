@@ -1,6 +1,5 @@
 package cn.peng.pxun.ui.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +12,7 @@ import org.greenrobot.eventbus.EventBus;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.ui.activity.BaseActivity;
 
 /**
  * Fragment的基类
@@ -22,7 +22,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
     /** 此Fragment所对应的业务操作类 */
     protected P presenter;
     /** Fragment所依赖的Activity */
-    protected Activity mActivity;
+    protected BaseActivity mActivity;
     // ButterKnife的解绑器
     private Unbinder mUnbinder;
 
@@ -60,7 +60,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
      * @des 子类可选择复写,用来进行初始化操作
      */
     public void init(){
-        mActivity = getActivity();
+        mActivity = (BaseActivity) getActivity();
         this.presenter = initPresenter();
     }
 

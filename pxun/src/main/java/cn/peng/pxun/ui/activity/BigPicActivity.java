@@ -15,6 +15,9 @@ import butterknife.BindView;
 import cn.peng.pxun.R;
 import cn.peng.pxun.presenter.BasePresenter;
 
+/**
+ * 大图预览页面
+ */
 public class BigPicActivity extends BaseActivity {
     @BindView(R.id.pv_bigpic)
     DragPhotoView mPvBigpic;
