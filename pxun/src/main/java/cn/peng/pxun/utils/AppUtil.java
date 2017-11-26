@@ -10,7 +10,7 @@ import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.User;
 
-import static cn.peng.pxun.presenter.BasePresenter.isPhoneNumber;
+import static cn.peng.pxun.presenter.base.BasePresenter.isPhoneNumber;
 
 /**
  * Created by tofirst on 2017/11/6.

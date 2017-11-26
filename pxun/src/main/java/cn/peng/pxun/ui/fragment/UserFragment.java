@@ -33,13 +33,13 @@ public class UserFragment extends BaseFragment<UserPresenter> {
     private List<User> userList;
 
     @Override
-    public View initView() {
+    public View initLayout() {
         View view = View.inflate(mActivity, R.layout.fragment_user, null);
         return view;
     }
 
     @Override
-    protected UserPresenter initPresenter() {
+    public UserPresenter initPresenter() {
         return new UserPresenter(this);
     }
 

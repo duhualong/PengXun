@@ -59,29 +59,29 @@ public class MineFragment extends BaseFragment<MinePresenter> {
     private String newBgPath;
 
     @Override
-    public void init() {
+    protected void init() {
         super.init();
         initChangeBgDialog();
     }
 
     @Override
-    public View initView() {
+    public View initLayout() {
         View view = View.inflate(mActivity, R.layout.fragment_mine, null);
         return view;
     }
 
     @Override
-    protected MinePresenter initPresenter() {
+    public MinePresenter initPresenter() {
         return new MinePresenter(this);
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
         mDvMineParent.setImageView(mIvMineBg);
     }
 
     @Override
-    public void initListener() {
+    protected void initListener() {
         mIvMineIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,7 +134,7 @@ public class MineFragment extends BaseFragment<MinePresenter> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mActivity, SettingActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, AppConfig.MINETOSETTING);
             }
         });
     }
@@ -181,6 +181,9 @@ public class MineFragment extends BaseFragment<MinePresenter> {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
+                case AppConfig.MINETOSETTING:
+                    getActivity().finish();
+                    break;
                 case AppConfig.MINETOPIC:
                     Uri uri = presenter.getUri(data);
                     String imagePath = presenter.getPathFromUri(uri);
@@ -218,7 +221,7 @@ public class MineFragment extends BaseFragment<MinePresenter> {
      * @param path
      */
     public void onBgUpLoadFinish(String path) {
-        mActivity.dismissLoadingDialog();
+        mActivity.dismissProgressDialog();
         if (!TextUtils.isEmpty(path)){
             newBgPath = path;
             oldBgPath = AppConfig.appUser.getInfoBackGround();

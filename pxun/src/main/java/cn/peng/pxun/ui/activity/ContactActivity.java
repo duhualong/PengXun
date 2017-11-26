@@ -14,7 +14,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BasePresenter;
 import cn.peng.pxun.ui.adapter.viewpager.ContactPagerAdapter;
 import cn.peng.pxun.ui.fragment.BaseFragment;
 import cn.peng.pxun.ui.fragment.FriendFragment;

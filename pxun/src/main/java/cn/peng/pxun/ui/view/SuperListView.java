@@ -44,7 +44,7 @@ public class SuperListView extends ListView {
     private OnLoadDataListener mListener;
 
     /** 下拉刷新目前的状态 */
-    private int refreshState = STATE_PULL_TO_REFRESH;
+    private int refreshState = -1;
     /** 下拉刷新状态：下拉刷新 */
     private static final int STATE_PULL_TO_REFRESH = 0;
     /** 下拉刷新状态：松开刷新 */
@@ -194,6 +194,26 @@ public class SuperListView extends ListView {
         va.start();
     }
 
+    public void startRefresh(){
+        final ValueAnimator va = ValueAnimator.ofInt(-headerViewHeight, 0);
+        //动画更新的监听
+        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                Integer animatedValue = (Integer) va.getAnimatedValue();
+                setTopPadding(headerView, animatedValue);
+                if (animatedValue < 0){
+                    refreshState = STATE_PULL_TO_REFRESH;
+                }else {
+                    refreshState = STATE_REFRESHING;
+                }
+                refreshState();
+            }
+        });
+        va.setDuration(200);
+        va.start();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
@@ -230,8 +250,11 @@ public class SuperListView extends ListView {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (refreshState == STATE_PULL_TO_REFRESH){
-                    setTopPadding(headerView,-headerViewHeight);
+                if (refreshState == STATE_PULL_TO_REFRESH && headerView.getPaddingTop() != -headerViewHeight){
+                    startTraslate(headerView, headerView.getPaddingTop(), -headerViewHeight);
+                    if (!isTopPull){
+                        return true;
+                    }
                 }else if (refreshState == STATE_RELEASE_TO_REFRESH){
                     refreshState = STATE_REFRESHING;
                     setTopPadding(headerView,0);

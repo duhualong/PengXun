@@ -1,34 +1,29 @@
 package cn.peng.pxun.presenter.activity;
 
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.exceptions.HyphenateException;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.SaveListener;
-import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.Group;
-import cn.peng.pxun.modle.bmob.SysMessage;
 import cn.peng.pxun.modle.bmob.User;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BaseUserPresenter;
 import cn.peng.pxun.ui.activity.SearchActivity;
-import cn.peng.pxun.utils.ThreadUtil;
 import cn.peng.pxun.utils.ToastUtil;
 
 /**
  * Created by msi on 2017/9/23.
  */
-public class SearchPresenter extends BasePresenter {
+public class SearchPresenter extends BaseUserPresenter {
 
     private SearchActivity activity;
 
     public SearchPresenter(SearchActivity activity) {
         super(activity);
         this.activity = activity;
+
+        getFriendListFromHuanXin();
     }
 
     /**
@@ -55,7 +50,7 @@ public class SearchPresenter extends BasePresenter {
         BmobQuery<User> bmobQuery = new BmobQuery();
         List<BmobQuery<User>> params = new ArrayList<>();
         params.add(new BmobQuery<User>().addWhereEqualTo("username", content));
-        params.add(new BmobQuery<User>().addWhereEqualTo("mobilePhoneNumber", content));
+        params.add(new BmobQuery<User>().addWhereEqualTo("loginNum", content));
         bmobQuery.or(params);
         bmobQuery.setLimit(50);
         bmobQuery.findObjects(new FindListener<User>(){
@@ -65,7 +60,7 @@ public class SearchPresenter extends BasePresenter {
                 if (e == null) {
                     activity.onUserSearch(list);
                 } else {
-                    ToastUtil.showToast(context,"查询失败：" + e.toString());
+                    ToastUtil.showToast(mContext,"查询失败：" + e.toString());
                     activity.onUserSearch(list);
                 }
             }
@@ -90,53 +85,8 @@ public class SearchPresenter extends BasePresenter {
                 if (e == null) {
                     activity.onGroupSearch(list);
                 } else {
-                    ToastUtil.showToast(context,"查询失败：" + e.toString());
+                    ToastUtil.showToast(mContext,"查询失败：" + e.toString());
                     activity.onGroupSearch(list);
-                }
-            }
-        });
-    }
-
-    /**
-     * 发送添加联系人请求
-     * @param user
-     */
-    public void addContact(final User user) {
-        final String appUserID = AppConfig.getUserId(AppConfig.appUser);
-        final String userID = AppConfig.getUserId(user);
-        if (userID.equals(appUserID)){
-            ToastUtil.showToast(activity, "无法添加自己为好友");
-            return;
-        }
-
-        ThreadUtil.runOnSubThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String message = AppConfig.appUser.getUsername()+"请求添加您为好友,请同意!";
-                    // 发送环信好友申请
-                    EMClient.getInstance().contactManager().addContact(userID, message);
-
-                    SysMessage sysMsg = new SysMessage();
-                    sysMsg.setMessage(message);
-                    sysMsg.setFromUser(appUserID);
-                    sysMsg.setToUser(userID);
-                    sysMsg.setMsgType("100");
-                    sysMsg.setMsgState("0");
-                    sysMsg.save(new SaveListener<String>(){
-
-                        @Override
-                        public void done(String s, BmobException e) {
-                            if (e == null){
-                                showToast("好友申请发送成功");
-                            }else{
-                                showToast("服务器连接较慢，请稍后重试");
-                            }
-                        }
-                    });
-                } catch (HyphenateException e) {
-                    e.printStackTrace();
-                    showToast("消息发送失败");
                 }
             }
         });

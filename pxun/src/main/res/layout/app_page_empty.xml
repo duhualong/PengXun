@@ -6,7 +6,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/page_empty" />
+        android:background="@drawable/page_empty" />
 
     <TextView
         android:id="@+id/tv_empty_text"

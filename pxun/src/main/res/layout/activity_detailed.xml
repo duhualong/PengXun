@@ -14,7 +14,8 @@
             android:id="@+id/iv_userinfo_bg"
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:background="@drawable/userinfo_bg"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/userinfo_bg"/>
 
         <LinearLayout
             android:layout_width="match_parent"

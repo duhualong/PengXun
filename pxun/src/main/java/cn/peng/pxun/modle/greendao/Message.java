@@ -22,6 +22,8 @@ public class Message {
     public String message;
     //发送时间
     public String date;
+    //消息时间
+    public Long msgTime;
     //发送者ID
     public String fromUserID;
     //接受者ID
@@ -32,12 +34,14 @@ public class Message {
     public Boolean isTuring;
     //图片路径
     public String picURL;
-    @Generated(hash = 970651565)
-    public Message(Long id, @NotNull String message, String date, String fromUserID,
-            String toUserID, Integer messageType, Boolean isTuring, String picURL) {
+    @Generated(hash = 1215190165)
+    public Message(Long id, @NotNull String message, String date, Long msgTime,
+            String fromUserID, String toUserID, Integer messageType,
+            Boolean isTuring, String picURL) {
         this.id = id;
         this.message = message;
         this.date = date;
+        this.msgTime = msgTime;
         this.fromUserID = fromUserID;
         this.toUserID = toUserID;
         this.messageType = messageType;
@@ -94,6 +98,12 @@ public class Message {
     }
     public void setPicURL(String picURL) {
         this.picURL = picURL;
+    }
+    public Long getMsgTime() {
+        return this.msgTime;
+    }
+    public void setMsgTime(Long msgTime) {
+        this.msgTime = msgTime;
     }
 
 

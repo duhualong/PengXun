@@ -7,7 +7,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.User;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BasePresenter;
 import cn.peng.pxun.ui.fragment.UserFragment;
 import cn.peng.pxun.utils.LogUtil;
 
@@ -16,15 +16,15 @@ import cn.peng.pxun.utils.LogUtil;
  */
 
 public class UserPresenter extends BasePresenter{
-    private UserFragment mFragment;
+    private UserFragment fragment;
 
     public UserPresenter(UserFragment fragment) {
         super(fragment);
-        this.mFragment = fragment;
+        this.fragment = fragment;
     }
 
     public void getUserList() {
-        if (isNetUsable(context)){
+        if (isNetUsable(mContext)){
             String mUserId = AppConfig.getUserId(AppConfig.appUser);
             BmobQuery<User> bmobQuery = new BmobQuery();
             if (isPhoneNumber(mUserId)){
@@ -39,11 +39,11 @@ public class UserPresenter extends BasePresenter{
             bmobQuery.findObjects(new FindListener<User>(){
                 @Override
                 public void done(List<User> list, BmobException e) {
-                    if (e == null) {
-                        mFragment.setData(list);
+                    if (e == null && list.size() > 0) {
+                        fragment.setData(list);
                     } else {
                         LogUtil.e(e.toString());
-                        mFragment.setEmptyPage();
+                        fragment.setEmptyPage();
                     }
                 }
             });

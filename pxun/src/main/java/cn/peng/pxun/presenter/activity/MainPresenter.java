@@ -7,7 +7,7 @@ import com.turing.androidsdk.SDKInit;
 import com.turing.androidsdk.SDKInitBuilder;
 
 import cn.peng.pxun.modle.AppConfig;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BasePresenter;
 import cn.peng.pxun.ui.activity.BaseActivity;
 
 /**
@@ -24,7 +24,7 @@ public class MainPresenter extends BasePresenter{
      * 初始化图灵机器人
      */
     public void initTuLing() {
-        SDKInitBuilder builder = new SDKInitBuilder(context).setSecret("77bd9b637dd3aff6").
+        SDKInitBuilder builder = new SDKInitBuilder(mContext).setSecret("77bd9b637dd3aff6").
                 setTuringKey(AppConfig.TURING_APP_KEY).setUniqueId("1136313078");
         SDKInit.init(builder, new InitListener() {
             @Override

@@ -1,6 +1,5 @@
 package cn.peng.pxun.ui.adapter.listview;
 
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -50,19 +49,29 @@ public class MessageAdapter extends SuperBaseApapter {
 
         @Override
         public void bindView() {
-            if ("系统消息".equals(mData.user.getUsername())){
-                mIvMessageIcon.setImageResource(R.drawable.icon_sys_message);
-            }else if ("智能小白".equals(mData.user.getUsername())){
-                mIvMessageIcon.setImageResource(R.drawable.icon_tuling);
-            }else{
-                if (!TextUtils.isEmpty(mData.user.getHeadIcon())){
-                    Picasso.with(MyApplication.context).load(mData.user.getHeadIcon()).into(mIvMessageIcon);
-                } else{
-                    mIvMessageIcon.setImageResource(R.drawable.icon_nan);
+            if (mData.isGroup){
+                if (!TextUtils.isEmpty(mData.group.getGroupIcon())){
+                    Picasso.with(MyApplication.context).load(mData.group.getGroupIcon()).into(mIvMessageIcon);
+                }else {
+                    mIvMessageIcon.setImageResource(R.drawable.icon_group);
                 }
+                mTvMessageName.setText(mData.group.getGroupName());
+                mTvMessageSignature.setText(mData.lastMsg);
+            }else {
+                if ("系统消息".equals(mData.user.getUsername())){
+                    mIvMessageIcon.setImageResource(R.drawable.icon_sys_message);
+                }else if ("智能小白".equals(mData.user.getUsername())){
+                    mIvMessageIcon.setImageResource(R.drawable.icon_tuling);
+                }else{
+                    if (!TextUtils.isEmpty(mData.user.getHeadIcon())){
+                        Picasso.with(MyApplication.context).load(mData.user.getHeadIcon()).into(mIvMessageIcon);
+                    } else{
+                        mIvMessageIcon.setImageResource(R.drawable.icon_nan);
+                    }
+                }
+                mTvMessageName.setText(mData.user.getUsername());
+                mTvMessageSignature.setText(mData.lastMsg);
             }
-            mTvMessageName.setText(mData.user.getUsername());
-            mTvMessageSignature.setText(mData.lastMsg);
         }
     }
 

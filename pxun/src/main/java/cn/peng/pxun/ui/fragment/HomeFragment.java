@@ -10,7 +10,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BasePresenter;
 import cn.peng.pxun.ui.adapter.viewpager.HomeAdapter;
 
 /**
@@ -29,36 +29,36 @@ public class HomeFragment extends BaseFragment {
     private List<BaseFragment> fragmentList;
 
     @Override
-    public View initView() {
+    public View initLayout() {
         View view = View.inflate(mActivity, R.layout.fragment_home, null);
         initFragmentList();
         return view;
     }
 
     @Override
-    protected BasePresenter initPresenter() {
+    public BasePresenter initPresenter() {
         return null;
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
         mTabTitle.setVisibility(View.VISIBLE);
         mTvTitleText.setVisibility(View.GONE);
         HomeAdapter mAdapter = new HomeAdapter(getChildFragmentManager(), fragmentList);
         mVpFragmentHome.setAdapter(mAdapter);//给ViewPager设置适配器
         mTabTitle.setupWithViewPager(mVpFragmentHome);//将TabLayout和ViewPager关联起来。
-        mVpFragmentHome.setCurrentItem(2);
+        mVpFragmentHome.setCurrentItem(0);
     }
 
     /**
      * 初始化Fragment
      */
     private void initFragmentList() {
-        UserFragment userFragment = new UserFragment();
-        FirstFragment firstFragment = new FirstFragment();
+//        UserFragment userFragment = new UserFragment();
+        SquareFragment firstFragment = new SquareFragment();
         MovieFragment movieFragment = new MovieFragment();
         fragmentList = new ArrayList<>();
-        fragmentList.add(userFragment);
+//        fragmentList.add(userFragment);
         fragmentList.add(firstFragment);
         fragmentList.add(movieFragment);
     }

@@ -10,12 +10,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.Calendar;
 
 import butterknife.BindView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
+import cn.peng.pxun.modle.bean.RegiestResultBean;
 import cn.peng.pxun.modle.picker.City;
 import cn.peng.pxun.modle.picker.County;
 import cn.peng.pxun.modle.picker.Province;
@@ -31,36 +36,36 @@ import static cn.peng.pxun.utils.ToastUtil.showToast;
  * 注册页面
  */
 public class RegistActivity extends BaseActivity<RegistPresenter> {
-    @BindView(R.id.et_regist_phone)
-    EditText mEtRegistPhone;
-    @BindView(R.id.et_regist_password)
-    EditText mEtRegistPassword;
-    @BindView(R.id.et_regist_again)
-    EditText mEtRegistAgain;
-    @BindView(R.id.bt_regist)
-    Button mBtRegist;
+
+
     @BindView(R.id.iv_regist_goback)
     ImageView mIvRegistGoback;
     @BindView(R.id.regist_toolbar)
     Toolbar mRegistToolbar;
-    @BindView(R.id.imageView)
-    ImageView mImageView;
+    @BindView(R.id.et_regist_loginnum)
+    EditText mEtRegistLoginnum;
     @BindView(R.id.et_regist_username)
     EditText mEtRegistUsername;
-    @BindView(R.id.tv_regist_sex)
-    TextView mTvRegistSex;
+    @BindView(R.id.et_regist_password)
+    EditText mEtRegistPassword;
+    @BindView(R.id.et_regist_again)
+    EditText mEtRegistAgain;
     @BindView(R.id.ll_regist_sex)
     LinearLayout mLlRegistSex;
-    @BindView(R.id.tv_regist_birthday)
-    TextView mTvRegistBirthday;
+    @BindView(R.id.tv_regist_sex)
+    TextView mTvRegistSex;
     @BindView(R.id.ll_regist_birthday)
     LinearLayout mLlRegistBirthday;
-    @BindView(R.id.tv_regist_address)
-    TextView mTvRegistAddress;
+    @BindView(R.id.tv_regist_birthday)
+    TextView mTvRegistBirthday;
     @BindView(R.id.ll_regist_address)
     LinearLayout mLlRegistAddress;
+    @BindView(R.id.tv_regist_address)
+    TextView mTvRegistAddress;
     @BindView(R.id.tv_regist_service)
     TextView mTvRegistService;
+    @BindView(R.id.bt_regist)
+    Button mBtRegist;
 
     private OptionPicker sexPicker;
     private DatePicker datePicker;
@@ -72,6 +77,8 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
         initSexPicker();
         initBirthdayPicker();
         initAddressPicker();
+        // 注册EventBus
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -95,21 +102,32 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
         mBtRegist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String phone = mEtRegistPhone.getText().toString().trim();
+                String loginNum = mEtRegistLoginnum.getText().toString().trim();
                 String username = mEtRegistUsername.getText().toString().trim();
                 String password = mEtRegistPassword.getText().toString().trim();
                 String pwdagain = mEtRegistAgain.getText().toString().trim();
 
-                if (TextUtils.isEmpty(phone)){
+                if (TextUtils.isEmpty(loginNum)){
                     showToast(RegistActivity.this,"帐号不能为空");
                     return;
-                }else if (TextUtils.isEmpty(username)){
+                }
+                if (loginNum.length() < 6){
+                    showToast(RegistActivity.this,"帐号长度不能小于6位");
+                    return;
+                }
+                if (TextUtils.isEmpty(username)){
                     showToast(RegistActivity.this,"昵称不能为空");
                     return;
-                }else if (TextUtils.isEmpty(password) || TextUtils.isEmpty(pwdagain)){
+                }
+                if (TextUtils.isEmpty(password) || TextUtils.isEmpty(pwdagain)){
                     showToast(RegistActivity.this,"密码不能为空");
                     return;
-                }else if (!password.equals(pwdagain)){
+                }
+                if (password.length() < 6 || pwdagain.length() < 6){
+                    showToast(RegistActivity.this,"帐号长度不能小于6位");
+                    return;
+                }
+                if (!password.equals(pwdagain)){
                     showToast(RegistActivity.this, "您俩次输入的密码不一致");
                     return;
                 }
@@ -119,7 +137,7 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
                 String address = mTvRegistAddress.getText().toString();
 
                 showLoadingDialog("请稍后...");
-                presenter.regist(phone, username, password ,sex ,birthday ,address);
+                presenter.regist(loginNum, username, password ,sex ,birthday ,address);
             }
         });
         mLlRegistSex.setOnClickListener(new View.OnClickListener() {
@@ -146,52 +164,6 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
                 showToast(RegistActivity.this,"注册协议");
             }
         });
-    }
-
-    /**
-     * 展示注册结果
-     * @param code
-     * @param userInfo
-     */
-    public void onRegistFinish(int code, int huanXinCode, String userInfo) {
-        switch (code) {
-            case AppConfig.NET_ERROR:
-                loadingDialog.setTitleText("注册失败")
-                        .setContentText("网络异常,请先检查您的网络!")
-                        .setConfirmText("确定")
-                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
-                break;
-            case AppConfig.SUCCESS:
-                dismissLoadingDialog();
-                Intent intent = new Intent();
-                intent.putExtra("userInfo", userInfo);
-                setResult(RESULT_OK, intent);
-                finish();
-                break;
-            case AppConfig.ERROR:
-                loadingDialog.setTitleText("注册失败");
-                if (huanXinCode == 203){
-                    loadingDialog .setContentText("用户以存在");
-                    mEtRegistPhone.setText("");
-                }else{
-                    loadingDialog.setContentText("用户注册失败，请稍后重试");
-                }
-                loadingDialog.setConfirmText("确定");
-                loadingDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
-                break;
-            case AppConfig.SERVER_ERROR:
-                loadingDialog.setTitleText("注册失败")
-                        .setContentText("当前服务器连接较慢，请稍后重试")
-                        .setConfirmText("确定")
-                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
-                break;
-            case AppConfig.NUMBER_ERROR:
-                loadingDialog.setTitleText("注册失败")
-                        .setContentText("您输入的帐号格式有误")
-                        .setConfirmText("确定")
-                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
-                break;
-        }
     }
 
     /**
@@ -281,4 +253,46 @@ public class RegistActivity extends BaseActivity<RegistPresenter> {
         });
         addressPicker.execute("河北省", "石家庄市", "长安区");
     }
+
+    /**
+     * 处理注册结果
+     * @param result
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRegistResult(RegiestResultBean result) {
+        switch (result.result) {
+            case AppConfig.NET_ERROR:
+                loadingDialog.setTitleText("注册失败")
+                        .setContentText("网络异常,请先检查您的网络!")
+                        .setConfirmText("确定")
+                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                break;
+            case AppConfig.REGIEST_HUANXIN_ERROR:
+                loadingDialog.setTitleText("注册失败");
+                if (result.errorCode == 203){
+                    loadingDialog .setContentText("用户以存在");
+                    mEtRegistLoginnum.setText("");
+                }else{
+                    loadingDialog.setContentText("用户注册失败，请稍后重试");
+                }
+                loadingDialog.setConfirmText("确定");
+                loadingDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                break;
+            case AppConfig.REGIEST_BMOB_ERROR:
+                loadingDialog.setTitleText("注册失败")
+                        .setContentText("当前服务器连接较慢，请稍后重试")
+                        .setConfirmText("确定")
+                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                break;
+            case AppConfig.REGIEST_SUCCESS:
+                dismissLoadingDialog();
+                Intent intent = new Intent();
+                intent.putExtra("user", result.mUser);
+                intent.putExtra("password", result.password);
+                setResult(RESULT_OK, intent);
+                finish();
+                break;
+        }
+    }
+
 }

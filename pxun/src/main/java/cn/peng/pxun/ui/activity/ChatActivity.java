@@ -34,6 +34,8 @@ import java.util.List;
 import butterknife.BindView;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
+import cn.peng.pxun.modle.bmob.Group;
+import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.modle.greendao.Message;
 import cn.peng.pxun.presenter.activity.ChatPresenter;
 import cn.peng.pxun.ui.adapter.SuperBaseApapter;
@@ -90,12 +92,18 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
     // 消息list的数据适配器
     private ChatAdapter chatAdapter;
     private EmojiAdapter emojiAdapter;
-    // 聊天用户名
-    private String toChatUserName;
-    // 聊天用户ID
-    private String toChatUserId;
+
     // 是否是群聊
     private boolean isGroup = false;
+    // 聊天用户
+    private User toChatUser;
+    // 聊天群组
+    private Group toChatGroup;
+    // 会话对象ID
+    private String toChatId;
+    // 会话对象名称
+    private String toChatName;
+
 
     @Override
     protected void init() {
@@ -106,15 +114,24 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
         EventBus.getDefault().register(this);
 
         Intent intent = getIntent();
-        toChatUserName = intent.getStringExtra("username");
-        toChatUserId = intent.getStringExtra("userId");
         isGroup = intent.getBooleanExtra("isGroup", false);
+
+        if (isGroup){
+            toChatGroup = (Group) intent.getSerializableExtra("toChatGroup");
+            toChatName = toChatGroup.getGroupName();
+            toChatId = toChatGroup.getGroupNum();
+        }else {
+            toChatUser = (User) intent.getSerializableExtra("toChatUser");
+            toChatName = toChatUser.getUsername();
+            toChatId = AppConfig.getUserId(toChatUser);
+        }
+
         list = new ArrayList<>();
-        if ("智能小白".equals(toChatUserName)) {
+        if ("tuling".equals(toChatId)) {
             presenter.initTuring();
             list = presenter.getTulingMessages();
         } else {
-            list = presenter.getHuanxinMessages(toChatUserId);
+            list = presenter.getHuanxinMessages(toChatId);
         }
     }
 
@@ -133,7 +150,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
         super.initView();
         setSupportActionBar(mChatToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mTvChatTitle.setText(toChatUserName);
+        mTvChatTitle.setText(toChatName);
         if (list != null && list.size() > 0) {
             chatAdapter = new ChatAdapter(list);
             mLvChat.setAdapter(chatAdapter);
@@ -225,7 +242,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                 msg.message = spellMsg;
                 msg.fromUserID = AppConfig.getUserId(AppConfig.appUser);
                 msg.messageType = Message.TEXT_TYPE;
-                if ("智能小白".equals(toChatUserName)) {
+                if ("智能小白".equals(toChatName)) {
                     if (AppConfig.isInitTuring){
                         msg.isTuring = true;
                         msg.toUserID = "tuling";
@@ -233,8 +250,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                     }
                 } else {
                     msg.isTuring = false;
-                    msg.toUserID = toChatUserId;
-                    presenter.sendTextMessage(spellMsg, toChatUserId, isGroup);
+                    msg.toUserID = toChatId;
+                    presenter.sendTextMessage(spellMsg, toChatId, isGroup);
                 }
                 addDataAndRefreshUi(msg, false);
             }
@@ -457,7 +474,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                     msg.fromUserID = AppConfig.getUserId(AppConfig.appUser);
                     msg.messageType = Message.TEXT_TYPE;
 
-                    if ("智能小白".equals(toChatUserName)) {
+                    if ("智能小白".equals(toChatName)) {
                         if (AppConfig.isInitTuring) {
                             msg.isTuring = true;
                             msg.toUserID = "tuling";
@@ -465,8 +482,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
                         }
                     } else {
                         msg.isTuring = false;
-                        msg.toUserID = toChatUserId;
-                        presenter.sendTextMessage(speechMsg, toChatUserId, isGroup);
+                        msg.toUserID = toChatId;
+                        presenter.sendTextMessage(speechMsg, toChatId, isGroup);
                     }
                     addDataAndRefreshUi(msg, false);
                 }
@@ -485,7 +502,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void receiveMessage(Message msg) {
-        if(toChatUserId.equals(msg.fromUserID)){
+        if(toChatId.equals(msg.fromUserID)){
             addDataAndRefreshUi(msg, false);
         }
     }
@@ -497,7 +514,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> {
 
         @Override
         public BaseHolder setHolder() {
-            return new ChatHolder(ChatActivity.this);
+            return new ChatHolder(ChatActivity.this, toChatUser);
         }
     }
 }

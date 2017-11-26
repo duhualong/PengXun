@@ -5,13 +5,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
-import com.hyphenate.chat.EMGroup;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
+import cn.peng.pxun.modle.AppConfig;
+import cn.peng.pxun.modle.bmob.Group;
 import cn.peng.pxun.presenter.fragment.GroupPresenter;
 import cn.peng.pxun.ui.activity.ChatActivity;
 import cn.peng.pxun.ui.adapter.listview.GroupAdapter;
@@ -29,45 +28,53 @@ public class GroupFragment extends BaseFragment<GroupPresenter> {
     @BindView(R.id.tv_empty_text)
     TextView tvEmptyText;
 
-    private List<EMGroup> groupList;
+    private List<Group> groupList;
     private GroupAdapter mAdapter;
 
     @Override
-    public void init() {
+    protected void init() {
         super.init();
         //EventBus.getDefault().register(this);
-        groupList = new ArrayList<>();
-        presenter.getGroupList();
     }
 
     @Override
-    protected GroupPresenter initPresenter() {
-        return new GroupPresenter(this);
-    }
-
-    @Override
-    public View initView() {
+    public View initLayout() {
         View view = View.inflate(mActivity, R.layout.fragment_group, null);
         return view;
     }
 
     @Override
-    public void initData() {
+    public GroupPresenter initPresenter() {
+        return new GroupPresenter(this);
+    }
+
+    @Override
+    protected void initView() {
         tvEmptyText.setText("您还没有群组");
         mAdapter = new GroupAdapter(groupList);
         mLvGroup.setAdapter(mAdapter);
     }
 
     @Override
-    public void initListener() {
+    protected void initData() {
+        if (AppConfig.groups != null && AppConfig.groups.size() > 0){
+            groupList = AppConfig.groups;
+            mAdapter.setDataSets(groupList);
+        }else {
+            mLvGroup.startRefresh();
+            presenter.getGroupList();
+        }
+    }
+
+    @Override
+    protected void initListener() {
         mLvGroup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                EMGroup group = groupList.get(position-1);
+                Group group = groupList.get(position-1);
                 Intent intent = new Intent(mActivity, ChatActivity.class);
                 intent.putExtra("isGroup", true);
-                intent.putExtra("userId", group.getGroupId());
-                intent.putExtra("username", group.getGroupName());
+                intent.putExtra("toChatGroup", group);
                 startActivity(intent);
             }
         });
@@ -80,20 +87,18 @@ public class GroupFragment extends BaseFragment<GroupPresenter> {
         });
     }
 
-
-    public void refreshGroup(List<EMGroup> grouplist) {
-        if (mLvGroup != null &&mAdapter != null ) {
-            if (grouplist == null || grouplist.size() == 0){
-                emptyView.setVisibility(View.VISIBLE);
-                return;
-            }
-            groupList = grouplist;
-            mAdapter.setDataSets(groupList);
+    public void onLoadFinish() {
+        if (mLvGroup != null && mAdapter != null && emptyView != null) {
             if (mLvGroup.isRefresh()) {
                 mLvGroup.onRefreshFinish();
             }
+            if (AppConfig.groups != null && AppConfig.groups.size() > 0){
+                groupList = AppConfig.groups;
+                mAdapter.setDataSets(groupList);
+            }else {
+                emptyView.setVisibility(View.VISIBLE);
+            }
         }
-
     }
 
 }

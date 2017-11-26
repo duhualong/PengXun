@@ -40,7 +40,7 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
     private FriendAdapter mAdapter;
 
     @Override
-    public void init() {
+    protected void init() {
         super.init();
         //EventBus.getDefault().register(this);
         friendList = new ArrayList<>();
@@ -48,25 +48,36 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
     }
 
     @Override
-    protected FriendPresenter initPresenter() {
+    public FriendPresenter initPresenter() {
         return new FriendPresenter(this);
     }
 
     @Override
-    public View initView() {
-        View view = View.inflate(mActivity, R.layout.fragment_contact, null);
+    public View initLayout() {
+        View view = View.inflate(mActivity, R.layout.fragment_friend, null);
         return view;
     }
 
     @Override
-    public void initData() {
+    protected void initView() {
         tvEmptyText.setText("您还没有好友");
         mAdapter = new FriendAdapter(friendList);
         mLvContact.setAdapter(mAdapter);
     }
 
     @Override
-    public void initListener() {
+    protected void initData() {
+        if (AppConfig.friends != null && AppConfig.friends.size() > 0){
+            friendList = AppConfig.friends;
+            mAdapter.setDataSets(friendList);
+        }else {
+            mLvContact.startRefresh();
+            presenter.getFriendList();
+        }
+    }
+
+    @Override
+    protected void initListener() {
         mLvContact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -74,14 +85,13 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
 
                 Intent intent = new Intent(mActivity, ChatActivity.class);
                 intent.putExtra("isGroup", false);
-                intent.putExtra("userId", AppConfig.getUserId(user));
-                intent.putExtra("username", user.getUsername());
+                intent.putExtra("toChatUser", user);
                 startActivity(intent);
             }
         });
         mLvContact.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 final User user = friendList.get(position-1);
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                 builder.setTitle("系统消息");
@@ -94,6 +104,9 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
                             public void run() {
                                 try {
                                     EMClient.getInstance().contactManager().deleteContact(AppConfig.getUserId(user));
+                                    friendList.remove(position);
+                                    AppConfig.friends.remove(position);
+                                    mAdapter.notifyDataSetChanged();
                                     presenter.showToast("删除好友成功");
                                 } catch (HyphenateException e) {
                                     e.printStackTrace();
@@ -122,20 +135,18 @@ public class FriendFragment extends BaseFragment<FriendPresenter> {
         });
     }
 
-    public void refreshFriend(User user) {
-        if (mLvContact != null && mAdapter != null ) {
-            friendList.add(user);
-            mAdapter.setDataSets(friendList);
-
-            if (mLvContact.isRefresh() && !presenter.isLoadingFriend()) {
+    public void onLoadFinish() {
+        if (mLvContact != null && mAdapter != null && emptyView != null) {
+            if (mLvContact.isRefresh()) {
                 mLvContact.onRefreshFinish();
+            }
+            if (AppConfig.friends != null && AppConfig.friends.size() > 0){
+                friendList = AppConfig.friends;
+                mAdapter.setDataSets(friendList);
+            }else {
+                emptyView.setVisibility(View.VISIBLE);
             }
         }
     }
 
-    public void setEmptyPage() {
-        if (mLvContact != null && mAdapter != null ) {
-            emptyView.setVisibility(View.VISIBLE);
-        }
-    }
 }

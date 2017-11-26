@@ -1,5 +1,6 @@
 package cn.peng.pxun.modle.bean;
 
+import cn.peng.pxun.modle.bmob.Group;
 import cn.peng.pxun.modle.bmob.User;
 
 /**
@@ -11,6 +12,8 @@ public class ConversationBean {
 
     // 会话用户
     public User user;
+    // 会话群组
+    public Group group;
     // 最后一条消息
     public String lastMsg;
     // 最后一次聊天时间
@@ -27,5 +30,10 @@ public class ConversationBean {
     public ConversationBean(User user) {
         this.user = user;
         this.isGroup = false;
+    }
+
+    public ConversationBean(Group group) {
+        this.group = group;
+        this.isGroup = true;
     }
 }

@@ -13,7 +13,7 @@ import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.SysMessage;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BasePresenter;
 import cn.peng.pxun.ui.activity.SysMessageActivity;
 import cn.peng.pxun.utils.ThreadUtil;
 
@@ -34,7 +34,7 @@ public class SysMessagePresenter extends BasePresenter{
      */
     public void getSysMessageList(){
         BmobQuery<SysMessage> bmobQuery = new BmobQuery();
-        bmobQuery.addWhereEqualTo("toUser", AppConfig.getUserId(AppConfig.appUser));
+        bmobQuery.addWhereEqualTo("toUserId", AppConfig.getUserId(AppConfig.appUser));
         bmobQuery.order("-createdAt");
         bmobQuery.findObjects(new FindListener<SysMessage>(){
 
@@ -58,7 +58,7 @@ public class SysMessagePresenter extends BasePresenter{
             @Override
             public void run() {
                 try {
-                    EMClient.getInstance().contactManager().acceptInvitation(sysMsg.getFromUser());
+                    EMClient.getInstance().contactManager().acceptInvitation(sysMsg.getFromUserId());
                     sysMsg.setMsgState("1");
                     sysMsg.update(new UpdateListener() {
                         @Override
@@ -66,8 +66,8 @@ public class SysMessagePresenter extends BasePresenter{
                             if (e == null){
                                 SysMessage newMsg = new SysMessage();
                                 newMsg.setMessage(AppConfig.appUser.getUsername()+"同意了你的好友申请。");
-                                newMsg.setFromUser(sysMsg.getToUser());
-                                newMsg.setToUser(sysMsg.getFromUser());
+                                newMsg.setFromUserId(sysMsg.getToUserId());
+                                newMsg.setToUserId(sysMsg.getFromUserId());
                                 newMsg.setMsgType("110");
                                 newMsg.setMsgState("1");
                                 addNewSysMessage(newMsg);

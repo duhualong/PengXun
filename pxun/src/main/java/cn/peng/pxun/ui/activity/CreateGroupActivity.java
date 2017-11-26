@@ -86,6 +86,8 @@ public class CreateGroupActivity extends BaseActivity<CreateGroupPresenter> {
                     ToastUtil.showToast(mActivity, "群名称不能为空");
                     return;
                 }
+
+                showLoadingDialog("请稍候...");
                 presenter.createGroup(groupName, "",groupType, null);
             }
         });
@@ -107,6 +109,7 @@ public class CreateGroupActivity extends BaseActivity<CreateGroupPresenter> {
     }
 
     public void onCreateGroup(int code, String groupInfo) {
+        dismissLoadingDialog();
         switch (code) {
             case AppConfig.NET_ERROR:
                 ToastUtil.showToast(mActivity, "网络异常,请先检查您的网络!");
@@ -118,7 +121,6 @@ public class CreateGroupActivity extends BaseActivity<CreateGroupPresenter> {
             case AppConfig.ERROR:
                 ToastUtil.showToast(mActivity, "群组创建失败,错误代码:" + groupInfo);
                 break;
-
         }
     }
 

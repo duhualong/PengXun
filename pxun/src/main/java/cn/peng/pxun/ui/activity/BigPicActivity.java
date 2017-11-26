@@ -13,7 +13,7 @@ import com.wingsofts.dragphotoview.DragPhotoView;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BasePresenter;
 
 /**
  * 大图预览页面

@@ -31,6 +31,8 @@ public class UserAdapter extends BaseQuickAdapter<User, BaseViewHolder> {
 
         if (!TextUtils.isEmpty(item.getHeadIcon())){
             Picasso.with(mContext).load(item.getHeadIcon()).into((ImageView) helper.getView(R.id.iv_message_icon));
+        }else {
+            ((ImageView) helper.getView(R.id.iv_message_icon)).setImageResource(R.drawable.icon_nan);
         }
     }
 }

@@ -1,44 +1,51 @@
 package cn.peng.pxun.presenter.fragment;
 
+import android.os.SystemClock;
+
 import java.util.List;
 
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.User;
-import cn.peng.pxun.presenter.BaseUserPresenter;
+import cn.peng.pxun.presenter.base.BaseUserPresenter;
 import cn.peng.pxun.ui.fragment.FriendFragment;
+import cn.peng.pxun.utils.ThreadUtil;
 
 /**
  * Created by msi on 2016/12/26.
  */
 public class FriendPresenter extends BaseUserPresenter {
-    private FriendFragment mFragment;
+    private FriendFragment fragment;
 
     private int index = 0;
     private boolean loadFriendState = false;
 
     public FriendPresenter(final FriendFragment fragment) {
         super(fragment);
-        mFragment = fragment;
+        this.fragment = fragment;
 
+        addListener();
+    }
+
+    private void addListener() {
         addFriendListListener(new FriendListListener() {
             @Override
             public void onGetFriendList(List<String> userIds) {
                 if (userIds != null && userIds.size() > 0){
                     startLoadUser();
                 }else {
-                    mFragment.setEmptyPage();
+                    loadFinish();
                 }
             }
         });
         addUserInfoListener(new UserInfoListener() {
             @Override
             public void onGetUser(User user) {
-                index += 1;
-                if (index < friendIds.size()){
-                    getUser(friendIds.get(index));
-                }else {
-                    loadFriendState = false;
+                if (user != null){
+                    AppConfig.friends.add(user);
                 }
-                mFragment.refreshFriend(user);
+
+                index++;
+                loadNext();
             }
         });
     }
@@ -49,13 +56,40 @@ public class FriendPresenter extends BaseUserPresenter {
     private void startLoadUser() {
         index = 0;
         loadFriendState = true;
-        getUser(friendIds.get(index));
+        AppConfig.friends.clear();
+
+        loadNext();
+    }
+
+    /**
+     * 加载下一个用户
+     */
+    private void loadNext(){
+        if (index < friendIds.size()){
+            String userId = friendIds.get(index);
+            getUser(userId);
+        } else {
+            loadFinish();
+        }
+    }
+
+    /**
+     * 数据加载完成
+     */
+    private void loadFinish(){
+        ThreadUtil.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                fragment.onLoadFinish();
+            }
+        });
     }
 
     /**
      * 从环信获取好友列表
      */
     public void getFriendList() {
+        SystemClock.sleep(300);
         getFriendListFromHuanXin();
     }
 

@@ -14,7 +14,7 @@ import cn.peng.pxun.ui.fragment.BaseFragment;
 public class HomeAdapter extends FragmentPagerAdapter {
     List<BaseFragment> list;
     private String[] tabs = {
-            "用户","推荐","电影"
+            "推荐","电影"
     };
 
     public HomeAdapter(FragmentManager fm, List<BaseFragment> fragmentList) {

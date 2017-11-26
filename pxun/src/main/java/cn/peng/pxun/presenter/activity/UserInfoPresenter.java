@@ -1,6 +1,6 @@
 package cn.peng.pxun.presenter.activity;
 
-import cn.peng.pxun.presenter.BaseUserPresenter;
+import cn.peng.pxun.presenter.base.BaseUserPresenter;
 import cn.peng.pxun.ui.activity.UserInfoActivity;
 
 /**

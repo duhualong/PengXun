@@ -8,6 +8,9 @@ import cn.bmob.v3.BmobUser;
  */
 
 public class User extends BmobUser implements Cloneable {
+    //登录帐号
+    private String loginNum;
+
     //三方登录id
     private String thirdPartyID;
     //信息背景图片
@@ -34,8 +37,16 @@ public class User extends BmobUser implements Cloneable {
     }
 
     public User(String userId, String username) {
-        setMobilePhoneNumber(userId);
+        setLoginNum(userId);
         setUsername(username);
+    }
+
+    public String getLoginNum() {
+        return loginNum;
+    }
+
+    public void setLoginNum(String loginNum) {
+        this.loginNum = loginNum;
     }
 
     public String getThirdPartyID() {

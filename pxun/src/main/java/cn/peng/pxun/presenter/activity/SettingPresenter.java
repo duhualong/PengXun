@@ -8,7 +8,7 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 
 import cn.peng.pxun.MyApplication;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BasePresenter;
 import cn.peng.pxun.ui.activity.SettingActivity;
 import cn.peng.pxun.utils.ThreadUtil;
 import cn.peng.pxun.utils.ToastUtil;

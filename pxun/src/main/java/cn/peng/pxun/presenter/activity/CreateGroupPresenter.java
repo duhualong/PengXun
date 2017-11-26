@@ -11,7 +11,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.Group;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BasePresenter;
 import cn.peng.pxun.ui.activity.CreateGroupActivity;
 
 /**
@@ -38,6 +38,7 @@ public class CreateGroupPresenter extends BasePresenter{
             final EMGroup emGroup = EMClient.getInstance().groupManager().createGroup(name, desc, new String[]{}, "", option);
 
             Group group = new Group();
+            group.setGroupMasterId(AppConfig.getUserId(AppConfig.appUser));
             group.setGroupNum(emGroup.getGroupId());
             group.setGroupName(name);
             group.setGroupDesc(desc);

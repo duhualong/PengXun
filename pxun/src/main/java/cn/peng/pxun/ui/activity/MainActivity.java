@@ -148,7 +148,8 @@ public class MainActivity extends BaseActivity<MainPresenter> {
         mIvMainCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.showToast(mActivity, "新建");
+                Intent intent = new Intent(mActivity, PublishPostsActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -180,7 +181,7 @@ public class MainActivity extends BaseActivity<MainPresenter> {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AppConfig.MINETOPIC){
+        if (requestCode == AppConfig.MINETOPIC || requestCode == AppConfig.MINETOSETTING){
             mineFragment.onActivityResult(requestCode, resultCode, data);
         }
     }

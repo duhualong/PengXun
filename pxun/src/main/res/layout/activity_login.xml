@@ -52,7 +52,7 @@
                 android:background="@drawable/user"/>
 
             <EditText
-                android:id="@+id/et_login_phone"
+                android:id="@+id/et_login_loginNum"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_centerVertical="true"
@@ -60,9 +60,7 @@
                 android:layout_marginRight="40dp"
                 android:layout_marginTop="2dp"
                 android:background="@null"
-                android:hint="请输入手机号"
-                android:inputType="phone"
-                android:maxLength="11"
+                android:hint="请输入登录帐号"
                 android:textSize="15sp"/>
 
         </RelativeLayout>

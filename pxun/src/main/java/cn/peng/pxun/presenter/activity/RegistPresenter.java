@@ -1,51 +1,28 @@
 package cn.peng.pxun.presenter.activity;
 
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.exceptions.HyphenateException;
-
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.SaveListener;
-import cn.bmob.v3.listener.UpdateListener;
-import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.User;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BaseUserPresenter;
 import cn.peng.pxun.ui.activity.BaseActivity;
-import cn.peng.pxun.ui.activity.RegistActivity;
-import cn.peng.pxun.utils.MD5Util;
-import cn.peng.pxun.utils.ThreadUtil;
 
 /**
  * RegistActivity的业务类
  */
-public class RegistPresenter extends BasePresenter{
-
-    private RegistActivity activity;
-    //当前注册的用户
-    private User user;
+public class RegistPresenter extends BaseUserPresenter{
 
     public RegistPresenter(BaseActivity activity) {
         super(activity);
-        this.activity = (RegistActivity) activity;
     }
 
     /**
      * 注册
-     * @param phone 用户登录账号，手机号
+     * @param loginNum 用户登录账号
      * @param username 用户名，昵称
      * @param password 密码
      * @param sex 用户性别
      * @param birthday 用户生日
      * @param address 用户所在地
      */
-    public void regist(String phone, String username, final String password, String sex, String birthday, String address) {
-        if (!isNetUsable(activity)){
-            activity.onRegistFinish(AppConfig.NET_ERROR, 100, "");
-            return;
-        }
-        if (!isPhoneNumber(phone)){
-            activity.onRegistFinish(AppConfig.NUMBER_ERROR, 101, "");
-            return;
-        }
+    public void regist(String loginNum, String username, String password, String sex, String birthday, String address) {
         if("未选择".equals(sex)){
             sex = "";
         }
@@ -56,68 +33,14 @@ public class RegistPresenter extends BasePresenter{
             address = "";
         }
 
-        //注册到自己的Bmob服务器
-        user = new User();
-        user.setMobilePhoneNumber(phone);
+        User user = new User();
+        user.setLoginNum(loginNum);
         user.setUsername(username);
-        user.setPassword(MD5Util.encode(password));
         user.setSex(sex);
         user.setBirthday(birthday);
         user.setAddress(address);
-        user.setLoginType("");
+        user.setLoginType("REGIEST");
 
-        user.signUp(new SaveListener<User>() {
-            @Override
-            public void done(final User user, BmobException e) {
-                if (e == null){
-                    registHuanXin(password);
-                }else {
-                    setResult(AppConfig.SERVER_ERROR, 500, "");
-                }
-            }
-        });
-    }
-
-    /**
-     * 注册环信服务器
-     * @param password
-     */
-    private void registHuanXin(final String password) {
-        ThreadUtil.runOnSubThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String userNum = user.getMobilePhoneNumber();
-                    EMClient.getInstance().createAccount(userNum, MD5Util.encode(password));
-                    //注册成功
-                    setResult(AppConfig.SUCCESS, 200, userNum + ":" + password);
-                } catch (HyphenateException e1) {
-                    e1.printStackTrace();
-                    //将Bmob上注册的user给删除掉
-                    user.delete(new UpdateListener() {
-                        @Override
-                        public void done(BmobException e) {
-
-                        }
-                    });
-                    //注册失败
-                    setResult(AppConfig.ERROR, e1.getErrorCode(), "");
-                }
-            }
-        });
-    }
-
-    /**
-     * 更新activity的注册结果
-     * @param code
-     * @param userInfo
-     */
-    private void setResult (final int code, final int huanXinCode, final String userInfo) {
-        ThreadUtil.runOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                activity.onRegistFinish(code, huanXinCode, userInfo);
-            }
-        });
+        registUser(user, loginNum, password);
     }
 }

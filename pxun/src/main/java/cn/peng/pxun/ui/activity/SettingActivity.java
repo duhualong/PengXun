@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
+import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.presenter.activity.SettingPresenter;
 import cn.peng.pxun.utils.ToastUtil;
 
@@ -103,8 +104,12 @@ public class SettingActivity extends BaseActivity<SettingPresenter> {
      */
     public void onLogoutSuccess(){
         loadingDialog.cancel();
-        Intent intent = new Intent(this, LoginActivity.class);
+        AppConfig.friends.clear();
+        AppConfig.groups.clear();
+        AppConfig.conversations.clear();
+        Intent intent = new Intent(mActivity, LoginActivity.class);
         startActivity(intent);
+        setResult(RESULT_OK);
         finish();
     }
 }

@@ -22,7 +22,7 @@ import cn.peng.pxun.modle.bean.TuringBean;
 import cn.peng.pxun.modle.bean.VoiceBean;
 import cn.peng.pxun.modle.greendao.Message;
 import cn.peng.pxun.modle.greendao.MessageDao;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BasePresenter;
 import cn.peng.pxun.ui.activity.BaseActivity;
 import cn.peng.pxun.ui.activity.ChatActivity;
 import cn.peng.pxun.utils.DateUtil;

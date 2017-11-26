@@ -1,5 +1,6 @@
 package cn.peng.pxun.ui.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +14,12 @@ import android.widget.TextView;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -20,20 +27,21 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
+import cn.peng.pxun.modle.bean.RegiestResultBean;
 import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.presenter.activity.LoginPresenter;
 import cn.peng.pxun.utils.AppUtil;
-import cn.peng.pxun.utils.MD5Util;
 import cn.peng.pxun.utils.ToastUtil;
-import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
+import me.weyye.hipermission.PermissionItem;
 
 /**
  * 登录页面
  */
 public class LoginActivity extends BaseActivity<LoginPresenter> {
-    @BindView(R.id.et_login_phone)
-    EditText mEtPhone;
+
+    @BindView(R.id.et_login_loginNum)
+    EditText mEtLoginNum;
     @BindView(R.id.et_login_password)
     EditText mEtPassword;
     @BindView(R.id.bt_login)
@@ -75,7 +83,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
                 User user = new User();
                 user.setThirdPartyID(data.get("uid"));
                 user.setUsername(data.get("screen_name"));
-                user.setPassword(MD5Util.encode(data.get("uid")));
                 user.setHeadIcon(data.get("profile_image_url"));
                 user.setSex(data.get("gender"));
 
@@ -89,7 +96,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
                 }
 
                 showLoadingDialog("正在登陆...");
-                presenter.thirdPartyUserRegiest(user);
+                presenter.thirdPartyUserLogin(user);
             }
         }
 
@@ -123,6 +130,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             initPermission();
         }
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -140,7 +148,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
         super.initView();
 
         String phone = MyApplication.sp.getString("phone", "");
-        mEtPhone.setText(phone);
+        mEtLoginNum.setText(phone);
         boolean isRememberPassword = MyApplication.sp.getBoolean("isRemember", false);
         mCbLogin.setChecked(isRememberPassword);
         if (isRememberPassword){
@@ -154,7 +162,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
         mBtLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String phone = mEtPhone.getText().toString().trim();
+                String phone = mEtLoginNum.getText().toString().trim();
                 String password = mEtPassword.getText().toString().trim();
 
                 if (TextUtils.isEmpty(phone)) {
@@ -200,6 +208,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        dismissLoadingDialog();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         MyApplication.umengApi.onActivityResult(requestCode, resultCode, data);
@@ -207,22 +221,86 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
             if (data != null){
                 switch (requestCode){
                     case AppConfig.LOGINTOREGIEST:
-                        String userInfo = data.getStringExtra("userInfo");
-                        String[] info = userInfo.split(":");
-                        mEtPhone.setText(info[0]);
-                        mEtPassword.setText(info[1]);
+                        User user = (User) data.getSerializableExtra("user");
+                        String password = data.getStringExtra("password");
+                        mEtLoginNum.setText(user.getLoginNum());
+                        mEtPassword.setText(password);
                         mCbLogin.setChecked(true);
-                        login(info[0], info[1]);
+                        login(user.getLoginNum(), password);
                         break;
                 }
             }
         }
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        dismissLoadingDialog();
+    /**
+     * 检查权限,动态申请权限
+     */
+    private void initPermission() {
+        if(Build.VERSION.SDK_INT>=23){
+            List<PermissionItem> permissionItems = new ArrayList();
+            permissionItems.add(new PermissionItem(Manifest.permission.ACCESS_FINE_LOCATION, "定位", R.drawable.permission_ic_location));
+            permissionItems.add(new PermissionItem(Manifest.permission.READ_EXTERNAL_STORAGE, "读取存储卡", R.drawable.permission_ic_storage ));
+            permissionItems.add(new PermissionItem(Manifest.permission.WRITE_EXTERNAL_STORAGE, "写入存储卡", R.drawable.permission_ic_storage ));
+            permissionItems.add(new PermissionItem(Manifest.permission.READ_PHONE_STATE, "手机状态", R.drawable.permission_ic_phone));
+            requestPermission(permissionItems, new PermissionCallback() {
+                @Override
+                public void onClose() {
+                    ToastUtil.showToast(mActivity, "您取消了授权");
+                }
+
+                @Override
+                public void onFinish() {
+                    //ToastUtil.showToast(mActivity, "授权成功");
+                }
+
+                @Override
+                public void onDeny(String permission, int position) {
+                }
+
+                @Override
+                public void onGuarantee(String permission, int position) {
+                }
+            });
+        }
+    }
+
+    /**
+     * 登录用户
+     * @param phone
+     * @param password
+     */
+    private void login(String phone, String password) {
+        showLoadingDialog("正在登陆...");
+        presenter.login(phone, password);
+    }
+
+    /**
+     * 处理三方用户注册结果
+     * @param result
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onThirdPartyUserRegistResult(RegiestResultBean result) {
+        switch (result.result) {
+            case AppConfig.NET_ERROR:
+                loadingDialog.setTitleText("注册失败")
+                        .setContentText("网络异常,请先检查您的网络!")
+                        .setConfirmText("确定")
+                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                break;
+            case AppConfig.REGIEST_HUANXIN_ERROR:
+            case AppConfig.REGIEST_BMOB_ERROR:
+                loadingDialog.setTitleText("注册失败")
+                        .setContentText("请求连接超时，请稍后重试")
+                        .setConfirmText("确定")
+                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                break;
+            case AppConfig.REGIEST_SUCCESS:
+                String loginNum = result.mUser.getThirdPartyID();
+                String password = result.password;
+                presenter.loginHuanXin(loginNum, password);
+                break;
+        }
     }
 
     /**
@@ -268,54 +346,4 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
         }
     }
 
-    private void login(String phone, String password) {
-        showLoadingDialog("正在登陆...");
-        presenter.login(phone, password);
-    }
-
-    /**
-     * 检查权限,动态申请权限
-     */
-    private void initPermission() {
-//        List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
-//        permissionItems.add(new PermissionItem(Manifest.permission.ACCESS_FINE_LOCATION, "定位", R.drawable.permission_ic_location));
-//        permissionItems.add(new PermissionItem(Manifest.permission.READ_EXTERNAL_STORAGE, "读取存储卡", R.drawable.permission_ic_storage ));
-//        permissionItems.add(new PermissionItem(Manifest.permission.WRITE_EXTERNAL_STORAGE, "写入存储卡", R.drawable.permission_ic_storage ));
-//        permissionItems.add(new PermissionItem(Manifest.permission.READ_PHONE_STATE, "手机状态", R.drawable.permission_ic_phone));
-
-//        if(Build.VERSION.SDK_INT>=23){
-//            String[] mPermissionList = new String[]{
-//                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                    Manifest.permission.ACCESS_FINE_LOCATION,
-//                    Manifest.permission.CALL_PHONE,
-//                    Manifest.permission.READ_LOGS,
-//                    Manifest.permission.READ_PHONE_STATE,
-//                    Manifest.permission.READ_EXTERNAL_STORAGE,
-//                    Manifest.permission.SET_DEBUG_APP,
-//                    Manifest.permission.SYSTEM_ALERT_WINDOW,
-//                    Manifest.permission.GET_ACCOUNTS,
-//                    Manifest.permission.WRITE_APN_SETTINGS};
-//            ActivityCompat.requestPermissions(this,mPermissionList,123);
-//        }
-        HiPermission.create(mActivity)
-            .checkMutiPermission(new PermissionCallback() {
-                @Override
-                public void onClose() {
-                ToastUtil.showToast(mActivity, "您取消了授权");
-                }
-
-                @Override
-                public void onFinish() {
-                //ToastUtil.showToast(mActivity, "授权成功");
-                }
-
-                @Override
-                public void onDeny(String permission, int position) {
-                }
-
-                @Override
-                public void onGuarantee(String permission, int position) {
-            }
-        });
-    }
 }

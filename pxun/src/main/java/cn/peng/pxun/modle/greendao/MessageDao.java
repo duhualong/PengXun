@@ -25,11 +25,12 @@ public class MessageDao extends AbstractDao<Message, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Message = new Property(1, String.class, "message", false, "MESSAGE");
         public final static Property Date = new Property(2, String.class, "date", false, "DATE");
-        public final static Property FromUserID = new Property(3, String.class, "fromUserID", false, "FROM_USER_ID");
-        public final static Property ToUserID = new Property(4, String.class, "toUserID", false, "TO_USER_ID");
-        public final static Property MessageType = new Property(5, Integer.class, "messageType", false, "MESSAGE_TYPE");
-        public final static Property IsTuring = new Property(6, Boolean.class, "isTuring", false, "IS_TURING");
-        public final static Property PicURL = new Property(7, String.class, "picURL", false, "PIC_URL");
+        public final static Property MsgTime = new Property(3, Long.class, "msgTime", false, "MSG_TIME");
+        public final static Property FromUserID = new Property(4, String.class, "fromUserID", false, "FROM_USER_ID");
+        public final static Property ToUserID = new Property(5, String.class, "toUserID", false, "TO_USER_ID");
+        public final static Property MessageType = new Property(6, Integer.class, "messageType", false, "MESSAGE_TYPE");
+        public final static Property IsTuring = new Property(7, Boolean.class, "isTuring", false, "IS_TURING");
+        public final static Property PicURL = new Property(8, String.class, "picURL", false, "PIC_URL");
     }
 
 
@@ -48,11 +49,12 @@ public class MessageDao extends AbstractDao<Message, Long> {
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"MESSAGE\" TEXT NOT NULL ," + // 1: message
                 "\"DATE\" TEXT," + // 2: date
-                "\"FROM_USER_ID\" TEXT," + // 3: fromUserID
-                "\"TO_USER_ID\" TEXT," + // 4: toUserID
-                "\"MESSAGE_TYPE\" INTEGER," + // 5: messageType
-                "\"IS_TURING\" INTEGER," + // 6: isTuring
-                "\"PIC_URL\" TEXT);"); // 7: picURL
+                "\"MSG_TIME\" INTEGER," + // 3: msgTime
+                "\"FROM_USER_ID\" TEXT," + // 4: fromUserID
+                "\"TO_USER_ID\" TEXT," + // 5: toUserID
+                "\"MESSAGE_TYPE\" INTEGER," + // 6: messageType
+                "\"IS_TURING\" INTEGER," + // 7: isTuring
+                "\"PIC_URL\" TEXT);"); // 8: picURL
     }
 
     /** Drops the underlying database table. */
@@ -76,29 +78,34 @@ public class MessageDao extends AbstractDao<Message, Long> {
             stmt.bindString(3, date);
         }
  
+        Long msgTime = entity.getMsgTime();
+        if (msgTime != null) {
+            stmt.bindLong(4, msgTime);
+        }
+ 
         String fromUserID = entity.getFromUserID();
         if (fromUserID != null) {
-            stmt.bindString(4, fromUserID);
+            stmt.bindString(5, fromUserID);
         }
  
         String toUserID = entity.getToUserID();
         if (toUserID != null) {
-            stmt.bindString(5, toUserID);
+            stmt.bindString(6, toUserID);
         }
  
         Integer messageType = entity.getMessageType();
         if (messageType != null) {
-            stmt.bindLong(6, messageType);
+            stmt.bindLong(7, messageType);
         }
  
         Boolean isTuring = entity.getIsTuring();
         if (isTuring != null) {
-            stmt.bindLong(7, isTuring ? 1L: 0L);
+            stmt.bindLong(8, isTuring ? 1L: 0L);
         }
  
         String picURL = entity.getPicURL();
         if (picURL != null) {
-            stmt.bindString(8, picURL);
+            stmt.bindString(9, picURL);
         }
     }
 
@@ -117,29 +124,34 @@ public class MessageDao extends AbstractDao<Message, Long> {
             stmt.bindString(3, date);
         }
  
+        Long msgTime = entity.getMsgTime();
+        if (msgTime != null) {
+            stmt.bindLong(4, msgTime);
+        }
+ 
         String fromUserID = entity.getFromUserID();
         if (fromUserID != null) {
-            stmt.bindString(4, fromUserID);
+            stmt.bindString(5, fromUserID);
         }
  
         String toUserID = entity.getToUserID();
         if (toUserID != null) {
-            stmt.bindString(5, toUserID);
+            stmt.bindString(6, toUserID);
         }
  
         Integer messageType = entity.getMessageType();
         if (messageType != null) {
-            stmt.bindLong(6, messageType);
+            stmt.bindLong(7, messageType);
         }
  
         Boolean isTuring = entity.getIsTuring();
         if (isTuring != null) {
-            stmt.bindLong(7, isTuring ? 1L: 0L);
+            stmt.bindLong(8, isTuring ? 1L: 0L);
         }
  
         String picURL = entity.getPicURL();
         if (picURL != null) {
-            stmt.bindString(8, picURL);
+            stmt.bindString(9, picURL);
         }
     }
 
@@ -154,11 +166,12 @@ public class MessageDao extends AbstractDao<Message, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getString(offset + 1), // message
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // date
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // fromUserID
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // toUserID
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // messageType
-            cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0, // isTuring
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // picURL
+            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // msgTime
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // fromUserID
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // toUserID
+            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // messageType
+            cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0, // isTuring
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // picURL
         );
         return entity;
     }
@@ -168,11 +181,12 @@ public class MessageDao extends AbstractDao<Message, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setMessage(cursor.getString(offset + 1));
         entity.setDate(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setFromUserID(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setToUserID(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setMessageType(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setIsTuring(cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0);
-        entity.setPicURL(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setMsgTime(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
+        entity.setFromUserID(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setToUserID(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setMessageType(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.setIsTuring(cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0);
+        entity.setPicURL(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     @Override

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import cn.peng.pxun.R;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BasePresenter;
 import cn.peng.pxun.utils.ToastUtil;
 
 /**

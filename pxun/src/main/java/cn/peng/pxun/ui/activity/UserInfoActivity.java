@@ -364,9 +364,7 @@ public class UserInfoActivity extends BaseActivity<UserInfoPresenter> {
      * @param code
      */
     public void updataResult(int code) {
-        if (loadingDialog != null){
-            loadingDialog.cancel();
-        }
+        dismissLoadingDialog();
         if (code == AppConfig.SUCCESS){
             AppConfig.appUser = mUser;
             initUserInfo();
@@ -381,7 +379,7 @@ public class UserInfoActivity extends BaseActivity<UserInfoPresenter> {
      * 上传头像完成
      */
     public void onIconUploadFinish(String iconPath) {
-        mActivity.dismissLoadingDialog();
+        dismissProgressDialog();
         if (!TextUtils.isEmpty(iconPath)){
             mUser.setHeadIcon(iconPath);
             upDataUserInfo();

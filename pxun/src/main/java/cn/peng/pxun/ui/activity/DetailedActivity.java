@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
-import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.User;
@@ -36,18 +35,21 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
     @BindView(R.id.bt_userinfo)
     Button mBtUserinfo;
 
-    private boolean isFriend;
-    private boolean isMe;
-    private String accountNumber;
     private User mUser;
+    private boolean isMe;
+    private boolean isTuling;
+    private boolean isFriend;
 
     @Override
     protected void init() {
         super.init();
+        showLoadingDialog("加载中");
         Intent intent = getIntent();
-        isMe = intent.getBooleanExtra("isMe",false);
-        accountNumber = intent.getStringExtra("accountNumber");
         mUser = (User) intent.getSerializableExtra("user");
+        isMe = intent.getBooleanExtra("isMe",false);
+        if (!isMe){
+            isTuling = "tuling".equals(mUser.getLoginNum());
+        }
     }
 
     @Override
@@ -63,7 +65,6 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
     @Override
     protected void initView() {
         super.initView();
-        showLoadingDialog("加载中");
     }
 
     @Override
@@ -75,7 +76,7 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
                 if (!TextUtils.isEmpty(mUser.getHeadIcon())){
                     intent.putExtra("url", mUser.getHeadIcon());
                 }else{
-                    if ("tuling".equals(accountNumber)){
+                    if (isTuling){
                         intent.putExtra("isTuling", true);
                     }else{
                         intent.putExtra("isTuling", false);
@@ -94,11 +95,11 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
                     if (isFriend){
                         Intent intent = new Intent(mActivity, ChatActivity.class);
                         intent.putExtra("isGroup", false);
-                        intent.putExtra("userId", AppConfig.getUserId(mUser));
-                        intent.putExtra("username", mUser.getUsername());
+                        intent.putExtra("toChatUser", mUser);
                         startActivity(intent);
+                        finish();
                     }else {
-                        presenter.showToast("添加好友");
+                        presenter.addFriend(mUser);
                     }
                 }
             }
@@ -109,20 +110,19 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
      * 开始初始化
      */
     public void startInit() {
-        isFriend = presenter.isMyFriend(AppConfig.getUserId(mUser));
+        isFriend = presenter.isFriend(AppConfig.getUserId(mUser));
         if (isMe){
             if (AppConfig.appUser != null){
                 setUserInfo(AppConfig.appUser);
-            } else {
-                accountNumber = MyApplication.sp.getString("userId","");
-                presenter.getUserInfo(accountNumber);
             }
-            mBtUserinfo.setText("修改资料卡");
+            mBtUserinfo.setText("修改资料");
         }else{
-            if (mUser == null){
-                presenter.getUserInfo(accountNumber);
-            }else {
-                setUserInfo(mUser);
+            if (mUser != null){
+                if (isTuling){
+                    setTulingInfo();
+                }else {
+                    setUserInfo(mUser);
+                }
             }
             if (isFriend){
                 mBtUserinfo.setText("发送消息");
@@ -130,6 +130,18 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
                 mBtUserinfo.setText("添加好友");
             }
         }
+    }
+
+    /**
+     * 设置图灵机器人的信息
+     */
+    private void setTulingInfo() {
+        dismissLoadingDialog();
+        mIvUserinfoIcon.setImageResource(R.drawable.icon_tuling);
+        mTvUserinfoId.setText("图灵小白");
+        mTvUserinfoSex.setText("女");
+        mTvUserinfoBirthday.setText("北京市朝阳区");
+        mTvUserinfoAddress.setText("2016年11月11日");
     }
 
     /**
@@ -148,8 +160,6 @@ public class DetailedActivity extends BaseActivity<DetailedPresenter> {
             }
             if (!TextUtils.isEmpty(user.getHeadIcon())){
                 Picasso.with(this).load(user.getHeadIcon()).into(mIvUserinfoIcon);
-            } else if ("tuling".equals(accountNumber)){
-                mIvUserinfoIcon.setImageResource(R.drawable.icon_tuling);
             }
             mTvUserinfoId.setText(user.getUsername());
             mTvUserinfoSex.setText(user.getSex());

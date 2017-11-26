@@ -145,6 +145,7 @@ public class MyApplication extends Application {
                     for (EMMessage emMsg : messages) {
                         Message msg = new Message();
                         msg.date = DateUtil.getDate(emMsg.getMsgTime());
+                        msg.msgTime = emMsg.getMsgTime();
                         msg.message = emMsg.getBody().toString().split(":")[1].replaceAll("\"", "");
                         msg.fromUserID = emMsg.getFrom();
                         msg.toUserID = emMsg.getTo();

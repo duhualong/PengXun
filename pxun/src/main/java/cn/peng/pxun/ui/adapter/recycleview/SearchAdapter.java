@@ -79,14 +79,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchHold
                     } else {
                         intent.putExtra("isMe",false);
                     }
-                    intent.putExtra("accountNumber",AppConfig.getUserId(user));
+                    intent.putExtra("user",user);
                     activity.startActivity(intent);
                 }
             });
             holder.mIvAddContact.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    presenter.addContact(user);
+                    presenter.addFriend(user);
                 }
             });
         }else if (searchType == SEARCH_GROUP){

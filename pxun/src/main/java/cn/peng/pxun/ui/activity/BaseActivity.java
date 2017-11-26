@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.peng.pxun.R;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BasePresenter;
 import cn.peng.pxun.ui.view.NumberProgressBar;
 import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
@@ -194,4 +194,5 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
                 .permissions(permissionItems)
                 .checkMutiPermission(callback);
     }
+
 }

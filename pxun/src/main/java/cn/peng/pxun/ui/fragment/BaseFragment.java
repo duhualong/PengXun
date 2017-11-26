@@ -11,7 +11,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BasePresenter;
 import cn.peng.pxun.ui.activity.BaseActivity;
 
 /**
@@ -35,9 +35,10 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = initView();
+        View view = initLayout();
         //绑定ButterKnife
         mUnbinder = ButterKnife.bind(this, view);
+        initView();
         initData();
         initListener();
         return view;
@@ -59,23 +60,30 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
      * 执行初始化操作,
      * @des 子类可选择复写,用来进行初始化操作
      */
-    public void init(){
+    protected void init(){
         mActivity = (BaseActivity) getActivity();
         this.presenter = initPresenter();
+    }
+
+    /**
+     * 初始化界面视图控件,
+     * @des 子类可选择复写,用来初始化界面视图
+     */
+    protected void initView(){
     }
 
     /**
      * 初始化界面数据,
      * @des 子类可选择复写,用来初始化界面数据
      */
-    public void initData() {
+    protected void initData() {
     }
 
     /**
      * 初始化界面内的监听,
      * @des 子类可选择复写,初始化界面内的监听
      */
-    public void initListener() {
+    protected void initListener() {
     }
 
     /**
@@ -83,11 +91,11 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
      * @des 子类必须复写
      * @return
      */
-    public abstract View initView();
+    public abstract View initLayout();
 
     /**
      * 初始化和此Fragment绑定的业务类
      * @return
      */
-    protected abstract P initPresenter();
+    public abstract P initPresenter();
 }

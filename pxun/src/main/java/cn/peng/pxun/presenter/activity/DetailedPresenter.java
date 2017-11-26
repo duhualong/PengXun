@@ -3,7 +3,7 @@ package cn.peng.pxun.presenter.activity;
 import java.util.List;
 
 import cn.peng.pxun.modle.bmob.User;
-import cn.peng.pxun.presenter.BaseUserPresenter;
+import cn.peng.pxun.presenter.base.BaseUserPresenter;
 import cn.peng.pxun.ui.activity.DetailedActivity;
 
 /**

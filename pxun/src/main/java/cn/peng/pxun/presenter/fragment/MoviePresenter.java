@@ -1,11 +1,9 @@
 package cn.peng.pxun.presenter.fragment;
 
 
-import android.app.Activity;
-
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bean.MovieBean;
-import cn.peng.pxun.presenter.BaseMoviePresenter;
+import cn.peng.pxun.presenter.base.BaseMoviePresenter;
 import cn.peng.pxun.server.MovieServer;
 import cn.peng.pxun.ui.fragment.MovieFragment;
 import cn.peng.pxun.utils.LogUtil;
@@ -21,13 +19,11 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class MoviePresenter extends BaseMoviePresenter {
-    private Activity mContext;
-    private MovieFragment mFragment;
+    private MovieFragment fragment;
 
     public MoviePresenter(MovieFragment fragment) {
         super(fragment);
-        this.mFragment = fragment;
-        this.mContext = fragment.getActivity();
+        this.fragment = fragment;
     }
 
     public void getMovieList(int start, int end) {
@@ -50,12 +46,12 @@ public class MoviePresenter extends BaseMoviePresenter {
 
                     @Override
                     public void onNext(@NonNull MovieBean movieBean) {
-                        mFragment.setData(movieBean, AppConfig.SUCCESS);
+                        fragment.setData(movieBean, AppConfig.SUCCESS);
                     }
 
                     @Override
                     public void onError(@NonNull Throwable throwable) {
-                        mFragment.setData(null, AppConfig.ERROR);
+                        fragment.setData(null, AppConfig.ERROR);
                         LogUtil.e("error:" + throwable.toString());
                     }
 

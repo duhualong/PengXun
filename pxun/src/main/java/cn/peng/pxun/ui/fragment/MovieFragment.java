@@ -16,11 +16,12 @@ import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bean.MovieBean;
 import cn.peng.pxun.presenter.fragment.MoviePresenter;
-import cn.peng.pxun.ui.activity.MovieInfoActivity;
+import cn.peng.pxun.ui.activity.WebActivity;
 import cn.peng.pxun.ui.adapter.recycleview.MovieAdapter;
 
 /**
  * Created by tofirst on 2017/10/27.
+ * 电影页面
  */
 
 public class MovieFragment extends BaseFragment<MoviePresenter> {
@@ -36,7 +37,7 @@ public class MovieFragment extends BaseFragment<MoviePresenter> {
     private int end;
 
     @Override
-    public void init() {
+    protected void init() {
         super.init();
         start = 0;
         end = 20;
@@ -44,33 +45,42 @@ public class MovieFragment extends BaseFragment<MoviePresenter> {
     }
 
     @Override
-    public View initView() {
+    public View initLayout() {
         View view = View.inflate(mActivity, R.layout.fragment_movie, null);
         return view;
     }
 
     @Override
-    protected MoviePresenter initPresenter() {
+    public MoviePresenter initPresenter() {
         return new MoviePresenter(this);
     }
 
     @Override
-    public void initData() {
-        presenter.getMovieList(start, end);
+    protected void initData() {
         adapter = new MovieAdapter(R.layout.item_movie, movieList);
         // 设置预加载 当列表滑动到倒数第3时加载更多
         adapter.setPreLoadNumber(3);
+        adapter.bindToRecyclerView(mRecycleview);
         mRecycleview.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         mRecycleview.setAdapter(adapter);
+
+        mRefreshLayout.setRefreshing(true);
+        presenter.getMovieList(start, end);
     }
 
     @Override
-    public void initListener() {
+    protected void initListener() {
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter baseQuickAdapter, View view, int position) {
-                Intent intent = new Intent(mActivity, MovieInfoActivity.class);
-                startActivity(intent);
+                MovieBean.SubjectsBean data = (MovieBean.SubjectsBean) baseQuickAdapter.getData().get(position);
+
+                if (data != null){
+                    Intent intent = new Intent(mActivity, WebActivity.class);
+                    String url = "https://movie.douban.com/subject/"+data.id;
+                    intent.putExtra("url",url);
+                    startActivity(intent);
+                }
             }
         });
         adapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {

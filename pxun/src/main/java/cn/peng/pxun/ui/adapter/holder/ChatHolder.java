@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.R;
 import cn.peng.pxun.modle.AppConfig;
+import cn.peng.pxun.modle.bmob.User;
 import cn.peng.pxun.modle.greendao.Message;
 import cn.peng.pxun.ui.activity.BigPicActivity;
 import cn.peng.pxun.ui.activity.ChatActivity;
@@ -41,8 +42,11 @@ public class ChatHolder extends BaseHolder<Message> {
     @BindView(R.id.cv_chat_ask)
     ChatView mCvChatAsk;
 
-    public ChatHolder(ChatActivity activity) {
+    private User toChatUser;
+
+    public ChatHolder(ChatActivity activity, User toChatUser) {
         this.activity = activity;
+        this.toChatUser = toChatUser;
     }
 
     @Override
@@ -67,7 +71,7 @@ public class ChatHolder extends BaseHolder<Message> {
             public void onClick(View v) {
                 Intent intent = new Intent(activity, DetailedActivity.class);
                 intent.putExtra("isMe",false);
-                intent.putExtra("accountNumber",mData.fromUserID);
+                intent.putExtra("user",toChatUser);
                 activity.startActivity(intent);
             }
         });
@@ -106,7 +110,11 @@ public class ChatHolder extends BaseHolder<Message> {
             if (mData.isTuring){
                 mIvChatReplyicon.setImageResource(R.drawable.icon_tuling);
             } else{
-                mIvChatReplyicon.setImageResource(R.drawable.icon_nan);
+                if (!TextUtils.isEmpty(toChatUser.getHeadIcon())){
+                    Picasso.with(activity).load(toChatUser.getHeadIcon()).into(mIvChatReplyicon);
+                }else {
+                    mIvChatReplyicon.setImageResource(R.drawable.icon_nan);
+                }
             }
 
             mCvChatReply.removeAllViews();

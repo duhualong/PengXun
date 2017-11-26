@@ -4,18 +4,16 @@ import android.content.SharedPreferences;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.exceptions.HyphenateException;
 
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.SaveListener;
 import cn.peng.pxun.MyApplication;
 import cn.peng.pxun.modle.AppConfig;
 import cn.peng.pxun.modle.bmob.User;
-import cn.peng.pxun.presenter.BasePresenter;
+import cn.peng.pxun.presenter.base.BaseUserPresenter;
 import cn.peng.pxun.ui.activity.LoginActivity;
 import cn.peng.pxun.utils.MD5Util;
 import cn.peng.pxun.utils.ThreadUtil;
@@ -23,9 +21,9 @@ import cn.peng.pxun.utils.ThreadUtil;
 /**
  * LoginActivity的业务类
  */
-public class LoginPresenter extends BasePresenter{
+public class LoginPresenter extends BaseUserPresenter{
     private LoginActivity activity;
-    private String phone;
+    private String loginNum;
     private String password;
     private boolean isThirdPartyLogin = false;
 
@@ -39,7 +37,7 @@ public class LoginPresenter extends BasePresenter{
      * 未注册用户先注册后登陆
      * @param user
      */
-    public void thirdPartyUserRegiest(final User user) {
+    public void thirdPartyUserLogin(final User user) {
         isThirdPartyLogin = true;
         BmobQuery<User> bmobQuery = new BmobQuery();
         bmobQuery.addWhereEqualTo("thirdPartyID", user.getThirdPartyID());
@@ -48,63 +46,46 @@ public class LoginPresenter extends BasePresenter{
             public void done(List<User> list, BmobException e) {
                 if (e == null){
                     if(list != null && list.size() > 0){
+                        // 已注册,直接登录
                         loginHuanXin(user.getThirdPartyID(), user.getThirdPartyID());
                     }else{
-                        regiestUser(user);
+                        // 未注册,先注册用户
+                        regiestThirdPartyUser(user);
                     }
                 }else{
                     e.printStackTrace();
-                    regiestUser(user);
+                    setResult(AppConfig.SERVER_ERROR, 500);
                 }
             }
         });
     }
 
     /**
-     * 注册用户
+     * 注册三方登录的用户
      * @param user
      */
-    private void regiestUser(final User user){
-        user.signUp(new SaveListener<User>() {
-            @Override
-            public void done(final User user, BmobException e) {
-                if (e == null){
-                    ThreadUtil.runOnSubThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                EMClient.getInstance().createAccount(user.getThirdPartyID(), MD5Util.encode(user.getThirdPartyID()));
-                                //注册成功
-                                loginHuanXin(user.getThirdPartyID(), user.getThirdPartyID());
-                            } catch (HyphenateException e1) {
-                                e1.printStackTrace();
-                                setResult(AppConfig.ERROR, e1.getErrorCode());
-                            }
-                        }
-                    });
-                }else {
-                    setResult(AppConfig.SERVER_ERROR, e.getErrorCode());
-                }
-            }
-        });
+    private void regiestThirdPartyUser(User user){
+        String userId = user.getThirdPartyID();
+        String password = user.getThirdPartyID();
+        registUser(user, userId, password);
     }
 
     /**
      * 登录帐号
-     * @param phone
+     * @param loginNum
      * @param password
      * @return
      */
-    public void login(String phone, final String password) {
+    public void login(String loginNum, final String password) {
         if (!isNetUsable(activity)){
             activity.onLoginFinish(AppConfig.NET_ERROR, 100);
             return;
         }
 
-        this.phone = phone;
+        this.loginNum = loginNum;
         this.isThirdPartyLogin = false;
 
-        loginHuanXin(phone, password);
+        loginHuanXin(loginNum, password);
     }
 
     /**
@@ -112,7 +93,7 @@ public class LoginPresenter extends BasePresenter{
      * @param accountNumber
      * @param password
      */
-    private void loginHuanXin(final String accountNumber, String password) {
+    public void loginHuanXin(final String accountNumber, String password) {
         this.password = password;
         EMClient.getInstance().login(accountNumber, MD5Util.encode(password),new EMCallBack() {
             @Override
@@ -168,7 +149,7 @@ public class LoginPresenter extends BasePresenter{
         SharedPreferences.Editor editor = MyApplication.sp.edit();
         if (!isThirdPartyLogin){
             editor.putBoolean("isThird",false);
-            editor.putString("phone",phone);
+            editor.putString("phone",loginNum);
             editor.putString("password",password);
             editor.putBoolean("isRemember",isRememberPassword);
         }else {

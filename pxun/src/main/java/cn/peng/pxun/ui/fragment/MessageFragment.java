@@ -42,28 +42,29 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
     private MessageAdapter mAdapter;
 
     @Override
-    public void init() {
+    protected void init() {
         super.init();
         EventBus.getDefault().register(this);
         messageList = new ArrayList<>();
         messageList.add(new ConversationBean(new User("admin", "系统消息")));
         messageList.add(new ConversationBean(new User("tuling", "智能小白")));
-        presenter.getMessageList();
     }
 
     @Override
-    protected MessagePresenter initPresenter() {
-        return new MessagePresenter(this);
-    }
-
-    @Override
-    public View initView() {
+    public View initLayout() {
         View view = View.inflate(mActivity, R.layout.fragment_message, null);
         return view;
     }
 
     @Override
-    public void initData() {
+    public MessagePresenter initPresenter() {
+        return new MessagePresenter(this);
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
+
         mTvTitleText.setText("消息");
         mIvTitleFriend.setVisibility(View.VISIBLE);
         mAdapter = new MessageAdapter(messageList);
@@ -71,7 +72,18 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
     }
 
     @Override
-    public void initListener() {
+    protected void initData() {
+        if (AppConfig.conversations != null && AppConfig.conversations.size() > 0){
+            messageList.addAll(AppConfig.conversations);
+            mAdapter.setDataSets(messageList);
+        }else {
+            mLvMessage.startRefresh();
+            presenter.getMessageList();
+        }
+    }
+
+    @Override
+    protected void initListener() {
         mIvTitleFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,13 +97,18 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
                 ConversationBean conversation = messageList.get(i - 1);
 
                 Intent intent = new Intent();
-                if ("系统消息".equals(conversation.user.getUsername())) {
-                    intent.setClass(mActivity, SysMessageActivity.class);
-                } else {
+                if (conversation.isGroup){
                     intent.setClass(mActivity, ChatActivity.class);
                     intent.putExtra("isGroup", conversation.isGroup);
-                    intent.putExtra("userId", AppConfig.getUserId(conversation.user));
-                    intent.putExtra("username", conversation.user.getUsername());
+                    intent.putExtra("toChatGroup", conversation.group);
+                }else {
+                    if ("系统消息".equals(conversation.user.getUsername())) {
+                        intent.setClass(mActivity, SysMessageActivity.class);
+                    }else {
+                        intent.setClass(mActivity, ChatActivity.class);
+                        intent.putExtra("isGroup", conversation.isGroup);
+                        intent.putExtra("toChatUser", conversation.user);
+                    }
                 }
                 startActivity(intent);
             }
@@ -113,16 +130,15 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
 
     /**
      * 刷新消息界面
-     * @param conversation
      */
-    public void refreshMessage(ConversationBean conversation) {
+    public void onLoadFinish() {
         if (mLvMessage != null && mAdapter != null) {
-            if (mLvMessage.isRefresh() && !presenter.isLoadingMessage()) {
+            if (mLvMessage.isRefresh()) {
                 mLvMessage.onRefreshFinish();
             }
 
-            if (conversation != null){
-                messageList.add(conversation);
+            if (AppConfig.conversations != null && AppConfig.conversations.size() > 0){
+                messageList.addAll(AppConfig.conversations);
                 mAdapter.setDataSets(messageList);
             }
         }
@@ -134,8 +150,32 @@ public class MessageFragment extends BaseFragment<MessagePresenter> {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void receiveMessage(Message msg) {
-        for (ConversationBean conversation : messageList){
-
+        boolean hasConversation = false;
+        int index = 0;
+        ConversationBean conversation = null;
+        for (int i = 0; i < messageList.size(); i++){
+            conversation = messageList.get(i);
+            if (conversation.isGroup){
+                if (conversation.group.getGroupNum().equals(msg.fromUserID)){
+                    index = i;
+                    hasConversation = true;
+                    break;
+                }
+            }else {
+                if (conversation.user.getLoginNum().equals(msg.fromUserID)){
+                    index = i;
+                    hasConversation = true;
+                    break;
+                }
+            }
+        }
+        if (hasConversation){
+            messageList.remove(index);
+            conversation.lastMsg = msg.message;
+            conversation.lastChatTime = msg.msgTime;
+            messageList.add(2, conversation);
+        } else {
+            // 当前会话列表没有该消息用户
         }
     }
 }

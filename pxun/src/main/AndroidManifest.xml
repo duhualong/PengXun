@@ -65,7 +65,9 @@
         </activity>
         <activity android:name=".ui.activity.MainActivity">
         </activity>
-        <activity android:name=".ui.activity.ChatActivity">
+        <activity
+            android:name=".ui.activity.ChatActivity"
+            android:launchMode="singleTask">
         </activity>
         <activity android:name=".ui.activity.BigPicActivity">
         </activity>
@@ -91,6 +93,16 @@
         </activity>
         <activity android:name=".ui.activity.ClipActivity">
         </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
 
         <!-- 设置环信应用的AppKey -->
         <meta-data
@@ -168,9 +180,9 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-        <activity android:name=".ui.activity.MovieInfoActivity">
-        </activity>
         <activity android:name=".ui.activity.ModifyUserInfoActivity">
+        </activity>
+        <activity android:name=".ui.activity.PublishPostsActivity">
         </activity>
     </application>
 

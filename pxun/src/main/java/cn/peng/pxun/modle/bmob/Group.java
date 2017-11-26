@@ -8,20 +8,18 @@ import cn.bmob.v3.BmobObject;
  */
 
 public class Group extends BmobObject{
+    //群号码
     private String groupNum;
+    //群名称
     private String groupName;
-    private String groupDesc;
+    //群图标
     private String groupIcon;
-
-    public String getGroupType() {
-        return groupType;
-    }
-
-    public void setGroupType(String groupType) {
-        this.groupType = groupType;
-    }
-
+    //群描述
+    private String groupDesc;
+    //群类型
     private String groupType;
+    //群主ID
+    private String groupMasterId;
 
     public String getGroupNum() {
         return groupNum;
@@ -39,6 +37,14 @@ public class Group extends BmobObject{
         this.groupName = groupName;
     }
 
+    public String getGroupIcon() {
+        return groupIcon;
+    }
+
+    public void setGroupIcon(String groupIcon) {
+        this.groupIcon = groupIcon;
+    }
+
     public String getGroupDesc() {
         return groupDesc;
     }
@@ -47,11 +53,19 @@ public class Group extends BmobObject{
         this.groupDesc = groupDesc;
     }
 
-    public String getGroupIcon() {
-        return groupIcon;
+    public String getGroupType() {
+        return groupType;
     }
 
-    public void setGroupIcon(String groupIcon) {
-        this.groupIcon = groupIcon;
+    public void setGroupType(String groupType) {
+        this.groupType = groupType;
+    }
+
+    public String getGroupMasterId() {
+        return groupMasterId;
+    }
+
+    public void setGroupMasterId(String groupMasterId) {
+        this.groupMasterId = groupMasterId;
     }
 }
